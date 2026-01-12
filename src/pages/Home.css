@@ -1,0 +1,828 @@
+/* ===========================
+   HOME HERO SECTION
+   Clean layout + animations + responsive
+=========================== */
+
+/* make sure hero allows overflow so floating elements are visible */
+.home-hero {
+  padding: 80px 20px 120px;
+  padding-top: 40px;
+  padding-bottom: 100px;
+}
+
+.hero-badge {
+  margin-bottom: 35px !important; /* Increase spacing */
+}
+
+
+/* FLOATING ICONS - absolutely positioned and above everything */
+.hero-icons {
+  position: absolute;            /* absolute to float over both sections */
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: -28px;                 /* how far they dip into the gap — tweak as needed */
+  display: flex;
+  gap: 20px;
+  align-items: flex-end;
+  height: 0;                     /* keep no extra flow height */
+  pointer-events: none;        /* let clicks pass through; remove if you want them clickable */
+  margin-bottom: 110px;
+  z-index: 20;                   /* must be higher than hero and mind-section */
+}
+
+/* Emoji style & animation */
+.hero-icons span {
+  display: inline-block;
+  font-size: 48px;
+  transform-origin: center;
+  animation: floatUp 3s ease-in-out infinite;
+  will-change: transform, opacity;
+  filter: drop-shadow(0 8px 20px rgba(0,0,0,0.08));
+}
+
+/* staggered delays */
+.hero-icons span:nth-child(2) { animation-delay: 0.2s; }
+.hero-icons span:nth-child(3) { animation-delay: 0.4s; }
+.hero-icons span:nth-child(4) { animation-delay: 0.6s; }
+.hero-icons span:nth-child(5) { animation-delay: 0.8s; }
+
+@keyframes floatUp {
+  0%   { transform: translateY(6px); opacity: 0.92; }
+  50%  { transform: translateY(-8px) rotate(-2deg); opacity: 1; }
+  100% { transform: translateY(6px); opacity: 0.92; }
+}
+
+/* Ensure categories render above divider but below icons if needed */
+.mind-section {
+  position: relative;
+  z-index: 10;  /* below .hero-icons (20) but above background */
+  margin-top: -8px; /* tweak to taste so they visually sit with the icons */
+}
+
+/* Responsive tweaks */
+@media (max-width: 800px) {
+  .hero-icons { bottom: -18px; gap: 14px; }
+  .hero-icons span { font-size: 22px; }
+}
+@media (max-width: 480px) {
+  .hero-icons { bottom: -12px; gap: 10px; }
+  .hero-icons span { font-size: 18px; }
+}
+
+
+/* container for center alignment and max width */
+.hero-inner {
+  max-width: 1100px;
+  width: 100%;
+  text-align: center;
+  margin: 0 auto;
+  padding: 20px;
+  position: relative;
+  z-index: 30;
+}
+
+/* =============================
+   SVG truck: single element roundtrip
+   - starts facing right
+   - drives right → flips → drives left → flips → repeat
+   - tweak --truck-travel to match badge inner width
+   ============================= */
+
+.hero-badge {
+  /* adjust this to suit your badge width so truck goes edge → edge */
+  --truck-travel: 170px; /* default — auto-set by JS for accuracy */
+  --truck-start-left: 0px; /* starting inset from left inside pill */
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 22px;
+  border-radius: 30px;
+  background: linear-gradient(90deg, rgba(255,245,240,0.95), rgba(255,250,255,0.95));
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+  overflow: visible;
+}
+
+/* pause animation when user hovers or focuses badge */
+.hero-badge:hover .truck,
+.hero-badge:focus-within .truck {
+  animation-play-state: paused;
+}
+
+/* truck container (holds inline svg) */
+.hero-badge .truck {
+  position: absolute;
+  left: var(--truck-start-left); /* visible at left edge inside pill */
+  top: 50%;
+  transform: translateY(-50%) scaleX(1); /* start facing right */
+  z-index: 2;
+  will-change: left, transform;
+  filter: drop-shadow(0 6px 12px rgba(0,0,0,0.06));
+  animation: truck-rt 5s cubic-bezier(.22,.9,.28,1) infinite;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* size tweak for the svg inside */
+.hero-badge .truck svg {
+  width: clamp(28px, 3.5vw, 48px);
+  height: auto;
+}
+
+/* main keyframes:
+   0%    visible at left, facing right
+   40%   at right edge (facing right)
+   45%   flip orientation (now faces left) — small pause
+   95%   arrive back left (facing left)
+   100%  reset orientation to face right immediately for next loop
+*/
+@keyframes truck-rt {
+  0% {
+    left: var(--truck-start-left);
+    transform: translateY(-50%) scaleX(1);
+    opacity: 1;
+  }
+
+  6% {
+    left: calc(var(--truck-start-left) + 6px);
+    transform: translateY(-52%) scaleX(1);
+  }
+
+  40% {
+    left: calc(var(--truck-travel));
+    transform: translateY(-50%) scaleX(1); /* facing right while going right */
+    opacity: 1;
+  }
+
+  45% {
+    left: calc(var(--truck-travel));
+    transform: translateY(-50%) scaleX(-1); /* flip to face left */
+    opacity: 1;
+  }
+
+  95% {
+    left: calc(var(--truck-start-left) + 0px); /* come back to same left inset */
+    transform: translateY(-52%) scaleX(-1); /* facing left while returning */
+    opacity: 1;
+  }
+
+  100% {
+    left: var(--truck-start-left);
+    transform: translateY(-50%) scaleX(1); /* reset to face right for next iteration */
+    opacity: 1;
+  }
+}
+
+/* mobile adjustments */
+@media (max-width: 720px) {
+  .hero-badge {
+    --truck-travel: 120px;
+    padding: 6px 14px;
+  }
+  .hero-badge .truck svg { width: 18px; height: 12px; }
+  .hero-badge .truck { animation-duration: 4s; }
+}
+
+/* reduced motion fallback */
+@media (prefers-reduced-motion: reduce) {
+  .hero-badge .truck {
+    animation: none !important;
+    left: var(--truck-start-left) !important;
+    transform: translateY(-50%) scaleX(1) !important;
+  }
+}
+
+/* HEADLINE */
+.hero-title {
+  font-size: clamp(36px, 7vw, 76px);
+
+  font-family: 'Poppins', sans-serif;
+  font-weight: 800;
+  line-height: 1;
+  margin: 6px 0 18px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #0b0b0b;
+
+  opacity: 0;
+  transform: translateY(10px);
+  animation: fadeUp 0.65s cubic-bezier(.2,.9,.25,1) 0.30s forwards;
+}
+
+/* highlighted word */
+.hero-title .accent {
+  color: #ff8686;
+}
+
+/* SUBTITLE */
+.hero-sub {
+  max-width: 760px;
+  margin: 12px auto 28px;
+  font-size: 1.05rem;
+  color: #4b5563;
+
+  opacity: 0;
+  transform: translateY(8px);
+  animation: fadeUp 0.55s cubic-bezier(.2,.9,.25,1) 0.45s forwards;
+}
+
+/* CTA BUTTONS CONTAINER */
+.hero-ctas {
+  display: inline-flex;
+  gap: 16px;
+  align-items: center;
+  margin-top: 12px;
+
+  opacity: 0;
+  transform: translateY(6px);
+  animation: fadeUp 0.55s cubic-bezier(.2,.9,.25,1) 0.60s forwards;
+}
+
+/* BUTTON BASE STYLE */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 26px;
+  border-radius: 999px;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+
+/* PRIMARY GRADIENT BUTTON */
+.btn-primary {
+  background: linear-gradient(90deg, #ff8a3d, #ff4da6);
+  color: white;
+  box-shadow: 0 12px 28px rgba(255,77,106,0.18);
+}
+
+.btn-primary:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(255,77,106,0.22);
+}
+
+/* OUTLINE BUTTON */
+.btn-outline {
+  border: 2px solid #ffb08a;
+  color: #ff6b3d;
+  background: rgba(255,255,255,0.6);
+}
+
+/* ICON SIZE */
+.btn .icon {
+  font-size: 1rem;
+}
+
+/* ===========================
+   WHY SECTION
+=========================== */
+.why-section {
+  margin-top: 120px;
+  text-align: center;
+  padding: 40px 20px 120px;
+  position: relative;
+  z-index: 30;
+}
+
+.why-title {
+  font-size: clamp(28px, 5vw, 48px);
+  font-weight: 800;
+  margin-bottom: 26px;
+}
+
+.why-cards {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 26px;
+  margin-top: 32px;
+}
+
+.why-card {
+  background: #ffffff;
+  border: 2px solid rgba(255, 138, 61, 0.18);
+  border-radius: 16px;
+  /* padding: 26px 22px; */
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.05);
+  transform: translateY(12px);
+  opacity: 0;
+  transition:
+    transform .25s ease,
+    border-color .25s ease,
+    box-shadow .25s ease,
+    background .25s ease;
+  animation: whyFadeUp 0.45s cubic-bezier(.23,.97,.35,1) forwards;
+  animation-delay: calc(var(--i) * 120ms);
+}
+
+/* ===========================
+   ANIMATIONS
+=========================== */
+@keyframes fadeUp {
+  0% {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  60% {
+    transform: translateY(-4px);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* ===========================
+   RESTAURANTS SECTION + CARDS
+=========================== */
+
+html { scroll-behavior: smooth; } /* smooth anchor scroll */
+
+.restaurants-section {
+  padding: 60px 20px 120px;
+  position: relative;
+  z-index: 30;
+}
+
+.section-head {
+  text-align: center;
+  margin-bottom: 22px;
+}
+.section-head h2 {
+  font-size: clamp(24px, 4vw, 32px);
+  margin-bottom: 6px;
+}
+.section-sub {
+  color: rgba(17,24,39,0.6);
+  margin-bottom: 18px;
+}
+
+/* grid */
+.restaurants-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* card */
+.restaurant-card {
+  display: flex;
+  gap: 14px;
+  background: rgba(255,255,255,0.85);
+  border-radius: 12px;
+  padding: 12px;
+  align-items: center;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+  transition: transform .14s ease, box-shadow .14s ease;
+}
+.restaurant-card:focus,
+.restaurant-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.08);
+}
+
+.restaurant-thumb {
+  width: 92px;
+  height: 92px;
+  border-radius: 10px;
+  overflow: hidden;
+  flex: 0 0 92px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* placeholder thumb */
+.thumb-placeholder {
+  width: 100%;
+  height: 100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background: linear-gradient(120deg, #ffd9cc, #ffd0e8);
+  color: rgba(17,24,39,0.7);
+  font-weight: 800;
+  font-size: 0.95rem;
+}
+
+/* info */
+.restaurant-info { flex: 1; min-width: 0; }
+.restaurant-name { font-size: 1.05rem; margin: 0 0 6px; font-weight: 800; }
+.restaurant-meta { color: rgba(17,24,39,0.6); font-size: 0.92rem; margin-bottom: 8px; display:flex; gap:6px; align-items:center; }
+.restaurant-bottom { display:flex; justify-content:space-between; align-items:center; color: rgba(17,24,39,0.75); font-weight:700; }
+
+/* small dot */
+.restaurant-meta .dot { opacity: 0.6; }
+
+/* more action */
+.more-action { text-align:center; margin-top: 20px; }
+
+/* footer */
+.site-footer { padding: 36px 20px; border-top: 1px solid rgba(0,0,0,0.04); margin-top: 30px; }
+.footer-inner { display:flex; justify-content:space-between; align-items:center; gap:12px; max-width:1100px; margin:0 auto; color: rgba(17,24,39,0.6); }
+.footer-links a { margin-left: 14px; color: rgba(17,24,39,0.7); text-decoration:none; }
+
+/* responsiveness */
+@media (max-width: 1000px) {
+  .restaurants-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 720px) {
+  .restaurants-grid { grid-template-columns: 1fr; }
+  .restaurant-thumb { width: 84px; height: 84px; flex: 0 0 84px; }
+  .footer-inner { flex-direction: column; gap: 8px; text-align:center; }
+}
+
+/* -----------------------------
+   ENHANCEMENTS: WHY section improvements
+------------------------------ */
+
+/* ================================
+   WHY – Boxed Cards + Borders + Hover
+================================ */
+
+.why-cards {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 26px;
+  margin-top: 32px;
+}
+
+.why-card {
+  background: #ffffff;
+  border: 2px solid rgba(255, 138, 61, 0.18);  /* soft orange border */
+  border-radius: 16px;
+  padding: 40px 26px;
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.05);
+  transform: translateY(12px);
+  opacity: 0;
+
+  transition: 
+    transform .25s ease,
+    border-color .25s ease,
+    box-shadow .25s ease,
+    background .25s ease;
+
+  animation: whyFadeUp 0.45s cubic-bezier(.23,.97,.35,1) forwards;
+  animation-delay: calc(var(--i) * 120ms);
+}
+
+/* Hover effect = lift + glow */
+.why-card:hover {
+  transform: translateY(-6px);
+  border-color: #ff8a3d;  /* bright orange */
+  background: linear-gradient(180deg, #fff9f7, #ffffff);
+  box-shadow: 0 14px 30px rgba(255, 138, 61, 0.18);
+  cursor: pointer;
+}
+
+/* keyboard focus */
+.why-card:focus {
+  outline: none;
+  border-color: #ff4da6;
+  box-shadow: 0 0 0 4px rgba(255,77,166,0.18);
+}
+
+/* WHY icon box */
+.why-icon {
+  width: 60px;
+  height: 60px;
+  min-width: 60px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #ffe8dc, #ffd0ef);
+  display: grid;
+  place-items: center;
+  font-size: 1.35rem;
+  color: #1a1a1a;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.06);
+}
+
+/* text */
+.why-card-title {
+  margin: 0 0 4px 0;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #1a1a1a;
+}
+.why-card-desc {
+  margin: 0;
+  font-size: .97rem;
+  color: #4b5563;
+  line-height: 1.45;
+}
+
+/* responsive */
+@media (max-width: 900px) {
+  .why-cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* decorative blobs inside why-left (visual only) */
+.why-left { position: relative; z-index:2; }
+.why-left .why-decor { position:absolute; inset:0; pointer-events:none; z-index:1; }
+.why-left .blob { position:absolute; border-radius:999px; filter: blur(28px); opacity:0.22; }
+.why-left .b1 { width:200px; height:200px; background:#FFD6B3; left:-40px; top:-30px; transform:rotate(10deg); }
+.why-left .b2 { width:140px; height:140px; background:#DFF3FF; right:-20px; bottom:-40px; }
+
+/* ===========================
+   REDUCED MOTION SUPPORT (global)
+=========================== */
+@media (prefers-reduced-motion: reduce) {
+  .hero-badge,
+  .hero-title,
+  .hero-sub,
+  .hero-ctas,
+  .why-card {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+
+/* DEBUG: force Why cards visible (temporary) */
+.why-cards { display: grid !important; grid-template-columns: repeat(3, 1fr) !important; gap: 20px !important; max-width: 1100px; margin: 0 auto; }
+.why-card { opacity: 1 !important; transform: none !important; animation: none !important; visibility: visible !important; display: flex !important; align-items: center !important; padding: 18px !important; border: 2px solid rgba(255,138,61,0.12) !important; box-shadow: 0 8px 22px rgba(0,0,0,0.06) !important; background: #fff !important; }
+.why-icon { display: grid !important; place-items: center !important; min-width: 48px !important; width: 48px !important; height: 48px !important; }
+
+
+/* TEMP OVERRIDE: restore borders + hover (put at end of Home.css) */
+.why-card {
+  border: 2px solid rgba(255,138,61,0.18) !important;
+  background: #ffffff !important;
+  transition: transform .25s ease !important,
+              border-color .25s ease !important,
+              box-shadow .25s ease !important,
+              background .25s ease !important;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.05) !important;
+  will-change: transform, box-shadow !important;
+  cursor: pointer !important;
+}
+
+/* hover/focus forced */
+.why-card:hover,
+.why-card:focus {
+  transform: translateY(-6px) !important;
+  border-color: #ff8a3d !important;
+  background: linear-gradient(180deg, #fff9f7, #ffffff) !important;
+  box-shadow: 0 14px 30px rgba(255, 138, 61, 0.18) !important;
+  outline: none !important;
+}
+
+/* keyboard focus visible */
+.why-card:focus {
+  box-shadow: 0 0 0 4px rgba(255,77,166,0.18) !important;
+}
+
+/* ensure icon sizing */
+.why-icon { width: 60px !important; height: 60px !important; min-width: 60px !important; }
+
+/* Match hero's curved bottom edges on Why section
+.why-section {
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+  background: linear-gradient(1deg, #fffdfc 0%, #f6fbff 100%);
+  margin-top: -48px;
+  padding-top: 70px;
+} */
+
+
+.home-hero {
+  background: #fff6f3; /* replace gradient with solid */
+}
+
+
+
+/* Increase spacing below the Why section subtitle */
+.why-sub {
+  margin-bottom: 30px !important;  /* increase or tweak value */
+}
+
+
+/* 3D soft icon bubble */
+.why-icon {
+  width: 64px;
+  height: 64px;
+  min-width: 64px;
+  border-radius: 18px;
+  background: radial-gradient(circle at 30% 30%, #ffffff 0%, #ffe4f1 40%, #ffd6c8 100%);
+  box-shadow:
+      0 6px 14px rgba(255, 77, 166, 0.18),
+      0 2px 6px rgba(0, 0, 0, 0.08),
+      inset 0 1px 2px rgba(255, 255, 255, 0.6);
+  display: grid;
+  place-items: center;
+  backdrop-filter: blur(6px);
+}
+.why-icon svg {
+  width: 32px;
+  height: 32px;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.18));
+}
+
+
+/* ===== 3D Icon micro-interactions: tilt + glow + reflection ===== */
+
+/* Make sure parent provides perspective for the 3D tilt */
+.why-card {
+  perspective: 900px; /* creates subtle 3D depth for icon tilt on hover */
+  -webkit-perspective: 900px;
+}
+
+/* Ensure icon is positioned for pseudo elements */
+.why-icon {
+  position: relative;
+  transition: transform .28s cubic-bezier(.2,.9,.25,1), box-shadow .28s cubic-bezier(.2,.9,.25,1);
+  transform-style: preserve-3d;
+  will-change: transform, box-shadow;
+  /* keep previously defined background/shadows */
+}
+
+/* hover: subtle 3D tilt + pop out + brighter shadow (glow) */
+.why-card:hover .why-icon,
+.why-card:focus .why-icon {
+  transform: rotateX(6deg) rotateY(-6deg) translateZ(6px);
+  box-shadow:
+    0 22px 46px rgba(255, 138, 61, 0.18),
+    0 8px 18px rgba(255, 77, 166, 0.10),
+    inset 0 1px 2px rgba(255,255,255,0.6);
+  z-index: 5;
+}
+
+/* keyboard focus uses same visual */
+.why-card:focus .why-icon { outline: none; }
+
+/* soft glossy reflection on the icon surface */
+.why-icon::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(135deg, rgba(255,255,255,0.65), rgba(255,255,255,0.06) 28%, rgba(255,255,255,0) 55%);
+  mix-blend-mode: overlay;
+  transform: translateZ(12px) translateY(0);
+  opacity: 0.9;
+  transition: transform .6s cubic-bezier(.2,.9,.25,1), opacity .35s ease;
+}
+
+/* on hover the highlight shifts slightly to imply depth */
+.why-card:hover .why-icon::before,
+.why-card:focus .why-icon::before {
+  transform: translateZ(14px) translateY(-6px) rotate(-6deg);
+  opacity: 1;
+}
+
+/* subtle halo/pulse under the icon on hover */
+.why-icon::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 120%;
+  height: 120%;
+  transform: translate(-50%, -50%);
+  border-radius: 20px;
+  background: radial-gradient(circle at 50% 40%, rgba(255,138,61,0.12), rgba(255,77,166,0.06) 40%, transparent 60%);
+  opacity: 0;
+  transition: opacity .28s ease, transform .45s cubic-bezier(.2,.9,.25,1);
+  pointer-events: none;
+}
+
+/* show halo on hover */
+.why-card:hover .why-icon::after,
+.why-card:focus .why-icon::after {
+  opacity: 1;
+  transform: translate(-50%, -54%); /* move slightly up as it blooms */
+}
+
+/* small motion & transform reduction for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .why-card, .why-icon, .why-icon::before, .why-icon::after {
+    transition: none !important;
+    animation: none !important;
+  }
+  .why-card:hover .why-icon,
+  .why-card:focus .why-icon {
+    transform: none !important;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.06) !important;
+  }
+  .why-icon::before, .why-icon::after { opacity: 0 !important; transform: none !important; }
+}
+
+
+.why-card {
+  min-height: 200px;  /* adjust 220 → 250 → 280 etc. */
+}
+
+
+.why-icon {
+  width: 85px;
+  height: 85px;
+}
+
+
+
+/* ===========================
+   CUSTOM SCROLLBAR THEME
+   Matching FoodByMe Colors
+=========================== */
+
+/* width of scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* scrollbar track (background) */
+::-webkit-scrollbar-track {
+  background: #fff5f9; /* soft pink background */
+  border-radius: 10px;
+}
+
+/* scrollbar thumb (the moving part) */
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #ff8a3d, #ff4da6);
+  border-radius: 10px;
+  border: 2px solid #fff5f9; /* creates clean gap around thumb */
+}
+
+/* hover effect */
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #ff7c2e, #ff338f);
+}
+
+/* Firefox support */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #ef964d #fff5f9;
+}
+
+
+.hero-banner {
+  background-image: url("../assets/hero.jpg");
+  background-size: cover;
+  background-position: center;
+  height: 380px;
+}
+
+.home-hero {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+#why.why-section {
+  margin-top: -10px !important;
+}
+
+/* Floating Food Icons */
+.hero-icons {
+  position: relative;
+  height: 60px;
+  margin-top: -25px;
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+}
+
+/* size of floating icons */
+
+.hero-icons span {
+  font-size: 40px;
+  animation: floatUp 3s ease-in-out infinite;
+}
+
+.hero-icons span:nth-child(2) { animation-delay: .3s; }
+.hero-icons span:nth-child(3) { animation-delay: .6s; }
+.hero-icons span:nth-child(4) { animation-delay: .9s; }
+.hero-icons span:nth-child(5) { animation-delay: 1.2s; }
+
+@keyframes floatUp {
+  0%   { transform: translateY(6px); opacity: .9; }
+  50%  { transform: translateY(-6px); opacity: 1; }
+  100% { transform: translateY(6px); opacity: .9; }
+}
+
+.hero-icons {
+  bottom: -65px;     /* move icons up/down */
+}
+
+.hero-icons {
+  gap: 18px;         /* increase or decrease icon spacing */
+}
+
+

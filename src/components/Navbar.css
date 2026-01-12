@@ -1,0 +1,51 @@
+.app-navbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background: #fff;
+  padding: 14px 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  z-index: 1000;
+}
+.nav-inner {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  max-width:1100px;
+  margin:0 auto;
+}
+.nav-links { list-style:none; display:flex; gap:16px; margin:0; padding:0; }
+.brand { margin:0; }
+
+.signup-btn {
+  display: inline-block;
+  text-decoration: none;
+  color: white;
+  background-color: #ff4d4d;
+  padding: 10px 22px;
+  border-radius: 50px;
+  border: none;           /* harmless on anchors */
+  cursor: pointer;
+  font-weight: 600;
+  transition: transform 0.15s ease, background-color 0.15s ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.signup-btn:hover {
+  background-color: #e63a3a;
+  transform: translateY(-2px);
+}
+
+
+
+
+.nav-links li {
+  display: flex;
+  align-items: center;
+}
+
+
+.active {
+  font-weight: 700;
+  color: #ff4d4d; /* highlight active link */
+}
