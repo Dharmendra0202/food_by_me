@@ -13,7 +13,7 @@ export default function Login() {
         transition={{ duration: 0.8 }}
       >
         <motion.img
-          src="/images/food-illustration.png"
+          src="Chinese.jpg"
           alt="Delicious food"
           initial={{ opacity: 0, y: 20, scale: 0.95 }}
           animate={{
@@ -72,8 +72,8 @@ export default function Login() {
             🍕 Login
           </motion.button>
 
-          <p className="signup-link">
-            Don’t have an account? <a href="/signup">Sign up</a>
+          <p className="login-link">
+            Already have an account? <a href="/login">Login</a>
           </p>
         </form>
       </motion.div>
