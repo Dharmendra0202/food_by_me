@@ -481,6 +481,36 @@ html { scroll-behavior: smooth; } /* smooth anchor scroll */
   animation: whyFadeUp 0.45s cubic-bezier(.23,.97,.35,1) forwards;
   animation-delay: calc(var(--i) * 120ms);
 }
+/* 🎁 Shift the extra line upward beautifully */
+.why-extra {
+  margin-top: -24px !important;
+  /* moves it up slightly */
+  margin-bottom: 10px !important;
+  /* keeps a bit of space before cards */
+  text-align: center;
+  font-style: italic;
+  color: #91301a;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  transition: all 0.25s ease;
+}
+
+/* ✨ Optional subtle floating effect for a lively feel */
+.why-extra {
+  animation: floatSubtle 3s ease-in-out infinite;
+}
+
+@keyframes floatSubtle {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-3px);
+  }
+}
 
 /* Hover effect = lift + glow */
 .why-card:hover {
@@ -833,11 +863,27 @@ html { scroll-behavior: smooth; } /* smooth anchor scroll */
   margin-bottom: 0.5rem;
 }
 
+/* Move the 🎁 text slightly upward */
 .why-bonus {
-  margin-top: 1rem;
+  margin-top: -24px !important;
+  margin-bottom: 8px !important;
   font-style: italic;
   color: #ff5e3a;
   text-align: center;
+  font-weight: 600;
+  animation: bonusFloat 3s ease-in-out infinite;
+}
+
+@keyframes bonusFloat {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-4px);
+  }
 }
 
 .colorful-footer {
