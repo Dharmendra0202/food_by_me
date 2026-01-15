@@ -304,13 +304,13 @@
 
 .why-card {
   background: #ffffff;
-  border: 2px solid rgba(255, 138, 61, 0.18);
   border-radius: 16px;
-  /* padding: 26px 22px; */
   display: flex;
   gap: 16px;
   align-items: flex-start;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.05);
+  /* Remove the shadow look */
+  box-shadow: none;
+
   transform: translateY(12px);
   opacity: 0;
   transition:
@@ -318,9 +318,10 @@
     border-color .25s ease,
     box-shadow .25s ease,
     background .25s ease;
-  animation: whyFadeUp 0.45s cubic-bezier(.23,.97,.35,1) forwards;
+  animation: whyFadeUp 0.45s cubic-bezier(.23, .97, .35, 1) forwards;
   animation-delay: calc(var(--i) * 120ms);
 }
+
 
 /* ===========================
    ANIMATIONS
@@ -492,9 +493,14 @@ html { scroll-behavior: smooth; } /* smooth anchor scroll */
 
 /* keyboard focus */
 .why-card:focus {
-  outline: none;
-  border-color: #ff4da6;
-  box-shadow: 0 0 0 4px rgba(255,77,166,0.18);
+  box-shadow: none !important;
+  /* remove all shadows */
+  border: 1px solid rgba(255, 138, 61, 0.10) !important;
+  /* soft flat border */
+  background: #fff !important;
+  /* keep clean white background */
+  transform: none !important;
+  /* no lift */
 }
 
 /* WHY icon box */
@@ -521,7 +527,7 @@ html { scroll-behavior: smooth; } /* smooth anchor scroll */
 .why-card-desc {
   margin: 0;
   font-size: .97rem;
-  color: #4b5563;
+  /* color: #4b5563; */
   line-height: 1.45;
 }
 
@@ -1012,4 +1018,60 @@ html { scroll-behavior: smooth; } /* smooth anchor scroll */
 
 .footer-links a:hover {
   text-decoration: underline;
+}
+/* FINAL CLEAN + HOVER EFFECT FOR WHY CARDS */
+.why-card {
+  background: #fff !important;
+  border: 2px solid rgba(255, 138, 61, 0.10) !important;
+  /* light soft orange */
+  border-radius: 16px !important;
+  box-shadow: none !important;
+  transform: none !important;
+  transition:
+    border-color 0.25s ease,
+    transform 0.25s ease,
+    background-color 0.25s ease;
+  cursor: pointer;
+}
+
+/* Hover effect — border color + gentle lift */
+.why-card:hover,
+.why-card:focus {
+  border-color: #ff8a3d !important;
+  /* bright orange highlight */
+  background: #fffdfc !important;
+  /* soft warm white on hover */
+  transform: translateY(-4px) !important;
+  /* slight lift */
+}
+
+/* Optional: subtle focus outline for accessibility */
+.why-card:focus {
+  outline: none !important;
+  box-shadow: 0 0 0 3px rgba(255, 138, 61, 0.2) !important;
+  /* soft orange glow */
+}
+
+/* keep icon clean — no shadow */
+.why-icon {
+  box-shadow: none !important;
+  background: #fff !important;
+}
+
+/* optional hover: make icon pop slightly */
+.why-card:hover .why-icon {
+  transform: scale(1.05);
+  transition: transform 0.25s ease;
+}
+
+@media (max-width: 1000px) {
+  .why-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 720px) {
+  .why-cards {
+    grid-template-columns: 1fr;
+  }
 }

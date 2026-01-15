@@ -288,15 +288,25 @@ export default function Home() {
                 title: "🍱 Huge Variety",
                 desc: "Cravings from Indian to Italian — all in one app!",
               },
+              {
+                id: "support",
+                title: "💬 24/7 Support",
+                desc: "Need help? Our team is here for you anytime, day or night!",
+              },
+              {
+                id: "quality",
+                title: "🥇 Premium Quality",
+                desc: "We ensure the best hygiene, ingredients, and taste in every bite.",
+              },
             ].map((f, i) => (
               <article
                 key={f.id}
-                className="why-card glow-card"
+                className="why-card"
                 role="listitem"
                 tabIndex={0}
                 style={{ "--i": i + 1 }}
               >
-                <div className="why-icon bounce">{f.title.split(" ")[0]}</div>
+                <div className="why-icon">{f.title.split(" ")[0]}</div>
                 <div className="why-body">
                   <h3 className="why-card-title">{f.title}</h3>
                   <p className="why-card-desc">{f.desc}</p>
