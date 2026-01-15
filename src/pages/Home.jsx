@@ -4,9 +4,6 @@ import heroImg from "../assets/hero.jpg";
 import deliveryImg from "../assets/delivery.png";
 import burgerImg from "../assets/burger.jpg";
 import WhatsOnYourMind from "../components/WhatsOnYourMind";
-{
-  /* <WhatsOnYourMind autoMs={90000} /> */
-}
 
 /* sample restaurant data — replace with real API later */
 const sampleRestaurants = [
@@ -63,7 +60,7 @@ const sampleRestaurants = [
 function RestaurantCard({ r }) {
   return (
     <article
-      className="restaurant-card"
+      className="restaurant-card fade-in"
       tabIndex={0}
       aria-label={`${r.name} restaurant`}
     >
@@ -130,19 +127,16 @@ export default function Home() {
     };
   }, []);
 
-  // handler for category click from WhatsOnYourMind
   const handleCategorySelect = (categoryName) => {
     setSelectedCategory(categoryName);
 
     const el = document.getElementById("restaurants");
     if (el) {
       el.scrollIntoView({ behavior: "smooth", block: "start" });
-      // focus for screen readers/keyboard users
       el.focus({ preventScroll: true });
     }
   };
 
-  // basic filter that checks name and cuisine for the selected category
   const filtered = sampleRestaurants.filter((r) => {
     if (!selectedCategory) return true;
     const s = selectedCategory.toLowerCase();
@@ -154,10 +148,9 @@ export default function Home() {
 
   return (
     <>
-      {/* HERO SECTION */}
+      {/* HERO SECTION (UNCHANGED) */}
       <header className="home-hero" role="region" aria-label="Homepage hero">
         <div className="hero-inner container">
-          {/* Moving Badge Truck */}
           <div
             className="hero-badge"
             role="status"
@@ -235,150 +228,75 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Floating Food Icons — place here, outside the header so it sits above next section */}
+      {/* Floating Food Icons */}
       <div className="hero-icons" aria-hidden="true">
         <span>🍕</span>
         <span>🍔</span>
         <span>🥗</span>
         <span>🍜</span>
         <span>🥘</span>
-        <span>🫀</span>
+        <span>🧋</span>
       </div>
 
-      {/* <WhatsOnYourMind /> */}
-
-      {/* Categories (clickable) */}
+      {/* What's On Your Mind (UNCHANGED) */}
       <WhatsOnYourMind onSelect={handleCategorySelect} speed={230} />
 
-      {/* WHY CHOOSE US */}
-      <section id="why" className="why-section container">
-        <div className="why-inner">
+      {/* WHY CHOOSE US (ENHANCED) */}
+      <section id="why" className="why-section container fade-in">
+        <div className="why-inner fancy-bg">
           <div className="why-left">
             <h2 className="why-title">
-              Why Choose <span className="accent">Us?</span>
+              Why Choose <span className="accent">Us? 🍽️</span>
             </h2>
 
             <p className="why-sub">
-              We focus on speed, quality, and value — so you can enjoy delicious
-              meals without hassle.
+              We deliver more than meals — we deliver <b>joy 😋</b>, freshness
+              🥦, and flavor 💫 with every bite.
             </p>
 
-            <div className="why-decor" aria-hidden="true">
+            <p className="why-extra">
+              🎁 Enjoy exclusive deals, rewards, and premium partner
+              restaurants!
+            </p>
+
+            <div className="why-decor animated-blobs" aria-hidden="true">
               <span className="blob b1" />
               <span className="blob b2" />
+              <span className="blob b3" />
             </div>
           </div>
 
-          {/* WHY CARDS */}
           <div className="why-cards" role="list">
             {[
               {
                 id: "fast",
-                title: "Fast Delivery",
-                desc: "Hot food delivered from door to door in minutes.",
-                icon: (
-                  <svg viewBox="0 0 24 24">
-                    <defs>
-                      <linearGradient id="fastIcon" x1="0" y1="0" x2="1" y2="1">
-                        <stop stopColor="#ff7c2e" />
-                        <stop offset="1" stopColor="#ffb347" />
-                      </linearGradient>
-                    </defs>
-
-                    <path
-                      d="M3 12h11l4-5h3v10h-3l-4-5H3"
-                      stroke="url(#fastIcon)"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <circle cx="7" cy="17" r="2" fill="url(#fastIcon)" />
-                    <circle cx="17" cy="17" r="2" fill="url(#fastIcon)" />
-                  </svg>
-                ),
+                title: "⚡ Fast Delivery",
+                desc: "Hot meals delivered right when hunger strikes!",
               },
-
               {
                 id: "top",
-                title: "Top Restaurants",
-                desc: "Handpicked partners with high hygiene & taste standards.",
-                icon: (
-                  <svg viewBox="0 0 24 24">
-                    <defs>
-                      <linearGradient id="topIcon" x1="0" y1="0" x2="1" y2="1">
-                        <stop stopColor="#ff5562" />
-                        <stop offset="1" stopColor="#ff8aa8" />
-                      </linearGradient>
-                    </defs>
-
-                    <path
-                      d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z"
-                      fill="url(#topIcon)"
-                    />
-                  </svg>
-                ),
+                title: "🏆 Top Restaurants",
+                desc: "We partner only with the best-rated kitchens!",
               },
-
               {
                 id: "price",
-                title: "Best Prices",
-                desc: "Offers, combos and deals that save you money every order.",
-                icon: (
-                  <svg viewBox="0 0 24 24">
-                    <defs>
-                      <linearGradient
-                        id="priceIcon"
-                        x1="0"
-                        y1="0"
-                        x2="1"
-                        y2="1"
-                      >
-                        <stop stopColor="#38ef7d" />
-                        <stop offset="1" stopColor="#11998e" />
-                      </linearGradient>
-                    </defs>
-
-                    <path
-                      d="M12 2L4 6v6c0 5 3.8 9.7 8 11 4.2-1.3 8-6 8-11V6l-8-4z"
-                      fill="url(#priceIcon)"
-                    />
-                    <path d="M11 9h2v6h-2z" fill="white" />
-                  </svg>
-                ),
+                title: "💸 Great Deals",
+                desc: "Save money every time with exciting offers!",
               },
-
               {
                 id: "variety",
-                title: "Huge Variety",
-                desc: "From local favorites to global cuisines — something for everyone.",
-                icon: (
-                  <svg viewBox="0 0 24 24">
-                    <defs>
-                      <linearGradient id="varIcon" x1="0" y1="0" x2="1" y2="1">
-                        <stop stopColor="#fbd72b" />
-                        <stop offset="1" stopColor="#f9484a" />
-                      </linearGradient>
-                    </defs>
-
-                    <path
-                      d="M3 12h18c0 5-4 9-9 9s-9-4-9-9z"
-                      fill="url(#varIcon)"
-                    />
-                    <circle cx="8" cy="9" r="2" fill="#fff" opacity="0.7" />
-                    <circle cx="16" cy="9" r="2" fill="#fff" opacity="0.7" />
-                  </svg>
-                ),
+                title: "🍱 Huge Variety",
+                desc: "Cravings from Indian to Italian — all in one app!",
               },
             ].map((f, i) => (
               <article
                 key={f.id}
-                className="why-card"
+                className="why-card glow-card"
                 role="listitem"
                 tabIndex={0}
                 style={{ "--i": i + 1 }}
               >
-                <div className="why-icon">{f.icon}</div>
-
+                <div className="why-icon bounce">{f.title.split(" ")[0]}</div>
                 <div className="why-body">
                   <h3 className="why-card-title">{f.title}</h3>
                   <p className="why-card-desc">{f.desc}</p>
@@ -392,15 +310,15 @@ export default function Home() {
       {/* RESTAURANTS SECTION */}
       <section
         id="restaurants"
-        className="restaurants-section container"
+        className="restaurants-section container fade-in"
         tabIndex={-1}
       >
         <div className="section-head">
-          <h2>Popular Restaurants</h2>
+          <h2>🍔 Popular Restaurants Near You</h2>
           <p className="section-sub">
             {selectedCategory
               ? `Showing results for "${selectedCategory}"`
-              : "Handpicked places with great reviews near you"}
+              : "Handpicked places with amazing food and reviews near you!"}
           </p>
           {selectedCategory && (
             <button
@@ -408,7 +326,7 @@ export default function Home() {
               onClick={() => setSelectedCategory("")}
               aria-label="Clear filter"
             >
-              Clear filter
+              ✖ Clear filter
             </button>
           )}
         </div>
@@ -418,32 +336,35 @@ export default function Home() {
             filtered.map((r) => <RestaurantCard key={r.id} r={r} />)
           ) : (
             <div className="no-results">
-              No restaurants found for "{selectedCategory}"
+              😞 No restaurants found for "{selectedCategory}"
             </div>
           )}
         </div>
 
         <div className="more-action">
           <button
-            className="btn btn-outline"
+            className="btn btn-outline pulse"
             onClick={() => {
               setSelectedCategory("");
-              window.alert("Load more — hook to API later");
+              window.alert("🍕 Loading more restaurants soon!");
             }}
           >
-            Show more restaurants
+            🍴 Show More Restaurants
           </button>
         </div>
       </section>
 
       {/* FOOTER */}
-      <footer className="site-footer container">
+      <footer className="site-footer container gradient-footer">
         <div className="footer-inner">
-          <div>© {new Date().getFullYear()} FoodByMe — Made with ❤️</div>
+          <div>
+            © {new Date().getFullYear()} <b>FoodByMe</b> — Made with ❤️, 🍔 & ☕
+          </div>
 
           <div className="footer-links">
-            <a href="/terms">Terms</a>
-            <a href="/privacy">Privacy</a>
+            <a href="/terms">📜 Terms</a>
+            <a href="/privacy">🔒 Privacy</a>
+            <a href="/contact">📞 Contact</a>
           </div>
         </div>
       </footer>
