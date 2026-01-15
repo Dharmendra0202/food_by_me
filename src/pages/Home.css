@@ -6,7 +6,7 @@
 /* make sure hero allows overflow so floating elements are visible */
 .home-hero {
   padding: 80px 20px 120px;
-  padding-top: 40px;
+  padding-top: 120px;
   padding-bottom: 100px;
 }
 
@@ -76,8 +76,8 @@
   width: 100%;
   text-align: center;
   margin: 0 auto;
-  padding: 20px;
-  position: relative;
+  padding: 0 24px;
+    /* equal padding on both sides */  position: relative;
   z-index: 30;
 }
 
