@@ -799,6 +799,59 @@ html { scroll-behavior: smooth; } /* smooth anchor scroll */
   justify-content: center;
   gap: 18px;
 }
+/* === New Beautified Section Styles === */
+
+.colorful-bg {
+  background: linear-gradient(135deg, #fff7ed 0%, #ffe8e8 100%);
+  border-radius: 20px;
+  padding: 3rem 2rem;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+}
+
+.pretty-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 1.5rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  text-align: center;
+  border: 1px solid #ffe3cc;
+}
+
+.pretty-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(255, 157, 74, 0.25);
+}
+
+.why-icon {
+  font-size: 2.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.why-bonus {
+  margin-top: 1rem;
+  font-style: italic;
+  color: #ff5e3a;
+  text-align: center;
+}
+
+.colorful-footer {
+  background: linear-gradient(90deg, #ff9966, #ff5e62);
+  color: white;
+  border-radius: 14px;
+  padding: 2rem;
+  text-align: center;
+  margin-top: 3rem;
+}
+
+.footer-links a {
+  color: #fff;
+  margin: 0 0.6rem;
+  text-decoration: none;
+}
+
+.footer-links a:hover {
+  text-decoration: underline;
+}
 
 /* size of floating icons */
 
