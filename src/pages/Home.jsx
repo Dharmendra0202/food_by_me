@@ -363,6 +363,75 @@ export default function Home() {
           </button>
         </div>
       </section>
+      {/* APP DOWNLOAD / PARTNER SECTION */}
+      <section className="app-section container fade-in" id="app">
+        <div className="app-inner">
+          <div className="app-left">
+            <h2 className="app-title">
+              Get Food Delivered <span className="accent">Faster 🚀</span>
+            </h2>
+
+            <p className="app-sub">
+              Download our app and enjoy lightning-fast delivery, exclusive
+              offers, and easy ordering anytime, anywhere!
+            </p>
+
+            <div className="app-features">
+              <div className="app-feature">📍 Live Order Tracking</div>
+              <div className="app-feature">💳 Easy Payments</div>
+              <div className="app-feature">🎁 Daily Offers & Rewards</div>
+              <div className="app-feature">🍔 1000+ Restaurants</div>
+            </div>
+
+            <div className="app-buttons">
+              <button
+                className="btn btn-primary"
+                onClick={() => window.alert("📲 App Store link coming soon!")}
+              >
+                🍎 Download on App Store
+              </button>
+
+              <button
+                className="btn btn-outline"
+                onClick={() => window.alert("📲 Play Store link coming soon!")}
+              >
+                🤖 Get it on Google Play
+              </button>
+            </div>
+          </div>
+
+          <div className="app-right">
+            <div className="app-card">
+              <h3>🤝 Want to Partner with Us?</h3>
+              <p>
+                Grow your restaurant business with more orders and more
+                customers.
+              </p>
+              <button
+                className="btn btn-link"
+                onClick={() =>
+                  window.alert("📩 Partner registration coming soon!")
+                }
+              >
+                ➕ Register Your Restaurant
+              </button>
+            </div>
+
+            <div className="app-card">
+              <h3>🛵 Become a Delivery Partner</h3>
+              <p>Earn money with flexible working hours and daily payouts.</p>
+              <button
+                className="btn btn-link"
+                onClick={() =>
+                  window.alert("🛵 Delivery partner signup coming soon!")
+                }
+              >
+                ➕ Join as Delivery Partner
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* FOOTER */}
       <footer className="site-footer container gradient-footer">
