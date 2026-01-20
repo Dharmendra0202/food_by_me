@@ -1118,6 +1118,6 @@ html { scroll-behavior: smooth; } /* smooth anchor scroll */
 
 @media (max-width: 720px) {
   .why-cards {
-    grid-template-columns: 1fr;
+    grid-template-columns: 2fr;
   }
-}
+} 
