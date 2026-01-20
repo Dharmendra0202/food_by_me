@@ -352,7 +352,7 @@ export default function Home() {
         </div>
 
         <div className="more-action">
-          <button
+          {/* <button
             className="btn btn-outline pulse"
             onClick={() => {
               setSelectedCategory("");
@@ -360,7 +360,7 @@ export default function Home() {
             }}
           >
             🍴 Show More Restaurants
-          </button>
+          </button> */}
         </div>
       </section>
       {/* APP DOWNLOAD / PARTNER SECTION */}
