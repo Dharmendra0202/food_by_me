@@ -445,6 +445,11 @@ export default function Home() {
             <a href="/privacy">🔒 Privacy</a>
             <a href="/contact">📞 Contact</a>
           </div>
+          <div className="footer-links">
+            <a href="/terms">📜 Terms</a>
+            <a href="/privacy">🔒 Privacy</a>
+            <a href="/contact">📞 Contact</a>
+          </div>
         </div>
       </footer>
     </>
