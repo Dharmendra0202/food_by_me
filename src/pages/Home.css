@@ -72,12 +72,20 @@
 
 /* container for center alignment and max width */
 .hero-inner {
-  max-width: 1100px;
   width: 100%;
-  text-align: center;
+  max-width: 1100px;
   margin: 0 auto;
-  padding: 0 24px;
-    /* equal padding on both sides */  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+
+  padding-left: 0px;
+  /* ✅ remove uneven spacing */
+  padding-right: 0px;
+  /* ✅ remove uneven spacing */
+  position: relative;
   z-index: 30;
 }
 
@@ -1207,9 +1215,10 @@ html { scroll-behavior: smooth; } /* smooth anchor scroll */
 
 /* ===== HERO SEARCH (IMAGE 1 STYLE) ===== */
 .hero-search {
-  margin-top: 22px;
   width: 100%;
   max-width: 900px;
+  margin: 22px auto 0 auto;
+  /* ✅ perfect center */
 }
 
 .search-box {
@@ -1314,4 +1323,22 @@ html { scroll-behavior: smooth; } /* smooth anchor scroll */
     flex-wrap: wrap;
     gap: 14px;
   }
+}
+
+.hero-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* ✅ makes search bar center */
+  text-align: center;
+  /* ✅ makes text center */
+}
+
+.hero-search {
+  margin-left: auto;
+  margin-right: auto;
+}
+.home-hero {
+  display: flex;
+  justify-content: center;
 }
