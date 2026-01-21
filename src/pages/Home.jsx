@@ -214,16 +214,102 @@ export default function Home() {
             taste, unbeatable prices.
           </p>
 
-          <div className="hero-ctas" role="navigation">
-            <a href="#restaurants" className="btn btn-primary">
-              <span className="icon">🔍</span>
-              <span className="label">Explore Restaurants</span>
-            </a>
+          {/* Search Bar like Image 1 (SVG Icons) */}
+          <div className="hero-search">
+            <div className="search-box">
+              {/* Location Icon */}
+              <span className="search-icon" aria-hidden="true">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M12 22s7-5.2 7-12a7 7 0 1 0-14 0c0 6.8 7 12 7 12Z"
+                    stroke="#FF7A45"
+                    strokeWidth="2"
+                  />
+                  <circle
+                    cx="12"
+                    cy="10"
+                    r="2.5"
+                    stroke="#FF7A45"
+                    strokeWidth="2"
+                  />
+                </svg>
+              </span>
 
-            <a href="#cart" className="btn btn-outline">
-              <span className="icon">🧾</span>
-              <span className="label">View Cart</span>
-            </a>
+              <input
+                type="text"
+                className="search-input"
+                placeholder="Enter delivery address..."
+              />
+
+              <button
+                className="search-btn"
+                onClick={() => {
+                  const el = document.getElementById("restaurants");
+                  if (el)
+                    el.scrollIntoView({ behavior: "smooth", block: "start" });
+                }}
+              >
+                Find Food
+                <span className="arrow" aria-hidden="true">
+                  ›
+                </span>
+              </button>
+            </div>
+
+            <div className="search-meta">
+              {/* Clock */}
+              <div className="meta-item">
+                <span className="meta-icon" aria-hidden="true">
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <circle
+                      cx="12"
+                      cy="12"
+                      r="9"
+                      stroke="#FF7A45"
+                      strokeWidth="2"
+                    />
+                    <path
+                      d="M12 7v5l3 2"
+                      stroke="#FF7A45"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                </span>
+                <span>30 min delivery</span>
+              </div>
+
+              {/* Star */}
+              <div className="meta-item">
+                <span className="meta-icon" aria-hidden="true">
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M12 3l2.6 5.8 6.4.6-4.8 4.1 1.5 6.2L12 16.9 6.3 19.7l1.5-6.2L3 9.4l6.4-.6L12 3Z"
+                      fill="#FF7A45"
+                    />
+                  </svg>
+                </span>
+                <span>4.8 avg rating</span>
+              </div>
+            </div>
           </div>
         </div>
       </header>
@@ -440,11 +526,6 @@ export default function Home() {
             © {new Date().getFullYear()} <b>FoodByMe</b> — Made with ❤️, 🍔 & ☕
           </div>
 
-          <div className="footer-links">
-            <a href="/terms">📜 Terms</a>
-            <a href="/privacy">🔒 Privacy</a>
-            <a href="/contact">📞 Contact</a>
-          </div>
           <div className="footer-links">
             <a href="/terms">📜 Terms</a>
             <a href="/privacy">🔒 Privacy</a>

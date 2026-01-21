@@ -1204,3 +1204,114 @@ html { scroll-behavior: smooth; } /* smooth anchor scroll */
     padding: 25px;
   }
 }
+
+/* ===== HERO SEARCH (IMAGE 1 STYLE) ===== */
+.hero-search {
+  margin-top: 22px;
+  width: 100%;
+  max-width: 900px;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(17, 24, 39, 0.08);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(12px);
+}
+
+.search-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 16px;
+  color: #111827;
+  padding: 6px 0;
+}
+
+.search-input::placeholder {
+  color: rgba(17, 24, 39, 0.55);
+  font-weight: 500;
+}
+
+.search-btn {
+  border: none;
+  cursor: pointer;
+  padding: 14px 26px;
+  border-radius: 22px;
+  font-weight: 700;
+  font-size: 16px;
+  color: #fff;
+  background: linear-gradient(90deg, #ff7a45, #ff4da6);
+  box-shadow: 0 12px 28px rgba(255, 77, 166, 0.22);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.search-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 16px 40px rgba(255, 77, 166, 0.3);
+}
+
+.search-btn .arrow {
+  font-size: 20px;
+  line-height: 0;
+  opacity: 0.95;
+}
+
+.search-meta {
+  display: flex;
+  gap: 30px;
+  align-items: center;
+  margin-top: 14px;
+  padding-left: 6px;
+  color: rgba(17, 24, 39, 0.7);
+  font-weight: 500;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.meta-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .search-box {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    border-radius: 18px;
+  }
+
+  .search-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .search-meta {
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+}
