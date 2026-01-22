@@ -209,10 +209,10 @@ export default function Home() {
             <br /> To Your Doorstep
           </h1>
 
-          <p className="hero-sub">
+          {/* <p className="hero-sub">
             Order from the best restaurants in your city. Fast delivery, amazing
             taste, unbeatable prices.
-          </p>
+          </p> */}
 
           {/* Search Bar like Image 1 (SVG Icons) */}
           <div className="hero-search">
