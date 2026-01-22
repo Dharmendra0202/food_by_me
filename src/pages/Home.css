@@ -1284,10 +1284,13 @@ html { scroll-behavior: smooth; } /* smooth anchor scroll */
 
 .search-meta {
   display: flex;
+  justify-content: center;
+  /* ✅ center */
   gap: 30px;
   align-items: center;
   margin-top: 14px;
-  padding-left: 6px;
+  padding-left: 0;
+  /* ✅ remove extra shift */
   color: rgba(17, 24, 39, 0.7);
   font-weight: 500;
 }
@@ -1337,8 +1340,4 @@ html { scroll-behavior: smooth; } /* smooth anchor scroll */
 .hero-search {
   margin-left: auto;
   margin-right: auto;
-}
-.home-hero {
-  display: flex;
-  justify-content: center;
 }
