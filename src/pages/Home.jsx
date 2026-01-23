@@ -90,6 +90,8 @@ export default function Home() {
   const badgeRef = useRef(null);
   const [selectedCategory, setSelectedCategory] = useState("");
 
+  
+
   useEffect(() => {
     const badge = badgeRef.current;
     if (!badge) return;
