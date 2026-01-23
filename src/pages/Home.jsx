@@ -327,6 +327,48 @@ export default function Home() {
       {/* What's On Your Mind (UNCHANGED) */}
       <WhatsOnYourMind onSelect={handleCategorySelect} speed={230} />
 
+      {/* SWIGGY STYLE RESTAURANT LIST SECTION */}
+      <section className="swiggy-section container fade-in" id="swiggy">
+        <div className="swiggy-head">
+          <h2 className="swiggy-title">
+            Restaurants with online food delivery near you
+          </h2>
+
+          <div className="swiggy-controls">
+            <button className="sort-btn">
+              Sort By <span className="sort-arrow">⌄</span>
+            </button>
+          </div>
+        </div>
+
+        <div className="swiggy-grid">
+          {Array.from({ length: 24 }).map((_, i) => (
+            <div key={i} className="swiggy-card">
+              <div className="swiggy-img">
+                <span className="swiggy-offer">ITEMS AT ₹{59 + i}</span>
+              </div>
+
+              <div className="swiggy-info">
+                <h3 className="swiggy-name">Restaurant {i + 1}</h3>
+
+                <div className="swiggy-meta">
+                  <span className="swiggy-rating">
+                    ⭐ {4.1 + (i % 5) * 0.1}
+                  </span>
+                  <span className="dot">•</span>
+                  <span>
+                    {25 + (i % 10)}-{35 + (i % 10)} mins
+                  </span>
+                </div>
+
+                <p className="swiggy-cuisine">Indian • Biryani • Fast Food</p>
+                <p className="swiggy-area">Chhindwara City</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* WHY CHOOSE US (ENHANCED) */}
       <section id="why" className="why-section container fade-in">
         <div className="why-inner fancy-bg">
