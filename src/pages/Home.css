@@ -1341,3 +1341,160 @@ html { scroll-behavior: smooth; } /* smooth anchor scroll */
   margin-left: auto;
   margin-right: auto;
 }
+
+/* ===========================
+   SWIGGY STYLE RESTAURANT GRID
+=========================== */
+
+.swiggy-section {
+  padding: 40px 20px 80px;
+}
+
+.swiggy-head {
+  max-width: 1100px;
+  margin: 0 auto 18px auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.swiggy-title {
+  font-size: clamp(22px, 3vw, 32px);
+  font-weight: 800;
+  margin: 0;
+  color: #111827;
+}
+
+.swiggy-controls {
+  display: flex;
+  gap: 10px;
+}
+
+.sort-btn {
+  border: 1px solid rgba(17, 24, 39, 0.12);
+  background: #fff;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.sort-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+}
+
+.sort-arrow {
+  margin-left: 6px;
+  font-size: 14px;
+}
+
+/* Grid like Swiggy */
+.swiggy-grid {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+}
+
+/* Restaurant Card */
+.swiggy-card {
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 1px solid rgba(17, 24, 39, 0.08);
+  transition: 0.25s ease;
+}
+
+.swiggy-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
+}
+
+/* Image */
+.swiggy-img {
+  height: 150px;
+  background: linear-gradient(135deg, #ffe0d2, #ffd6ef);
+  position: relative;
+}
+
+/* Offer text */
+.swiggy-offer {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+/* Info */
+.swiggy-info {
+  padding: 14px 14px 16px;
+}
+
+.swiggy-name {
+  font-size: 1.05rem;
+  font-weight: 800;
+  margin: 0 0 8px;
+  color: #111827;
+}
+
+.swiggy-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(17, 24, 39, 0.7);
+  font-weight: 700;
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+}
+
+.swiggy-rating {
+  background: rgba(16, 185, 129, 0.12);
+  color: #065f46;
+  padding: 4px 8px;
+  border-radius: 10px;
+  font-size: 0.85rem;
+}
+
+.swiggy-cuisine {
+  margin: 0;
+  font-size: 0.9rem;
+  color: rgba(17, 24, 39, 0.65);
+  font-weight: 600;
+}
+
+.swiggy-area {
+  margin: 6px 0 0;
+  font-size: 0.88rem;
+  color: rgba(17, 24, 39, 0.55);
+  font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 1100px) {
+  .swiggy-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 800px) {
+  .swiggy-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 520px) {
+  .swiggy-grid {
+    grid-template-columns: 1fr;
+  }
+}
