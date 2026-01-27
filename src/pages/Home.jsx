@@ -1,8 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./Home.css";
-import heroImg from "../assets/hero.jpg";
-import deliveryImg from "../assets/delivery.png";
-import burgerImg from "../assets/burger.jpg";
 import WhatsOnYourMind from "../components/WhatsOnYourMind";
 
 /* sample restaurant data — replace with real API later */
