@@ -831,7 +831,7 @@ html { scroll-behavior: smooth; } /* smooth anchor scroll */
 }
 
 #why.why-section {
-  margin-top: -10px !important;
+  margin-top: 80px !important;
 }
 
 /* Floating Food Icons */
