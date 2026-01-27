@@ -1498,6 +1498,11 @@ html { scroll-behavior: smooth; } /* smooth anchor scroll */
     grid-template-columns: 1fr;
   }
 }
+
+.section-head {
+  margin-top: clamp(60px, 10vw, 120px);
+}
+
 .swiggy-section::after {
   content: "";
   display: block;
