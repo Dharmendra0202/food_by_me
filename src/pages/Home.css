@@ -1498,3 +1498,8 @@ html { scroll-behavior: smooth; } /* smooth anchor scroll */
     grid-template-columns: 1fr;
   }
 }
+.swiggy-section::after {
+  content: "";
+  display: block;
+  height: 80px;
+}
