@@ -1427,10 +1427,25 @@ html { scroll-behavior: smooth; } /* smooth anchor scroll */
   width: 100%;
   height: 100%;
   object-fit: cover;
-  /* 🔥 perfect Swiggy-style crop */
+  /* 🔥 perfect crop */
   display: block;
 }
+.swiggy-img img {
+  transition: transform 0.35s ease;
+}
 
+.swiggy-card:hover .swiggy-img img {
+  transform: scale(1.08);
+}
+
+.swiggy-img::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top,
+      rgba(0, 0, 0, 0.4),
+      rgba(0, 0, 0, 0.05));
+}
 /* Offer text */
 .swiggy-offer {
   position: absolute;
