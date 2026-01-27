@@ -54,6 +54,26 @@ const sampleRestaurants = [
   },
 ];
 
+const swiggyImages = [
+  "/images/Biryani.jpg",
+  "/images/Pizza.jpg",
+  "/images/Cakes.jpg",
+  "/images/Chinese.jpg",
+  "/images/Desserts.jpg",
+  "/images/Coffee.jpg",
+  "/images/kebabs.jpg",
+  "/images/khichdi.jpg",
+  "/images/Noodles.jpg",
+  "/images/paratha.jpg",
+  "/images/Pureveg.jpg",
+  "/images/rasgulla.jpg",
+  "/images/shake.jpg",
+  "/images/south-indian.jpg",
+  "/images/Tea.png",
+  "/images/Fruits.jpg",
+];
+
+
 function RestaurantCard({ r }) {
   return (
     <article
@@ -344,6 +364,10 @@ export default function Home() {
           {Array.from({ length: 24 }).map((_, i) => (
             <div key={i} className="swiggy-card">
               <div className="swiggy-img">
+                <img
+                  src={swiggyImages[i % swiggyImages.length]}
+                  alt={`Restaurant ${i + 1}`}
+                />
                 <span className="swiggy-offer">ITEMS AT ₹{59 + i}</span>
               </div>
 

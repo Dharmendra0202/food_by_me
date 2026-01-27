@@ -1416,11 +1416,19 @@ html { scroll-behavior: smooth; } /* smooth anchor scroll */
   box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
 }
 
-/* Image */
 .swiggy-img {
   height: 150px;
-  background: linear-gradient(135deg, #ffe0d2, #ffd6ef);
   position: relative;
+  overflow: hidden;
+  border-radius: 16px 16px 0 0;
+}
+
+.swiggy-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* 🔥 perfect Swiggy-style crop */
+  display: block;
 }
 
 /* Offer text */
