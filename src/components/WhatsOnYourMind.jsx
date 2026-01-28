@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./whatsOnYourMind.css";
+import { useNavigate } from "react-router-dom";
+
 
 /**
  * Continuous smooth infinite scroller
@@ -35,9 +37,10 @@ export default function WhatsOnYourMind({
   const isPaused = useRef(false);
   const [isHovering, setHovering] = useState(false);
 
-  // duplicate list for infinite loop
-  const loopItems = [...items, ...items];
+  const navigate = useNavigate();
 
+
+  // duplicate list for infinite loop
   // preload images
   useEffect(() => {
     items.forEach((it) => {
@@ -145,10 +148,9 @@ export default function WhatsOnYourMind({
       onMouseLeave={() => setHovering(false)}
     >
       <div className="mind-header">
-     <h2>
-  What's on your <span className="mind-mixed">Mind ?</span>
-</h2>
-
+        <h2>
+          What's on your <span className="mind-mixed">Mind ?</span>
+        </h2>
 
         {/* <div className="mind-arrows">
           <button className="arrow left" onClick={() => scrollByDir(-1)}>
@@ -160,25 +162,41 @@ export default function WhatsOnYourMind({
         </div> */}
       </div>
 
-    <div className="mind-container">
-  <div className="marquee-track">
-    {items.map((it, i) => (
-      <button className="mind-item" key={i}>
-        <img src={it.img} alt={it.name} />
-        <p>{it.name}</p>
-      </button>
-    ))}
+      <div className="mind-container">
+        <div className="marquee-track">
+          {items.map((it, i) => (
+            <button
+              className="mind-item"
+              key={i}
+              onClick={() =>
+                navigate(
+                  `/category/${it.name.toLowerCase().replace(/\s+/g, "-")}`,
+                )
+              }
+            >
+              <img src={it.img} alt={it.name} />
+              <p>{it.name}</p>
+            </button>
+          ))}
 
-    {/* Duplicate once for infinite scroll */}
-    {items.map((it, i) => (
-      <button className="mind-item" key={`dup-${i}`}>
-        <img src={it.img} alt={it.name} />
-        <p>{it.name}</p>
-      </button>
-    ))}
-  </div>
-</div>
-
+          {/* Duplicate once for infinite scroll */}
+          {items.map((it, i) => (
+            <button
+              className="mind-item"
+              key={`dup-${i}`}
+              onClick={() =>
+                navigate(
+                  `/category/${it.name.toLowerCase().replace(/\s+/g, "-")}`,
+                )
+              }
+              aria-label={`Browse ${it.name}`}
+            >
+              <img src={it.img} alt={it.name} />
+              <p>{it.name}</p>
+            </button>
+          ))}
+        </div>
+      </div>
     </section>
   );
 }
