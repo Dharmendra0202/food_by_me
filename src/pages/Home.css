@@ -825,10 +825,10 @@ html { scroll-behavior: smooth; } /* smooth anchor scroll */
   height: 380px;
 }
 
-.home-hero {
+/* .home-hero {
   margin-bottom: 0 !important;
   padding-bottom: 0 !important;
-}
+} */
 
 #why.why-section {
   margin-top: -10px !important;

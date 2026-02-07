@@ -162,7 +162,7 @@ export default function WhatsOnYourMind({
         </div> */}
       </div>
 
-      <div className="mind-container">
+<div className="mind-container" ref={sc}>
         <div className="marquee-track">
           {items.map((it, i) => (
             <button

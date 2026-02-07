@@ -15,28 +15,30 @@ const DATA = {
 };
 
 export default function CategoryPage() {
-  const { slug } = useParams();
+  const { name } = useParams();   // ADD THIS
+
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+
 
   useEffect(() => {
     setLoading(true);
     const t = setTimeout(() => setLoading(false), 700);
     return () => clearTimeout(t);
-  }, [slug]);
+  }, [name]);
 
   if (loading) {
     return (
       <div className="category-loader">
         <div className="spinner" />
-        <p>Loading {slug}...</p>
+        <p>Loading {name}...</p>
       </div>
     );
   }
 
   const items =
-    DATA[slug]?.filter((i) =>
+    DATA[name]?.filter((i) =>
       i.name.toLowerCase().includes(search.toLowerCase()),
     ) || [];
 
@@ -47,12 +49,12 @@ export default function CategoryPage() {
       </button>
 
       <h1 className="category-title">
-        🍽️ {slug.replace("-", " ").toUpperCase()}
+        🍽️ {name.replace("-", " ").toUpperCase()}
       </h1>
 
       <input
         className="category-search"
-        placeholder={`Search ${slug}...`}
+        placeholder={`Search ${name}...`}
         value={search}
         onChange={(e) => setSearch(e.target.value)}
       />
