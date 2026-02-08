@@ -5,6 +5,8 @@
   position: relative;
   margin: 34px 0;
   padding: 6px 18px;
+  z-index: 10;
+  overflow: visible;
 }
 
 .whatsOnYourMind {

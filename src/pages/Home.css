@@ -1027,12 +1027,16 @@ html { scroll-behavior: smooth; } /* smooth anchor scroll */
 }
 
 .fade-in {
-  opacity: 0;
-  transform: translateY(30px);
+  opacity: 1;
+  transform: translateY(0);
   animation: fadeUp 1.2s ease forwards;
 }
 
 @keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
   to {
     opacity: 1;
     transform: translateY(0);
@@ -1348,6 +1352,13 @@ html { scroll-behavior: smooth; } /* smooth anchor scroll */
 
 .swiggy-section {
   padding: 40px 20px 80px;
+  position: relative;
+  z-index: 5;
+  display: block;
+  width: 100%;
+  visibility: visible;
+  opacity: 1;
+  min-height: auto;
 }
 
 .swiggy-head {
@@ -1399,6 +1410,10 @@ html { scroll-behavior: smooth; } /* smooth anchor scroll */
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 18px;
+  width: 100%;
+  min-height: auto;
+  visibility: visible;
+  opacity: 1;
 }
 
 /* Restaurant Card */
@@ -1409,6 +1424,9 @@ html { scroll-behavior: smooth; } /* smooth anchor scroll */
   cursor: pointer;
   border: 1px solid rgba(17, 24, 39, 0.08);
   transition: 0.25s ease;
+  visibility: visible;
+  opacity: 1;
+  display: block;
 }
 
 .swiggy-card:hover {
@@ -1421,6 +1439,9 @@ html { scroll-behavior: smooth; } /* smooth anchor scroll */
   position: relative;
   overflow: hidden;
   border-radius: 16px 16px 0 0;
+  background: #f3f4f6;
+  display: block;
+  min-height: 150px;
 }
 
 .swiggy-img img {
@@ -1429,6 +1450,7 @@ html { scroll-behavior: smooth; } /* smooth anchor scroll */
   object-fit: cover;
   /* 🔥 perfect crop */
   display: block;
+  min-height: 150px;
 }
 .swiggy-img img {
   transition: transform 0.35s ease;
@@ -1462,6 +1484,11 @@ html { scroll-behavior: smooth; } /* smooth anchor scroll */
 /* Info */
 .swiggy-info {
   padding: 14px 14px 16px;
+  background: #fff;
+  min-height: 120px;
+  display: block;
+  visibility: visible;
+  opacity: 1;
 }
 
 .swiggy-name {
@@ -1469,6 +1496,9 @@ html { scroll-behavior: smooth; } /* smooth anchor scroll */
   font-weight: 800;
   margin: 0 0 8px;
   color: #111827;
+  display: block;
+  visibility: visible;
+  opacity: 1;
 }
 
 .swiggy-meta {

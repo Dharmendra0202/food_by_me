@@ -4,6 +4,8 @@ import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
+import CategoryPage from "./pages/CategoryPage";
+import BiryaniPage from "./pages/BiryaniPage";
 import "./App.css";
 
 export default function App() {
@@ -26,6 +28,8 @@ export default function App() {
           <Route path="/" element={<Home />} />{" "}
           <Route path="/signup" element={<Signup />} />{" "}
           <Route path="/login" element={<Login />} />{" "}
+          <Route path="/category/:name" element={<CategoryPage />} />{" "}
+          <Route path="/biryani" element={<BiryaniPage />} />{" "}
         </Routes>{" "}
       </main>{" "}
     </div>

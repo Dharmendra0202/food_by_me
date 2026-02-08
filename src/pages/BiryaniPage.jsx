@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import "./BiryaniPage.css";
 
 const biryaniItems = [
@@ -45,8 +46,18 @@ const biryaniItems = [
 ];
 
 export default function BiryaniPage() {
+  const navigate = useNavigate();
+
   return (
     <div className="biryani-page">
+      <button 
+        className="back-btn" 
+        onClick={() => navigate(-1)}
+        aria-label="Go back"
+      >
+        ← Back
+      </button>
+
       <div className="biryani-hero">
         <h1>🍛 40 Types of Delicious Biryani</h1>
         <p>Pick your favourite flavor and enjoy the feast</p>

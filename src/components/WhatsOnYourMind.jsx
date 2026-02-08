@@ -168,11 +168,12 @@ export default function WhatsOnYourMind({
             <button
               className="mind-item"
               key={i}
-              onClick={() =>
-                navigate(
-                  `/category/${it.name.toLowerCase().replace(/\s+/g, "-")}`,
-                )
-              }
+              onClick={() => {
+                const path = it.name.toLowerCase() === "biryani" 
+                  ? "/biryani" 
+                  : `/category/${it.name.toLowerCase().replace(/\s+/g, "-")}`;
+                navigate(path);
+              }}
             >
               <img src={it.img} alt={it.name} />
               <p>{it.name}</p>
@@ -184,11 +185,12 @@ export default function WhatsOnYourMind({
             <button
               className="mind-item"
               key={`dup-${i}`}
-              onClick={() =>
-                navigate(
-                  `/category/${it.name.toLowerCase().replace(/\s+/g, "-")}`,
-                )
-              }
+              onClick={() => {
+                const path = it.name.toLowerCase() === "biryani" 
+                  ? "/biryani" 
+                  : `/category/${it.name.toLowerCase().replace(/\s+/g, "-")}`;
+                navigate(path);
+              }}
               aria-label={`Browse ${it.name}`}
             >
               <img src={it.img} alt={it.name} />
