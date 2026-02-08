@@ -87,35 +87,68 @@ export default function WhatsOnYourMind({
   useEffect(() => {
     const el = sc.current;
     if (!el) return;
-
+    // Use pointer events so mouse + touch both work (drag to scroll)
     let startX = 0;
     let startLeft = 0;
+    let dragging = false;
+    let wheelUnpauseTimer = null;
 
-    const start = (e) => {
+    const onPointerDown = (e) => {
+      dragging = true;
       isPaused.current = true;
-      startX = e.touches[0].clientX;
+      startX = e.clientX;
       startLeft = el.scrollLeft;
+      try {
+        e.target.setPointerCapture?.(e.pointerId);
+      } catch (err) {}
     };
-    const move = (e) => {
-      const dx = startX - e.touches[0].clientX;
+
+    const onPointerMove = (e) => {
+      if (!dragging) return;
+      const dx = startX - e.clientX;
       el.scrollLeft = startLeft + dx;
 
       const firstCopyWidth = el.scrollWidth / 2;
       if (el.scrollLeft >= firstCopyWidth) el.scrollLeft -= firstCopyWidth;
       if (el.scrollLeft < 0) el.scrollLeft += firstCopyWidth;
     };
-    const end = () => {
-      setTimeout(() => (isPaused.current = false), 100);
+
+    const onPointerUp = (e) => {
+      dragging = false;
+      setTimeout(() => (isPaused.current = false), 120);
+      try {
+        e.target.releasePointerCapture?.(e.pointerId);
+      } catch (err) {}
     };
 
-    el.addEventListener("touchstart", start, { passive: true });
-    el.addEventListener("touchmove", move, { passive: true });
-    el.addEventListener("touchend", end);
+    // map vertical wheel to horizontal scroll when hovering
+    const onWheel = (e) => {
+      if (!el) return;
+      // Prevent page vertical scroll while over marquee
+      e.preventDefault();
+      isPaused.current = true;
+      el.scrollLeft += e.deltaY;
+
+      const firstCopyWidth = el.scrollWidth / 2;
+      if (el.scrollLeft >= firstCopyWidth) el.scrollLeft -= firstCopyWidth;
+      if (el.scrollLeft < 0) el.scrollLeft += firstCopyWidth;
+
+      // clear previous timer
+      if (wheelUnpauseTimer) clearTimeout(wheelUnpauseTimer);
+      wheelUnpauseTimer = setTimeout(() => (isPaused.current = false), 200);
+    };
+
+    el.addEventListener("pointerdown", onPointerDown, { passive: true });
+    window.addEventListener("pointermove", onPointerMove, { passive: true });
+    window.addEventListener("pointerup", onPointerUp, { passive: true });
+    el.addEventListener("wheel", onWheel, { passive: false });
 
     return () => {
-      el.removeEventListener("touchstart", start);
-      el.removeEventListener("touchmove", move);
-      el.removeEventListener("touchend", end);
+      el.removeEventListener("pointerdown", onPointerDown);
+      window.removeEventListener("pointermove", onPointerMove);
+      window.removeEventListener("pointerup", onPointerUp);
+      el.removeEventListener("wheel", onWheel);
+      if (wheelUnpauseTimer) clearTimeout(wheelUnpauseTimer);
     };
   }, []);
 
