@@ -6,6 +6,19 @@ import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import CategoryPage from "./pages/CategoryPage";
 import BiryaniPage from "./pages/BiryaniPage";
+import ParathaPage from "./pages/ParathaPage";
+import TeaPage from "./pages/TeaPage";
+import CoffeePage from "./pages/CoffeePage";
+import KebabsPage from "./pages/KebabsPage";
+import FruitsPage from "./pages/FruitsPage";
+import DessertPage from "./pages/DessertPage";
+import KhichdiPage from "./pages/KhichdiPage";
+import ShakePage from "./pages/ShakePage";
+import RasgulaPage from "./pages/RasgulaPage";
+import CakesPage from "./pages/CakesPage";
+import ChinesePage from "./pages/ChinesePage";
+import NoodlesPage from "./pages/NoodlesPage";
+import PureVegPage from "./pages/PureVegPage";
 import "./App.css";
 
 export default function App() {
@@ -30,6 +43,19 @@ export default function App() {
           <Route path="/login" element={<Login />} />{" "}
           <Route path="/category/:name" element={<CategoryPage />} />{" "}
           <Route path="/biryani" element={<BiryaniPage />} />{" "}
+          <Route path="/paratha" element={<ParathaPage />} />{" "}
+          <Route path="/tea" element={<TeaPage />} />{" "}
+          <Route path="/coffee" element={<CoffeePage />} />{" "}
+          <Route path="/kebabs" element={<KebabsPage />} />{" "}
+          <Route path="/fruits" element={<FruitsPage />} />{" "}
+          <Route path="/desserts" element={<DessertPage />} />{" "}
+          <Route path="/khichdi" element={<KhichdiPage />} />{" "}
+          <Route path="/shake" element={<ShakePage />} />{" "}
+          <Route path="/rasgulla" element={<RasgulaPage />} />{" "}
+          <Route path="/cakes" element={<CakesPage />} />{" "}
+          <Route path="/chinese" element={<ChinesePage />} />{" "}
+          <Route path="/noodles" element={<NoodlesPage />} />{" "}
+          <Route path="/pureveg" element={<PureVegPage />} />{" "}
         </Routes>{" "}
       </main>{" "}
     </div>

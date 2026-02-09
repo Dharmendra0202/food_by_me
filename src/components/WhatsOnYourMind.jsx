@@ -39,6 +39,27 @@ export default function WhatsOnYourMind({
 
   const navigate = useNavigate();
 
+  // Map category names to their routes
+  const getCategoryRoute = (name) => {
+    const routeMap = {
+      "noodles": "/noodles",
+      "chinese": "/chinese",
+      "pure veg": "/pureveg",
+      "paratha": "/paratha",
+      "tea": "/tea",
+      "coffee": "/coffee",
+      "kebabs": "/kebabs",
+      "fruits": "/fruits",
+      "biryani": "/biryani",
+      "desserts": "/desserts",
+      "khichdi": "/khichdi",
+      "shake": "/shake",
+      "rasgulla": "/rasgulla",
+      "cakes": "/cakes",
+    };
+    return routeMap[name.toLowerCase()] || `/category/${name.toLowerCase().replace(/\s+/g, "-")}`;
+  };
+
 
   // duplicate list for infinite loop
   // preload images
@@ -201,12 +222,7 @@ export default function WhatsOnYourMind({
             <button
               className="mind-item"
               key={i}
-              onClick={() => {
-                const path = it.name.toLowerCase() === "biryani" 
-                  ? "/biryani" 
-                  : `/category/${it.name.toLowerCase().replace(/\s+/g, "-")}`;
-                navigate(path);
-              }}
+              onClick={() => navigate(getCategoryRoute(it.name))}
             >
               <img src={it.img} alt={it.name} />
               <p>{it.name}</p>
@@ -218,12 +234,7 @@ export default function WhatsOnYourMind({
             <button
               className="mind-item"
               key={`dup-${i}`}
-              onClick={() => {
-                const path = it.name.toLowerCase() === "biryani" 
-                  ? "/biryani" 
-                  : `/category/${it.name.toLowerCase().replace(/\s+/g, "-")}`;
-                navigate(path);
-              }}
+              onClick={() => navigate(getCategoryRoute(it.name))}
               aria-label={`Browse ${it.name}`}
             >
               <img src={it.img} alt={it.name} />
