@@ -329,3 +329,10 @@
     font-size: 1.3em;
   }
 }
+
+.khichdi-page {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  padding-top: 55px;
+  /* increase this value to move whole page down */
+  min-height: 100vh;
+}
