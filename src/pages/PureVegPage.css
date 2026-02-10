@@ -1,6 +1,6 @@
 .pureveg-page {
   background: linear-gradient(135deg, #f0f9f0 0%, #dff5dd 100%);
-  padding: 0;
+  padding-top: 60px;
   min-height: 100vh;
 }
 
