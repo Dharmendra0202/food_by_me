@@ -1,6 +1,7 @@
 .chinese-page {
   background: linear-gradient(135deg, #fff8f0 0%, #ffe6d5 100%);
-  padding: 0;
+  padding-top: 70px;
+  /* increase or decrease as needed */
   min-height: 100vh;
 }
 

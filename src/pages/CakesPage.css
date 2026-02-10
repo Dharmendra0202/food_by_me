@@ -329,3 +329,11 @@
     font-size: 1.3em;
   }
 }
+
+
+.cakes-page {
+  background: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 100%);
+  padding-top: 60px;
+  /* increase value as needed */
+  min-height: 100vh;
+}

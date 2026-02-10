@@ -1,6 +1,7 @@
 .dessert-page {
   background: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 100%);
-  padding: 0;
+  padding-top: 120px;
+  /* adjust as needed */
   min-height: 100vh;
 }
 

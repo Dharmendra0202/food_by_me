@@ -329,3 +329,10 @@
     font-size: 1.3em;
   }
 }
+
+.biryani-page {
+  background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+  padding-top: 55px;
+  /* increase as needed */
+  min-height: 100vh;
+}
