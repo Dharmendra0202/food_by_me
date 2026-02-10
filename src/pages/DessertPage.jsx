@@ -29,8 +29,9 @@ const dessertImages = Array(20).fill("desserts.jpg");
 
 export default function DessertPage() {
   const navigate = useNavigate();
-  const firstHalf = dessertItems.slice(0, 10);
-  const secondHalf = dessertItems.slice(10);
+  const trimTwo = (arr) => arr.slice(0, Math.max(0, arr.length - 2));
+  const firstHalf = trimTwo(dessertItems.slice(0, 10));
+  const secondHalf = trimTwo(dessertItems.slice(10));
 
   return (
     <div className="dessert-page">

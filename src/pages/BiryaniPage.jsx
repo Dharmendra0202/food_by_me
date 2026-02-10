@@ -29,8 +29,9 @@ const biryaniImages = Array(20).fill("Biryani.jpg");
 
 export default function BiryaniPage() {
   const navigate = useNavigate();
-  const firstHalf = biryaniItems.slice(0, 10);
-  const secondHalf = biryaniItems.slice(10);
+  const trimTwo = (arr) => arr.slice(0, Math.max(0, arr.length - 2));
+  const firstHalf = trimTwo(biryaniItems.slice(0, 10));
+  const secondHalf = trimTwo(biryaniItems.slice(10));
 
   return (
     <div className="biryani-page">

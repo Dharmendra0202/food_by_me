@@ -29,8 +29,9 @@ const chineseImages = Array(20).fill("Chinese.jpg");
 
 export default function ChinesePage() {
   const navigate = useNavigate();
-  const firstHalf = chineseItems.slice(0, 10);
-  const secondHalf = chineseItems.slice(10);
+  const trimTwo = (arr) => arr.slice(0, Math.max(0, arr.length - 2));
+  const firstHalf = trimTwo(chineseItems.slice(0, 10));
+  const secondHalf = trimTwo(chineseItems.slice(10));
 
   return (
     <div className="chinese-page">

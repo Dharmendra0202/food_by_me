@@ -29,8 +29,9 @@ const parathaImages = Array(20).fill("paratha.jpg");
 
 export default function ParathaPage() {
   const navigate = useNavigate();
-  const firstHalf = parathaItems.slice(0, 10);
-  const secondHalf = parathaItems.slice(10);
+  const trimTwo = (arr) => arr.slice(0, Math.max(0, arr.length - 2));
+  const firstHalf = trimTwo(parathaItems.slice(0, 10));
+  const secondHalf = trimTwo(parathaItems.slice(10));
 
   return (
     <div className="paratha-page">

@@ -29,8 +29,9 @@ const coffeeImages = Array(20).fill("Coffee.jpg");
 
 export default function CoffeePage() {
   const navigate = useNavigate();
-  const firstHalf = coffeeItems.slice(0, 10);
-  const secondHalf = coffeeItems.slice(10);
+  const trimTwo = (arr) => arr.slice(0, Math.max(0, arr.length - 2));
+  const firstHalf = trimTwo(coffeeItems.slice(0, 10));
+  const secondHalf = trimTwo(coffeeItems.slice(10));
 
   return (
     <div className="coffee-page">

@@ -29,8 +29,9 @@ const pureVegImages = Array(20).fill("Pureveg.jpg");
 
 export default function PureVegPage() {
   const navigate = useNavigate();
-  const firstHalf = pureVegItems.slice(0, 10);
-  const secondHalf = pureVegItems.slice(10);
+  const trimTwo = (arr) => arr.slice(0, Math.max(0, arr.length - 2));
+  const firstHalf = trimTwo(pureVegItems.slice(0, 10));
+  const secondHalf = trimTwo(pureVegItems.slice(10));
 
   return (
     <div className="pureveg-page">

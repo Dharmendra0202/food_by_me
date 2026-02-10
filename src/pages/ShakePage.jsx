@@ -29,8 +29,9 @@ const shakeImages = Array(20).fill("shake.jpg");
 
 export default function ShakePage() {
   const navigate = useNavigate();
-  const firstHalf = shakeItems.slice(0, 10);
-  const secondHalf = shakeItems.slice(10);
+  const trimTwo = (arr) => arr.slice(0, Math.max(0, arr.length - 2));
+  const firstHalf = trimTwo(shakeItems.slice(0, 10));
+  const secondHalf = trimTwo(shakeItems.slice(10));
 
   return (
     <div className="shake-page">

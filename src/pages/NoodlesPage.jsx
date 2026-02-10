@@ -29,8 +29,9 @@ const noodlesImages = Array(20).fill("Noodles.jpg");
 
 export default function NoodlesPage() {
   const navigate = useNavigate();
-  const firstHalf = noodlesItems.slice(0, 10);
-  const secondHalf = noodlesItems.slice(10);
+  const trimTwo = (arr) => arr.slice(0, Math.max(0, arr.length - 2));
+  const firstHalf = trimTwo(noodlesItems.slice(0, 10));
+  const secondHalf = trimTwo(noodlesItems.slice(10));
 
   return (
     <div className="noodles-page">

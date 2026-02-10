@@ -29,8 +29,9 @@ const fruitsImages = Array(20).fill("Fruits.jpg");
 
 export default function FruitsPage() {
   const navigate = useNavigate();
-  const firstHalf = fruitsItems.slice(0, 10);
-  const secondHalf = fruitsItems.slice(10);
+  const trimTwo = (arr) => arr.slice(0, Math.max(0, arr.length - 2));
+  const firstHalf = trimTwo(fruitsItems.slice(0, 10));
+  const secondHalf = trimTwo(fruitsItems.slice(10));
 
   return (
     <div className="fruits-page">

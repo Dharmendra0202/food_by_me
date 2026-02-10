@@ -29,8 +29,9 @@ const kebabsImages = Array(20).fill("kebabs.jpg");
 
 export default function KebabsPage() {
   const navigate = useNavigate();
-  const firstHalf = kebabsItems.slice(0, 10);
-  const secondHalf = kebabsItems.slice(10);
+  const trimTwo = (arr) => arr.slice(0, Math.max(0, arr.length - 2));
+  const firstHalf = trimTwo(kebabsItems.slice(0, 10));
+  const secondHalf = trimTwo(kebabsItems.slice(10));
 
   return (
     <div className="kebabs-page">

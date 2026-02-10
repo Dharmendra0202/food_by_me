@@ -29,8 +29,9 @@ const teaImages = Array(20).fill("Tea.png");
 
 export default function TeaPage() {
   const navigate = useNavigate();
-  const firstHalf = teaItems.slice(0, 10);
-  const secondHalf = teaItems.slice(10);
+  const trimTwo = (arr) => arr.slice(0, Math.max(0, arr.length - 2));
+  const firstHalf = trimTwo(teaItems.slice(0, 10));
+  const secondHalf = trimTwo(teaItems.slice(10));
 
   return (
     <div className="tea-page">

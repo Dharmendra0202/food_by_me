@@ -29,8 +29,9 @@ const rasgulaImages = Array(20).fill("rasgulla.jpg");
 
 export default function RasgulaPage() {
   const navigate = useNavigate();
-  const firstHalf = rasgulaItems.slice(0, 10);
-  const secondHalf = rasgulaItems.slice(10);
+  const trimTwo = (arr) => arr.slice(0, Math.max(0, arr.length - 2));
+  const firstHalf = trimTwo(rasgulaItems.slice(0, 10));
+  const secondHalf = trimTwo(rasgulaItems.slice(10));
 
   return (
     <div className="rasgula-page">
