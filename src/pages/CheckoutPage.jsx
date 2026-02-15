@@ -89,6 +89,22 @@ export default function CheckoutPage() {
     }, 900);
   };
 
+  const allowOnlyDigits = (event, maxLength) => {
+    const input = event.currentTarget;
+    input.value = input.value.replace(/\D/g, "").slice(0, maxLength);
+  };
+
+  const allowOnlyNameChars = (event) => {
+    const input = event.currentTarget;
+    input.value = input.value.replace(/[^A-Za-z\s'.-]/g, "").replace(/\s{2,}/g, " ");
+  };
+
+  const formatExpiry = (event) => {
+    const input = event.currentTarget;
+    const digits = input.value.replace(/\D/g, "").slice(0, 4);
+    input.value = digits.length > 2 ? `${digits.slice(0, 2)}/${digits.slice(2)}` : digits;
+  };
+
   return (
     <section className="checkout-page">
       <div className="checkout-shell container">
@@ -157,12 +173,31 @@ export default function CheckoutPage() {
 
               <label className="checkout-field">
                 <span>Full name</span>
-                <input type="text" required placeholder="Enter your full name" />
+                <input
+                  type="text"
+                  required
+                  placeholder="Enter your full name"
+                  autoComplete="name"
+                  inputMode="text"
+                  pattern="[A-Za-z][A-Za-z\\s'.-]*"
+                  onInput={allowOnlyNameChars}
+                  title="Use letters and spaces only"
+                />
               </label>
 
               <label className="checkout-field">
                 <span>Phone number</span>
-                <input type="tel" required placeholder="Enter mobile number" />
+                <input
+                  type="tel"
+                  required
+                  placeholder="Enter mobile number"
+                  inputMode="numeric"
+                  autoComplete="tel"
+                  pattern="[0-9]{10}"
+                  maxLength={10}
+                  onInput={(event) => allowOnlyDigits(event, 10)}
+                  title="Enter a 10-digit mobile number"
+                />
               </label>
 
               <label className="checkout-field">
@@ -204,15 +239,45 @@ export default function CheckoutPage() {
                 <div className="checkout-card-grid">
                   <label className="checkout-field">
                     <span>Card number</span>
-                    <input type="text" required placeholder="1234 5678 9012 3456" />
+                    <input
+                      type="text"
+                      required
+                      placeholder="1234 5678 9012 3456"
+                      inputMode="numeric"
+                      autoComplete="cc-number"
+                      pattern="[0-9]{16}"
+                      maxLength={16}
+                      onInput={(event) => allowOnlyDigits(event, 16)}
+                      title="Enter a 16-digit card number"
+                    />
                   </label>
                   <label className="checkout-field">
                     <span>Expiry</span>
-                    <input type="text" required placeholder="MM/YY" />
+                    <input
+                      type="text"
+                      required
+                      placeholder="MM/YY"
+                      inputMode="numeric"
+                      autoComplete="cc-exp"
+                      pattern="(0[1-9]|1[0-2])\\/([0-9]{2})"
+                      maxLength={5}
+                      onInput={formatExpiry}
+                      title="Use MM/YY format"
+                    />
                   </label>
                   <label className="checkout-field">
                     <span>CVV</span>
-                    <input type="password" required placeholder="123" />
+                    <input
+                      type="password"
+                      required
+                      placeholder="123"
+                      inputMode="numeric"
+                      autoComplete="cc-csc"
+                      pattern="[0-9]{3,4}"
+                      maxLength={4}
+                      onInput={(event) => allowOnlyDigits(event, 4)}
+                      title="Enter 3 or 4 digit CVV"
+                    />
                   </label>
                 </div>
               )}

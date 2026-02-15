@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./AuthPages.css";
 
+const NAME_REGEX = /^[A-Za-z][A-Za-z\s'.-]*$/;
+
 export default function Signup() {
   const [formData, setFormData] = useState({
     fullName: "",
@@ -16,7 +18,11 @@ export default function Signup() {
   const validateForm = () => {
     const next = {};
 
-    if (!formData.fullName.trim()) next.fullName = "Name is required";
+    const normalizedName = formData.fullName.trim();
+    if (!normalizedName) next.fullName = "Name is required";
+    else if (!NAME_REGEX.test(normalizedName)) {
+      next.fullName = "Name can contain letters and spaces only";
+    }
     if (!formData.email.trim()) next.email = "Email is required";
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) next.email = "Enter a valid email";
     if (!formData.password || formData.password.length < 6) next.password = "Password must be 6+ characters";
@@ -28,7 +34,12 @@ export default function Signup() {
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const nextValue =
+      name === "fullName"
+        ? value.replace(/[^A-Za-z\s'.-]/g, "").replace(/\s{2,}/g, " ")
+        : value;
+
+    setFormData((prev) => ({ ...prev, [name]: nextValue }));
     if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
@@ -67,6 +78,10 @@ export default function Signup() {
             placeholder="Your name"
             value={formData.fullName}
             onChange={handleChange}
+            autoComplete="name"
+            inputMode="text"
+            pattern="[A-Za-z][A-Za-z\\s'.-]*"
+            title="Use letters and spaces only"
           />
           {errors.fullName && <span className="auth-error">{errors.fullName}</span>}
 
