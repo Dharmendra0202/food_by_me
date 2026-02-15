@@ -1374,12 +1374,6 @@ html { scroll-behavior: smooth; } /* smooth anchor scroll */
   letter-spacing: -0.02em;
 }
 
-.swiggy-subtitle {
-  margin: 8px 0 0;
-  color: rgba(17, 24, 39, 0.62);
-  font-weight: 600;
-}
-
 .swiggy-controls {
   display: flex;
   gap: 10px;
@@ -1464,8 +1458,16 @@ html { scroll-behavior: smooth; } /* smooth anchor scroll */
   color: inherit;
 }
 
-.swiggy-card:hover {
-  transform: translateY(-6px);
+.swiggy-card-link:focus-visible {
+  outline: 3px solid rgba(255, 122, 69, 0.36);
+  outline-offset: 4px;
+  border-radius: 22px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .swiggy-card:hover {
+    transform: translateY(-6px);
+  }
 }
 
 .swiggy-img {
@@ -1486,9 +1488,11 @@ html { scroll-behavior: smooth; } /* smooth anchor scroll */
   transition: transform 0.45s ease, filter 0.35s ease;
 }
 
-.swiggy-card:hover .swiggy-img img {
-  transform: scale(1.08);
-  filter: saturate(1.06);
+@media (hover: hover) and (pointer: fine) {
+  .swiggy-card:hover .swiggy-img img {
+    transform: scale(1.08);
+    filter: saturate(1.06);
+  }
 }
 
 .swiggy-img::after {
@@ -1645,32 +1649,110 @@ html { scroll-behavior: smooth; } /* smooth anchor scroll */
 }
 
 @media (max-width: 800px) {
+  .swiggy-section {
+    padding: 38px 16px 76px;
+  }
+
+  .swiggy-head {
+    margin-bottom: 20px;
+  }
+
   .swiggy-search-input {
     min-width: 100%;
   }
 
   .swiggy-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 20px 14px;
+    gap: 18px 12px;
   }
 
   .swiggy-img {
-    height: 178px;
+    height: 168px;
   }
 
   .swiggy-offer {
-    font-size: 1rem;
+    font-size: 0.95rem;
+  }
+
+  .swiggy-info {
+    min-height: 120px;
+    padding-top: 10px;
+  }
+
+  .swiggy-title-row {
+    margin-bottom: 5px;
+  }
+
+  .swiggy-ad-tag {
+    height: 22px;
+    padding: 0 7px;
+    font-size: 0.95rem;
+  }
+
+  .swiggy-name {
+    font-size: 0.98rem;
+  }
+
+  .swiggy-meta {
+    font-size: 0.9rem;
+    margin-bottom: 6px;
+  }
+
+  .swiggy-cuisine,
+  .swiggy-area {
+    font-size: 0.86rem;
   }
 }
 
 @media (max-width: 520px) {
+  .swiggy-section {
+    padding: 34px 14px 68px;
+  }
+
   .swiggy-grid {
     grid-template-columns: 1fr;
-    gap: 18px;
+    gap: 16px;
   }
 
   .swiggy-img {
-    height: 205px;
+    height: 188px;
+    border-radius: 16px;
+  }
+
+  .swiggy-offer {
+    left: 10px;
+    bottom: 10px;
+    font-size: 0.92rem;
+    max-width: calc(100% - 20px);
+  }
+
+  .swiggy-info {
+    min-height: auto;
+    padding: 9px 2px 0;
+  }
+
+  .swiggy-name {
+    font-size: 0.96rem;
+  }
+
+  .swiggy-meta {
+    font-size: 0.88rem;
+    gap: 6px;
+  }
+
+  .swiggy-rating-icon {
+    width: 18px;
+    height: 18px;
+    font-size: 0.62rem;
+  }
+
+  .swiggy-cuisine,
+  .swiggy-area {
+    font-size: 0.84rem;
+  }
+
+  .swiggy-cuisine {
+    -webkit-line-clamp: 2;
   }
 }
 

@@ -357,9 +357,6 @@ export default function Home() {
             <h2 className="swiggy-title">
               Restaurants with online food delivery near you
             </h2>
-            <p className="swiggy-subtitle">
-              {filteredSwiggyRestaurants.length} restaurants found
-            </p>
           </div>
 
           <div className="swiggy-controls" role="group" aria-label="Filter restaurants">
