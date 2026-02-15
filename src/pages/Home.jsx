@@ -1,77 +1,33 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import "./Home.css";
 import WhatsOnYourMind from "../components/WhatsOnYourMind";
+import { deliveryRestaurants } from "../data/restaurants";
 
-/* sample restaurant data — replace with real API later */
-const sampleRestaurants = [
-  {
-    id: 1,
-    name: "Spice Villa",
-    cuisine: "Indian • Biryani",
-    eta: "25-35 min",
-    price: "₹250 for two",
-    rating: "4.6",
-  },
-  {
-    id: 2,
-    name: "Pizza Palace",
-    cuisine: "Italian • Pizza",
-    eta: "20-30 min",
-    price: "₹350 for two",
-    rating: "4.5",
-  },
-  {
-    id: 3,
-    name: "Sushi Spot",
-    cuisine: "Japanese • Sushi",
-    eta: "30-40 min",
-    price: "₹600 for two",
-    rating: "4.7",
-  },
-  {
-    id: 4,
-    name: "Burger Barn",
-    cuisine: "Fast Food • Burgers",
-    eta: "18-25 min",
-    price: "₹200 for two",
-    rating: "4.3",
-  },
-  {
-    id: 5,
-    name: "Green Bowl",
-    cuisine: "Healthy • Salads",
-    eta: "22-32 min",
-    price: "₹300 for two",
-    rating: "4.4",
-  },
-  {
-    id: 6,
-    name: "Taco Town",
-    cuisine: "Mexican • Tacos",
-    eta: "20-30 min",
-    price: "₹280 for two",
-    rating: "4.2",
-  },
+const sampleRestaurants = deliveryRestaurants.slice(0, 6).map((restaurant) => ({
+  id: restaurant.id,
+  name: restaurant.name,
+  cuisine: restaurant.cuisines.join(" • "),
+  eta: `${restaurant.etaMin}-${restaurant.etaMax} min`,
+  price: `₹${restaurant.priceForTwo} for two`,
+  rating: restaurant.rating.toFixed(1),
+}));
+
+const cuisineOptions = [
+  "All",
+  ...new Set(
+    deliveryRestaurants.flatMap((restaurant) => restaurant.cuisines)
+  ),
 ];
 
-const swiggyImages = [
-  "/images/Biryani.jpg",
-  "/images/Pizza.jpg",
-  "/images/Cakes.jpg",
-  "/images/Chinese.jpg",
-  "/images/Desserts.jpg",
-  "/images/Coffee.jpg",
-  "/images/kebabs.jpg",
-  "/images/khichdi.jpg",
-  "/images/Noodles.jpg",
-  "/images/paratha.jpg",
-  "/images/Pureveg.jpg",
-  "/images/rasgulla.jpg",
-  "/images/shake.jpg",
-  "/images/south-indian.jpg",
-  "/images/Tea.png",
-  "/images/Fruits.jpg",
-];
+const adRestaurantIds = new Set([
+  "biryani",
+  "pizza",
+  "dosa",
+  "idli",
+  "rolls",
+  "pav-bhaji",
+]);
 
 
 function RestaurantCard({ r }) {
@@ -106,6 +62,9 @@ function RestaurantCard({ r }) {
 export default function Home() {
   const badgeRef = useRef(null);
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCuisine, setSelectedCuisine] = useState("All");
+  const [sortBy, setSortBy] = useState("relevance");
 
   
 
@@ -164,6 +123,51 @@ export default function Home() {
       (r.cuisine || "").toLowerCase().includes(s)
     );
   });
+
+  const filteredSwiggyRestaurants = useMemo(() => {
+    const query = searchTerm.trim().toLowerCase();
+
+    let list = deliveryRestaurants.filter((restaurant) => {
+      const matchesSearch =
+        !query ||
+        restaurant.name.toLowerCase().includes(query) ||
+        restaurant.area.toLowerCase().includes(query) ||
+        restaurant.cuisines.some((cuisine) =>
+          cuisine.toLowerCase().includes(query)
+        );
+
+      const matchesCuisine =
+        selectedCuisine === "All" ||
+        restaurant.cuisines.includes(selectedCuisine);
+
+      return matchesSearch && matchesCuisine;
+    });
+
+    if (sortBy === "rating-high") {
+      list = [...list].sort((a, b) => b.rating - a.rating);
+    } else if (sortBy === "eta-low") {
+      list = [...list].sort((a, b) => a.etaMin - b.etaMin);
+    } else if (sortBy === "price-low") {
+      list = [...list].sort((a, b) => a.priceForTwo - b.priceForTwo);
+    } else if (sortBy === "price-high") {
+      list = [...list].sort((a, b) => b.priceForTwo - a.priceForTwo);
+    } else if (sortBy === "name-az") {
+      list = [...list].sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    return list;
+  }, [searchTerm, selectedCuisine, sortBy]);
+
+  const hasActiveSwiggyFilters =
+    searchTerm.trim().length > 0 ||
+    selectedCuisine !== "All" ||
+    sortBy !== "relevance";
+
+  const resetSwiggyFilters = () => {
+    setSearchTerm("");
+    setSelectedCuisine("All");
+    setSortBy("relevance");
+  };
 
   return (
     <>
@@ -349,46 +353,109 @@ export default function Home() {
       {/* SWIGGY STYLE RESTAURANT LIST SECTION */}
       <section className="swiggy-section container fade-in" id="swiggy">
         <div className="swiggy-head">
-          <h2 className="swiggy-title">
-            Restaurants with online food delivery near you
-          </h2>
+          <div>
+            <h2 className="swiggy-title">
+              Restaurants with online food delivery near you
+            </h2>
+            <p className="swiggy-subtitle">
+              {filteredSwiggyRestaurants.length} restaurants found
+            </p>
+          </div>
 
-          <div className="swiggy-controls">
-            <button className="sort-btn">
-              Sort By <span className="sort-arrow">⌄</span>
-            </button>
+          <div className="swiggy-controls" role="group" aria-label="Filter restaurants">
+            <input
+              type="search"
+              className="swiggy-search-input"
+              placeholder="Search by name, cuisine, area..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              aria-label="Search restaurants"
+            />
+
+            <select
+              className="sort-btn"
+              value={selectedCuisine}
+              onChange={(e) => setSelectedCuisine(e.target.value)}
+              aria-label="Filter by cuisine"
+            >
+              {cuisineOptions.map((cuisine) => (
+                <option key={cuisine} value={cuisine}>
+                  {cuisine}
+                </option>
+              ))}
+            </select>
+
+            <select
+              className="sort-btn"
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              aria-label="Sort restaurants"
+            >
+              <option value="relevance">Sort: Relevance</option>
+              <option value="rating-high">Sort: Rating (High to Low)</option>
+              <option value="eta-low">Sort: Fastest Delivery</option>
+              <option value="price-low">Sort: Price (Low to High)</option>
+              <option value="price-high">Sort: Price (High to Low)</option>
+              <option value="name-az">Sort: Name (A to Z)</option>
+            </select>
+
+            {hasActiveSwiggyFilters && (
+              <button className="sort-btn reset-btn" onClick={resetSwiggyFilters}>
+                Reset
+              </button>
+            )}
           </div>
         </div>
 
         <div className="swiggy-grid">
-          {Array.from({ length: 24 }).map((_, i) => (
-            <div key={i} className="swiggy-card">
-              <div className="swiggy-img">
-                <img
-                  src={swiggyImages[i % swiggyImages.length]}
-                  alt={`Restaurant ${i + 1}`}
-                />
-                <span className="swiggy-offer">ITEMS AT ₹{59 + i}</span>
-              </div>
-
-              <div className="swiggy-info">
-                <h3 className="swiggy-name">Restaurant {i + 1}</h3>
-
-                <div className="swiggy-meta">
-                  <span className="swiggy-rating">
-                    ⭐ {4.1 + (i % 5) * 0.1}
-                  </span>
-                  <span className="dot">•</span>
-                  <span>
-                    {25 + (i % 10)}-{35 + (i % 10)} mins
-                  </span>
+          {filteredSwiggyRestaurants.length ? (
+            filteredSwiggyRestaurants.map((restaurant) => (
+              <Link
+                key={restaurant.id}
+                to={`/restaurant/${restaurant.id}`}
+                className="swiggy-card swiggy-card-link"
+                aria-label={`Open ${restaurant.name}`}
+              >
+                <div className="swiggy-img">
+                  <img src={restaurant.image} alt={restaurant.name} />
+                  <span className="swiggy-offer">{restaurant.offer}</span>
                 </div>
 
-                <p className="swiggy-cuisine">Indian • Biryani • Fast Food</p>
-                <p className="swiggy-area">Chhindwara City</p>
-              </div>
+                <div className="swiggy-info">
+                  <div className="swiggy-title-row">
+                    {adRestaurantIds.has(restaurant.id) && (
+                      <span className="swiggy-ad-tag">Ad</span>
+                    )}
+                    <h3 className="swiggy-name">{restaurant.name}</h3>
+                  </div>
+
+                  <div className="swiggy-meta">
+                    <span className="swiggy-rating">
+                      <span className="swiggy-rating-icon" aria-hidden="true">
+                        ★
+                      </span>
+                      <span>{restaurant.rating.toFixed(1)}</span>
+                    </span>
+                    <span className="swiggy-meta-dot" aria-hidden="true">
+                      •
+                    </span>
+                    <span className="swiggy-time">
+                      {restaurant.etaMin}-{restaurant.etaMax} mins
+                    </span>
+                  </div>
+
+                  <p className="swiggy-cuisine">
+                    {restaurant.cuisines.join(", ")}
+                  </p>
+                  <p className="swiggy-area">{restaurant.area}</p>
+                </div>
+              </Link>
+            ))
+          ) : (
+            <div className="swiggy-empty">
+              No restaurants matched your search. Try another cuisine or clear filters.
             </div>
-          ))}
+          )}
         </div>
       </section>
 

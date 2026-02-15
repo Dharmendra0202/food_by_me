@@ -1,160 +1,90 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
-import "./Login.css";
+import "./AuthPages.css";
 
 export default function Login() {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
+  const [formData, setFormData] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const validateForm = () => {
-    const newErrors = {};
+    const next = {};
 
-    if (!formData.email.trim()) {
-      newErrors.email = "Email is required";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = "Please enter a valid email";
-    }
-    if (!formData.password) {
-      newErrors.password = "Password is required";
-    }
+    if (!formData.email.trim()) next.email = "Email is required";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) next.email = "Enter a valid email";
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    if (!formData.password) next.password = "Password is required";
+
+    setErrors(next);
+    return Object.keys(next).length === 0;
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-    // Clear error for this field when user starts typing
-    if (errors[name]) {
-      setErrors((prev) => ({
-        ...prev,
-        [name]: "",
-      }));
-    }
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!validateForm()) {
-      return;
-    }
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    if (!validateForm()) return;
 
     setIsLoading(true);
-    // Simulate API call
     setTimeout(() => {
       setIsLoading(false);
-      // Here you would typically send credentials to backend
-      console.log("Login successful:", formData);
       navigate("/");
-    }, 1500);
+    }, 1100);
   };
 
   return (
-    <div className="auth-page">
-      {/* Left side illustration */}
-      <motion.div
-        className="auth-illustration"
-        initial={{ opacity: 0, x: -50 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.8 }}
-      >
-        <motion.img
-          src="/images/kebabs.jpg"
-          alt="Delicious Kebabs"
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{
-            opacity: 1,
-            scale: 1,
-            y: [0, -8, 0],
-          }}
-          transition={{
-            duration: 3,
-            ease: "easeInOut",
-            repeat: Infinity,
-          }}
-        />
-      </motion.div>
+    <section className="auth-premium auth-login">
+      <aside className="auth-rail" aria-hidden="true">
+        <div className="auth-rail-track">
+          {["Secure", "Quick", "Fresh", "Premium", "Fast", "Curated", "Trusted", "Ready", "Daily", "Smart", "Secure", "Quick"].map((text, index) => (
+            <span key={`${text}-${index}`}>{text}</span>
+          ))}
+        </div>
+      </aside>
 
-      {/* Right side login form */}
-      <motion.div
-        className="auth-container"
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.2 }}
-      >
-        <h2 className="auth-title">Welcome Back 👋</h2>
-        <p className="auth-subtitle">
-          Login to continue ordering delicious meals!
-        </p>
+      <div className="auth-card">
+        <div className="auth-headline">Sign in</div>
+        <h1>Welcome back</h1>
+        <p>Fast checkout and saved picks.</p>
 
         <form className="auth-form" onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="email">Email</label>
-            <input
-              id="email"
-              type="email"
-              name="email"
-              placeholder="you@example.com"
-              value={formData.email}
-              onChange={handleChange}
-              className={errors.email ? "input-error" : ""}
-            />
-            {errors.email && (
-              <span className="error-message">{errors.email}</span>
-            )}
-          </div>
+          <label htmlFor="email">Email</label>
+          <input
+            id="email"
+            type="email"
+            name="email"
+            placeholder="you@example.com"
+            value={formData.email}
+            onChange={handleChange}
+          />
+          {errors.email && <span className="auth-error">{errors.email}</span>}
 
-          <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <input
-              id="password"
-              type="password"
-              name="password"
-              placeholder="••••••••"
-              value={formData.password}
-              onChange={handleChange}
-              className={errors.password ? "input-error" : ""}
-            />
-            {errors.password && (
-              <span className="error-message">{errors.password}</span>
-            )}
-          </div>
+          <label htmlFor="password">Password</label>
+          <input
+            id="password"
+            type="password"
+            name="password"
+            placeholder="Enter password"
+            value={formData.password}
+            onChange={handleChange}
+          />
+          {errors.password && <span className="auth-error">{errors.password}</span>}
 
-          <div className="form-footer">
-            <Link to="/forgot-password" className="forgot-link">
-              Forgot Password?
-            </Link>
-          </div>
-
-          <motion.button
-            type="submit"
-            className="auth-btn"
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            disabled={isLoading}
-          >
-            {isLoading ? "Logging in..." : "🍕 Login"}
-          </motion.button>
-
-          <p className="switch-link">
-            Don't have an account?{" "}
-            <Link to="/signup" className="link-text">
-              Sign up here
-            </Link>
-          </p>
+          <button type="submit" className="auth-submit" disabled={isLoading}>
+            {isLoading ? "Signing in..." : "Continue"}
+          </button>
         </form>
-      </motion.div>
-    </div>
+
+        <div className="auth-links">
+          <span>New here?</span>
+          <Link to="/signup">Create account</Link>
+        </div>
+      </div>
+    </section>
   );
 }

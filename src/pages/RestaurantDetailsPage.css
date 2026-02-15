@@ -1,0 +1,133 @@
+.restaurant-details-page {
+  min-height: 100vh;
+  padding: 108px 20px 48px;
+}
+
+.restaurant-details-shell {
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+.restaurant-details-hero {
+  display: grid;
+  grid-template-columns: minmax(300px, 460px) 1fr;
+  gap: 24px;
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(17, 24, 39, 0.08);
+  border-radius: 20px;
+  padding: 18px;
+  box-shadow: 0 18px 38px rgba(0, 0, 0, 0.1);
+}
+
+.restaurant-details-hero img {
+  width: 100%;
+  height: 100%;
+  min-height: 300px;
+  object-fit: cover;
+  border-radius: 16px;
+}
+
+.restaurant-details-content h1 {
+  margin: 8px 0 10px;
+  font-size: clamp(1.8rem, 2.7vw, 2.6rem);
+  line-height: 1.1;
+  color: #101827;
+}
+
+.restaurant-details-kicker {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 12px;
+  font-weight: 800;
+  color: #ff7a45;
+}
+
+.restaurant-details-copy {
+  margin: 0 0 14px;
+  color: rgba(17, 24, 39, 0.76);
+  font-weight: 600;
+}
+
+.restaurant-details-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.restaurant-details-pills span {
+  background: rgba(16, 24, 39, 0.08);
+  border-radius: 999px;
+  padding: 8px 12px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.restaurant-details-cuisines,
+.restaurant-details-area,
+.restaurant-details-offer {
+  margin: 0 0 8px;
+  color: rgba(17, 24, 39, 0.74);
+  font-weight: 600;
+}
+
+.restaurant-details-offer {
+  color: #065f46;
+}
+
+.restaurant-details-actions {
+  margin-top: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.restaurant-back-link,
+.restaurant-order-btn {
+  border: none;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.restaurant-back-link {
+  background: #eef2ff;
+  color: #25336b;
+}
+
+.restaurant-order-btn {
+  background: linear-gradient(120deg, #ff7a45, #ff4d4d);
+  color: #fff;
+}
+
+.restaurant-highlights {
+  margin-top: 20px;
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(17, 24, 39, 0.08);
+  border-radius: 18px;
+  padding: 18px;
+}
+
+.restaurant-highlights h2 {
+  margin: 0 0 10px;
+  color: #111827;
+}
+
+.restaurant-highlights ul {
+  margin: 0;
+  padding-left: 20px;
+  color: rgba(17, 24, 39, 0.76);
+  font-weight: 600;
+  display: grid;
+  gap: 8px;
+}
+
+@media (max-width: 920px) {
+  .restaurant-details-hero {
+    grid-template-columns: 1fr;
+  }
+}

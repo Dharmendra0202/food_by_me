@@ -19,11 +19,14 @@ import CakesPage from "./pages/CakesPage";
 import ChinesePage from "./pages/ChinesePage";
 import NoodlesPage from "./pages/NoodlesPage";
 import PureVegPage from "./pages/PureVegPage";
+import RestaurantDetailsPage from "./pages/RestaurantDetailsPage";
+import ScrollToTop from "./components/ScrollToTop";
 import "./App.css";
 
 export default function App() {
   return (
     <div className="app-root">
+      <ScrollToTop />
       {" "}
       <Navbar /> {/* Background dots + blobs (decorative) */}{" "}
       <div className="bg-dots" aria-hidden="true">
@@ -41,6 +44,7 @@ export default function App() {
           <Route path="/" element={<Home />} />{" "}
           <Route path="/signup" element={<Signup />} />{" "}
           <Route path="/login" element={<Login />} />{" "}
+          <Route path="/restaurant/:id" element={<RestaurantDetailsPage />} />{" "}
           <Route path="/category/:name" element={<CategoryPage />} />{" "}
           <Route path="/biryani" element={<BiryaniPage />} />{" "}
           <Route path="/paratha" element={<ParathaPage />} />{" "}

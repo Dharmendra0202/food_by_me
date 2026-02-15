@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
-import "./Signup.css";
+import "./AuthPages.css";
 
 export default function Signup() {
   const [formData, setFormData] = useState({
@@ -15,182 +14,105 @@ export default function Signup() {
   const navigate = useNavigate();
 
   const validateForm = () => {
-    const newErrors = {};
+    const next = {};
 
-    if (!formData.fullName.trim()) {
-      newErrors.fullName = "Full name is required";
-    }
-    if (!formData.email.trim()) {
-      newErrors.email = "Email is required";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = "Please enter a valid email";
-    }
-    if (!formData.password) {
-      newErrors.password = "Password is required";
-    } else if (formData.password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters";
-    }
-    if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = "Passwords do not match";
-    }
+    if (!formData.fullName.trim()) next.fullName = "Name is required";
+    if (!formData.email.trim()) next.email = "Email is required";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) next.email = "Enter a valid email";
+    if (!formData.password || formData.password.length < 6) next.password = "Password must be 6+ characters";
+    if (formData.password !== formData.confirmPassword) next.confirmPassword = "Passwords do not match";
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    setErrors(next);
+    return Object.keys(next).length === 0;
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-    // Clear error for this field when user starts typing
-    if (errors[name]) {
-      setErrors((prev) => ({
-        ...prev,
-        [name]: "",
-      }));
-    }
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!validateForm()) {
-      return;
-    }
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    if (!validateForm()) return;
 
     setIsLoading(true);
-    // Simulate API call
     setTimeout(() => {
       setIsLoading(false);
-      // Here you would typically send data to backend
-      console.log("Signup successful:", formData);
       navigate("/login");
-    }, 1500);
+    }, 1200);
   };
 
   return (
-    <div className="signup-page">
-      {/* Left side illustration */}
-      <motion.div
-        className="signup-illustration"
-        initial={{ opacity: 0, x: -50 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.8 }}
-      >
-        <motion.img
-          src="/images/Pizza.jpg"
-          alt="Delicious Pizza"
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{
-            opacity: 1,
-            scale: 1,
-            y: [0, -8, 0],
-          }}
-          transition={{
-            duration: 3,
-            ease: "easeInOut",
-            repeat: Infinity,
-          }}
-        />
-      </motion.div>
+    <section className="auth-premium auth-signup">
+      <aside className="auth-rail" aria-hidden="true">
+        <div className="auth-rail-track">
+          {["Join", "Taste", "Fast", "Safe", "Premium", "Cart", "Checkout", "Fresh", "Join", "Taste", "Fast", "Safe"].map((text, index) => (
+            <span key={`${text}-${index}`}>{text}</span>
+          ))}
+        </div>
+      </aside>
 
-      {/* Right side signup form */}
-      <motion.div
-        className="signup-container"
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.2 }}
-      >
-        <h2 className="signup-title">Create Account 🍽️</h2>
-        <p className="signup-subtitle">
-          Join FoodByMe and start ordering your favorite meals today!
-        </p>
+      <div className="auth-card">
+        <div className="auth-headline">Create profile</div>
+        <h1>Start in one minute</h1>
+        <p>Save favorites and reorder faster.</p>
 
-        <form className="signup-form" onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="fullName">Full Name</label>
-            <input
-              id="fullName"
-              type="text"
-              name="fullName"
-              placeholder="John Doe"
-              value={formData.fullName}
-              onChange={handleChange}
-              className={errors.fullName ? "input-error" : ""}
-            />
-            {errors.fullName && (
-              <span className="error-message">{errors.fullName}</span>
-            )}
-          </div>
+        <form className="auth-form" onSubmit={handleSubmit}>
+          <label htmlFor="fullName">Full name</label>
+          <input
+            id="fullName"
+            type="text"
+            name="fullName"
+            placeholder="Your name"
+            value={formData.fullName}
+            onChange={handleChange}
+          />
+          {errors.fullName && <span className="auth-error">{errors.fullName}</span>}
 
-          <div className="form-group">
-            <label htmlFor="email">Email</label>
-            <input
-              id="email"
-              type="email"
-              name="email"
-              placeholder="you@example.com"
-              value={formData.email}
-              onChange={handleChange}
-              className={errors.email ? "input-error" : ""}
-            />
-            {errors.email && (
-              <span className="error-message">{errors.email}</span>
-            )}
-          </div>
+          <label htmlFor="email">Email</label>
+          <input
+            id="email"
+            type="email"
+            name="email"
+            placeholder="you@example.com"
+            value={formData.email}
+            onChange={handleChange}
+          />
+          {errors.email && <span className="auth-error">{errors.email}</span>}
 
-          <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <input
-              id="password"
-              type="password"
-              name="password"
-              placeholder="••••••••"
-              value={formData.password}
-              onChange={handleChange}
-              className={errors.password ? "input-error" : ""}
-            />
-            {errors.password && (
-              <span className="error-message">{errors.password}</span>
-            )}
-          </div>
+          <label htmlFor="password">Password</label>
+          <input
+            id="password"
+            type="password"
+            name="password"
+            placeholder="At least 6 characters"
+            value={formData.password}
+            onChange={handleChange}
+          />
+          {errors.password && <span className="auth-error">{errors.password}</span>}
 
-          <div className="form-group">
-            <label htmlFor="confirmPassword">Confirm Password</label>
-            <input
-              id="confirmPassword"
-              type="password"
-              name="confirmPassword"
-              placeholder="••••••••"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              className={errors.confirmPassword ? "input-error" : ""}
-            />
-            {errors.confirmPassword && (
-              <span className="error-message">{errors.confirmPassword}</span>
-            )}
-          </div>
+          <label htmlFor="confirmPassword">Confirm password</label>
+          <input
+            id="confirmPassword"
+            type="password"
+            name="confirmPassword"
+            placeholder="Repeat password"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+          />
+          {errors.confirmPassword && <span className="auth-error">{errors.confirmPassword}</span>}
 
-          <motion.button
-            type="submit"
-            className="signup-btn"
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            disabled={isLoading}
-          >
-            {isLoading ? "Creating Account..." : "🍔 Sign Up"}
-          </motion.button>
-
-          <p className="auth-link">
-            Already have an account?{" "}
-            <Link to="/login" className="link-text">
-              Login here
-            </Link>
-          </p>
+          <button type="submit" className="auth-submit" disabled={isLoading}>
+            {isLoading ? "Creating..." : "Create account"}
+          </button>
         </form>
-      </motion.div>
-    </div>
+
+        <div className="auth-links">
+          <span>Already have an account?</span>
+          <Link to="/login">Sign in</Link>
+        </div>
+      </div>
+    </section>
   );
 }

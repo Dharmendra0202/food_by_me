@@ -60,6 +60,13 @@ export default function WhatsOnYourMind({
     return routeMap[name.toLowerCase()] || `/category/${name.toLowerCase().replace(/\s+/g, "-")}`;
   };
 
+  const navigateToCategory = (name) => {
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    navigate(getCategoryRoute(name));
+  };
+
 
   // duplicate list for infinite loop
   // preload images
@@ -222,7 +229,7 @@ export default function WhatsOnYourMind({
             <button
               className="mind-item"
               key={i}
-              onClick={() => navigate(getCategoryRoute(it.name))}
+              onClick={() => navigateToCategory(it.name)}
             >
               <img src={it.img} alt={it.name} />
               <p>{it.name}</p>
@@ -234,7 +241,7 @@ export default function WhatsOnYourMind({
             <button
               className="mind-item"
               key={`dup-${i}`}
-              onClick={() => navigate(getCategoryRoute(it.name))}
+              onClick={() => navigateToCategory(it.name)}
               aria-label={`Browse ${it.name}`}
             >
               <img src={it.img} alt={it.name} />
