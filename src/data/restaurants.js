@@ -1,4 +1,4 @@
-export const deliveryRestaurants = [
+const baseDeliveryRestaurants = [
   {
     id: "biryani",
     name: "Biryani",
@@ -11,7 +11,180 @@ export const deliveryRestaurants = [
     offer: "ITEMS AT ₹149",
     image: "/images/Biryani.jpg",
     description: "Fragrant dum biryani cooked in rich spices and slow steam.",
-    highlights: ["Dum Biryani", "Family Pack", "Spicy Options"],
+    highlights: [
+      {
+        name: "Dum Biryani Classic",
+        image: "/images/my-biryani-1.jpg",
+        offer: "ITEMS AT ₹129",
+        rating: 4.7,
+        eta: "22-32 mins",
+        cuisines: "Biryani, Indian, Mughlai",
+        area: "City Center",
+        price: 129,
+      },
+      {
+        name: "Hyderabadi Veg Biryani",
+        image: "/images/my-biryani-2.jpg",
+        offer: "FLAT ₹40 OFF",
+        rating: 4.5,
+        eta: "24-34 mins",
+        cuisines: "Biryani, Veg, Indian",
+        area: "Main Market",
+        price: 139,
+      },
+      {
+        name: "Paneer Tikka Biryani",
+        image: "/images/my-biryani-3.jpg",
+        offer: "20% OFF UPTO ₹60",
+        rating: 4.4,
+        eta: "25-35 mins",
+        cuisines: "Biryani, North Indian, Tandoor",
+        area: "Shastri Nagar",
+        price: 159,
+      },
+      {
+        name: "Lucknowi Tehri",
+        image: "/images/my-biryani-4.jpg",
+        offer: "ITEMS AT ₹119",
+        rating: 4.3,
+        eta: "20-30 mins",
+        cuisines: "Biryani, Awadhi, Indian",
+        area: "Civil Lines",
+        price: 119,
+      },
+      {
+        name: "Egg Masala Biryani",
+        image: "/images/my-biryani-5.jpg",
+        offer: "FLAT ₹35 OFF",
+        rating: 4.4,
+        eta: "23-33 mins",
+        cuisines: "Biryani, Egg, Indian",
+        area: "Temple Road",
+        price: 149,
+      },
+      {
+        name: "Kolkata Aloo Biryani",
+        image: "/images/my-biryani-6.jpg",
+        offer: "ITEMS AT ₹139",
+        rating: 4.6,
+        eta: "24-34 mins",
+        cuisines: "Biryani, Bengali, Indian",
+        area: "Town Hall",
+        price: 139,
+      },
+      {
+        name: "Family Handi Biryani",
+        image: "/images/my-biryani-7.jpg",
+        offer: "₹100 OFF ABOVE ₹499",
+        rating: 4.8,
+        eta: "30-40 mins",
+        cuisines: "Biryani, Family Pack, Indian",
+        area: "City Center",
+        price: 299,
+      },
+      {
+        name: "Spicy Andhra Biryani",
+        image: "/images/my-biryani-8.jpg",
+        offer: "15% OFF UPTO ₹70",
+        rating: 4.5,
+        eta: "26-36 mins",
+        cuisines: "Biryani, Andhra, Spicy",
+        area: "Lake Road",
+        price: 169,
+      },
+      {
+        name: "Raita and Salan Combo",
+        image: "/images/my-biryani-9.jpg",
+        offer: "COMBO AT ₹179",
+        rating: 4.4,
+        eta: "22-32 mins",
+        cuisines: "Biryani, Combo, Indian",
+        area: "Nehru Chowk",
+        price: 179,
+      },
+    ],
+    nonVegHighlights: [
+      {
+        name: "Hyderabadi Chicken Dum Biryani",
+        image: "/images/my-biryani-10.jpg",
+        offer: "ITEMS AT ₹169",
+        rating: 4.8,
+        eta: "25-35 mins",
+        cuisines: "Biryani, Chicken, Indian",
+        area: "City Center",
+        price: 169,
+      },
+      {
+        name: "Murgh Tikka Biryani",
+        image: "/images/my-biryani-11.jpg",
+        offer: "20% OFF UPTO ₹75",
+        rating: 4.6,
+        eta: "26-36 mins",
+        cuisines: "Biryani, Chicken, Tandoor",
+        area: "Station Road",
+        price: 189,
+      },
+      {
+        name: "Chicken 65 Biryani",
+        image: "/images/my-biryani-12.jpg",
+        offer: "FLAT ₹50 OFF",
+        rating: 4.5,
+        eta: "24-34 mins",
+        cuisines: "Biryani, Chicken, Spicy",
+        area: "Parasia Road",
+        price: 199,
+      },
+      {
+        name: "Mutton Ghosht Biryani",
+        image: "/images/my-biryani-13.jpg",
+        offer: "ITEMS AT ₹229",
+        rating: 4.7,
+        eta: "30-42 mins",
+        cuisines: "Biryani, Mutton, Mughlai",
+        area: "MG Road",
+        price: 229,
+      },
+      {
+        name: "Nalli Nihari Biryani",
+        image: "/images/my-biryani-14.jpg",
+        offer: "₹125 OFF ABOVE ₹599",
+        rating: 4.6,
+        eta: "32-45 mins",
+        cuisines: "Biryani, Mutton, Slow Cooked",
+        area: "Old City",
+        price: 269,
+      },
+      {
+        name: "Prawn Masala Biryani",
+        image: "/images/my-biryani-15.jpg",
+        offer: "ITEMS AT ₹249",
+        rating: 4.4,
+        eta: "30-40 mins",
+        cuisines: "Biryani, Seafood, Coastal",
+        area: "Link Road",
+        price: 249,
+      },
+      {
+        name: "Fish Fry Biryani",
+        image: "/images/my-biryani-16.jpg",
+        offer: "15% OFF UPTO ₹90",
+        rating: 4.3,
+        eta: "28-38 mins",
+        cuisines: "Biryani, Fish, Indian",
+        area: "Market Chowk",
+        price: 219,
+      },
+      {
+        name: "Keema Biryani",
+        image: "/images/my-biryani-17.jpg",
+        offer: "ITEMS AT ₹199",
+        rating: 4.5,
+        eta: "27-37 mins",
+        cuisines: "Biryani, Keema, Indian",
+        area: "College Square",
+        price: 199,
+      },
+    ],
   },
   {
     id: "burger",
@@ -25,7 +198,180 @@ export const deliveryRestaurants = [
     offer: "BURGER COMBO ₹129",
     image: "/images/burger.jpg",
     description: "Juicy burgers with loaded toppings and crispy fries.",
-    highlights: ["Cheese Burger", "Veg Patty", "Meal Combo"],
+    highlights: [
+      {
+        name: "Classic Veg Burger",
+        image: "https://unsplash.com/photos/gm2zwTb0s9c/download?force=true&w=1200",
+        offer: "ITEMS AT ₹89",
+        rating: 4.4,
+        eta: "18-28 mins",
+        cuisines: "Burgers, Fast Food, Veg",
+        area: "Station Road",
+        price: 89,
+      },
+      {
+        name: "Paneer Crunch Burger",
+        image: "https://unsplash.com/photos/YQ-HwoiVhpc/download?force=true&w=1200",
+        offer: "FLAT ₹30 OFF",
+        rating: 4.5,
+        eta: "20-30 mins",
+        cuisines: "Burgers, North Indian, Fast Food",
+        area: "City Center",
+        price: 119,
+      },
+      {
+        name: "Aloo Tikki Burger",
+        image: "https://unsplash.com/photos/Al9618AKGts/download?force=true&w=1200",
+        offer: "ITEMS AT ₹79",
+        rating: 4.2,
+        eta: "16-26 mins",
+        cuisines: "Burgers, Street Food, Veg",
+        area: "Main Market",
+        price: 79,
+      },
+      {
+        name: "Double Cheese Burger",
+        image: "https://unsplash.com/photos/9G_oJBKwi1c/download?force=true&w=1200",
+        offer: "20% OFF UPTO ₹60",
+        rating: 4.6,
+        eta: "21-31 mins",
+        cuisines: "Burgers, Cheese, Fast Food",
+        area: "College Square",
+        price: 139,
+      },
+      {
+        name: "Peri Peri Burger",
+        image: "https://unsplash.com/photos/Fn6dPYtPUMc/download?force=true&w=1200",
+        offer: "ITEMS AT ₹109",
+        rating: 4.3,
+        eta: "19-29 mins",
+        cuisines: "Burgers, Spicy, Fast Food",
+        area: "Shastri Nagar",
+        price: 109,
+      },
+      {
+        name: "BBQ Smoky Burger",
+        image: "https://unsplash.com/photos/7YnVp6VLa0g/download?force=true&w=1200",
+        offer: "15% OFF UPTO ₹55",
+        rating: 4.5,
+        eta: "22-32 mins",
+        cuisines: "Burgers, BBQ, Fast Food",
+        area: "Civil Lines",
+        price: 149,
+      },
+      {
+        name: "Mushroom Melt Burger",
+        image: "https://unsplash.com/photos/itFJJve2V4c/download?force=true&w=1200",
+        offer: "FLAT ₹35 OFF",
+        rating: 4.3,
+        eta: "20-30 mins",
+        cuisines: "Burgers, Continental, Fast Food",
+        area: "Temple Road",
+        price: 129,
+      },
+      {
+        name: "Crispy Corn Burger",
+        image: "https://unsplash.com/photos/YxM1QgRJ97Y/download?force=true&w=1200",
+        offer: "ITEMS AT ₹99",
+        rating: 4.1,
+        eta: "18-27 mins",
+        cuisines: "Burgers, Snacks, Veg",
+        area: "Lake Road",
+        price: 99,
+      },
+      {
+        name: "Supreme Meal Combo",
+        image: "https://unsplash.com/photos/766f8bfig18/download?force=true&w=1200",
+        offer: "COMBO AT ₹179",
+        rating: 4.6,
+        eta: "24-34 mins",
+        cuisines: "Burgers, Fries, Beverages",
+        area: "Nehru Chowk",
+        price: 179,
+      },
+    ],
+    nonVegHighlights: [
+      {
+        name: "Crispy Chicken Burger",
+        image: "https://unsplash.com/photos/DdBRhFS0tVw/download?force=true&w=1200",
+        offer: "ITEMS AT ₹129",
+        rating: 4.5,
+        eta: "20-30 mins",
+        cuisines: "Burgers, Chicken, Fast Food",
+        area: "Station Road",
+        price: 129,
+      },
+      {
+        name: "Grilled Chicken Burger",
+        image: "https://unsplash.com/photos/0eZftljGQtU/download?force=true&w=1200",
+        offer: "FLAT ₹40 OFF",
+        rating: 4.6,
+        eta: "22-32 mins",
+        cuisines: "Burgers, Grilled Chicken, Fast Food",
+        area: "City Center",
+        price: 149,
+      },
+      {
+        name: "Smoky BBQ Chicken Burger",
+        image: "https://unsplash.com/photos/zjmRMsnzlIM/download?force=true&w=1200",
+        offer: "20% OFF UPTO ₹70",
+        rating: 4.7,
+        eta: "24-34 mins",
+        cuisines: "Burgers, BBQ, Chicken",
+        area: "Parasia Road",
+        price: 169,
+      },
+      {
+        name: "Peri Peri Chicken Burger",
+        image: "https://unsplash.com/photos/k6ozwK_lBD0/download?force=true&w=1200",
+        offer: "ITEMS AT ₹139",
+        rating: 4.4,
+        eta: "21-31 mins",
+        cuisines: "Burgers, Spicy Chicken, Fast Food",
+        area: "MG Road",
+        price: 139,
+      },
+      {
+        name: "Bacon Cheese Burger",
+        image: "https://unsplash.com/photos/jmGHU6fim2s/download?force=true&w=1200",
+        offer: "₹100 OFF ABOVE ₹399",
+        rating: 4.5,
+        eta: "23-33 mins",
+        cuisines: "Burgers, Bacon, Fast Food",
+        area: "Old City",
+        price: 189,
+      },
+      {
+        name: "Lamb Patty Burger",
+        image: "https://unsplash.com/photos/cTam8dtPAmo/download?force=true&w=1200",
+        offer: "ITEMS AT ₹199",
+        rating: 4.6,
+        eta: "25-35 mins",
+        cuisines: "Burgers, Lamb, Continental",
+        area: "Market Chowk",
+        price: 199,
+      },
+      {
+        name: "Loaded Meat Burger",
+        image: "https://unsplash.com/photos/ibUXI7GIm1M/download?force=true&w=1200",
+        offer: "15% OFF UPTO ₹80",
+        rating: 4.4,
+        eta: "24-34 mins",
+        cuisines: "Burgers, Meat, Fast Food",
+        area: "College Square",
+        price: 209,
+      },
+      {
+        name: "Ultimate Chicken Combo",
+        image: "https://unsplash.com/photos/xVQdH7sha9w/download?force=true&w=1200",
+        offer: "COMBO AT ₹229",
+        rating: 4.6,
+        eta: "26-36 mins",
+        cuisines: "Burgers, Chicken, Fries, Beverages",
+        area: "Town Hall",
+        price: 229,
+      },
+    ],
   },
   {
     id: "pizza",
@@ -39,7 +385,208 @@ export const deliveryRestaurants = [
     offer: "BUY 1 GET 1",
     image: "/images/Pizza.jpg",
     description: "Stone-baked pizza with classic sauces and premium cheese.",
-    highlights: ["Farmhouse", "Cheese Burst", "Thin Crust"],
+    highlights: [
+      {
+        name: "Classic Margherita",
+        image: "/images/Pizza.jpg",
+        offer: "ITEMS AT ₹79",
+        rating: 4.4,
+        eta: "20-30 mins",
+        cuisines: "Pizzas, Italian, Fast Food",
+        area: "Nehru Chowk",
+      },
+      {
+        name: "Farmhouse",
+        image: "/images/pasta.jpg",
+        offer: "ITEMS AT ₹99",
+        rating: 4.3,
+        eta: "25-35 mins",
+        cuisines: "Pizzas, Italian, Desserts",
+        area: "Station Road",
+      },
+      {
+        name: "Cheese Burst",
+        image: "/images/Pizza.jpg",
+        offer: "35% OFF",
+        rating: 4.2,
+        eta: "30-35 mins",
+        cuisines: "Pizzas, Fast Food",
+        area: "Main Market",
+      },
+      {
+        name: "Thin Crust",
+        image: "/images/pasta.jpg",
+        offer: "ITEMS AT ₹79",
+        rating: 4.5,
+        eta: "30-40 mins",
+        cuisines: "Pizzas, Italian, Cafe",
+        area: "Lake Road",
+      },
+      {
+        name: "Peppy Paneer",
+        image: "/images/Pizza.jpg",
+        offer: "ITEMS AT ₹99",
+        rating: 4.4,
+        eta: "20-30 mins",
+        cuisines: "Pizzas, Italian, Fast Food",
+        area: "Civil Lines",
+      },
+      {
+        name: "Veggie Supreme",
+        image: "/images/pasta.jpg",
+        offer: "10% OFF UPTO ₹40",
+        rating: 4.5,
+        eta: "20-35 mins",
+        cuisines: "Pizzas, Veg, Fast Food",
+        area: "Shastri Nagar",
+      },
+      {
+        name: "Paneer Tikka",
+        image: "/images/Pizza.jpg",
+        offer: "65% OFF UPTO ₹125",
+        rating: 4.6,
+        eta: "30-40 mins",
+        cuisines: "Pizzas, Pasta, Italian",
+        area: "City Center",
+      },
+      {
+        name: "Corn & Jalapeno",
+        image: "/images/pasta.jpg",
+        offer: "20% OFF UPTO ₹50",
+        rating: 4.2,
+        eta: "45-55 mins",
+        cuisines: "Pizzas, Beverages, Fast Food",
+        area: "MG Road",
+      },
+      {
+        name: "Mushroom Delight",
+        image: "/images/Pizza.jpg",
+        offer: "ITEMS AT ₹149",
+        rating: 4.5,
+        eta: "40-45 mins",
+        cuisines: "Italian, Continental, Desserts",
+        area: "Temple Road",
+      },
+      {
+        name: "Mexican Green Wave",
+        image: "/images/pasta.jpg",
+        offer: "ITEMS AT ₹49",
+        rating: 4.4,
+        eta: "30-35 mins",
+        cuisines: "Snacks, Pizzas, Fast Food",
+        area: "Town Hall",
+      },
+      {
+        name: "Double Cheese",
+        image: "/images/Pizza.jpg",
+        offer: "₹125 OFF ABOVE ₹449",
+        rating: 4.4,
+        eta: "35-40 mins",
+        cuisines: "Pizzas, Burgers, Grill",
+        area: "College Square",
+      },
+      {
+        name: "BBQ Chicken",
+        image: "/images/pasta.jpg",
+        offer: "ITEMS AT ₹89",
+        rating: 4.6,
+        eta: "45-50 mins",
+        cuisines: "Pizzas, Burgers",
+        area: "Parasia Road",
+      },
+      {
+        name: "Pepperoni",
+        image: "/images/Pizza.jpg",
+        offer: "BUY 1 GET 1",
+        rating: 4.3,
+        eta: "22-32 mins",
+        cuisines: "Pizzas, Italian, Fast Food",
+        area: "Nehru Chowk",
+      },
+      {
+        name: "Four Cheese",
+        image: "/images/pasta.jpg",
+        offer: "FLAT 25% OFF",
+        rating: 4.7,
+        eta: "28-38 mins",
+        cuisines: "Pizzas, Italian, Desserts",
+        area: "Ring Road",
+      },
+    ],
+    nonVegHighlights: [
+      {
+        name: "Hot and Spicy Chicken Pizza",
+        image: "/images/Pizza.jpg",
+        offer: "ITEMS AT ₹69",
+        rating: 3.6,
+        eta: "65-75 mins",
+        cuisines: "Pizzas, Beverages, Snacks, Fast Food",
+        area: "Dombivli",
+      },
+      {
+        name: "Chicken Tikka Feast",
+        image: "/images/kebabs.jpg",
+        offer: "₹100 OFF ABOVE ₹999",
+        rating: 3.8,
+        eta: "55-65 mins",
+        cuisines: "Chinese, Biryani, Indian, Tandoor",
+        area: "Palava City",
+      },
+      {
+        name: "The Premier Platter",
+        image: "/images/Pizza.jpg",
+        offer: "ITEMS AT ₹179",
+        rating: 3.6,
+        eta: "60-70 mins",
+        cuisines: "Beverages, Pizzas, Fast Food",
+        area: "Palava City",
+      },
+      {
+        name: "Pepperoni Blast",
+        image: "/images/Shawarma.jpg",
+        offer: "ITEMS AT ₹149",
+        rating: 3.8,
+        eta: "70-80 mins",
+        cuisines: "Pizzas, Fast Food, Beverages",
+        area: "Dombivli",
+      },
+      {
+        name: "BBQ Chicken Overload",
+        image: "/images/Rolls.jpg",
+        offer: "₹75 OFF ABOVE ₹499",
+        rating: 2.8,
+        eta: "65-75 mins",
+        cuisines: "Burgers, Fast Food, Chinese",
+        area: "Tisgaon Naka",
+      },
+      {
+        name: "Meat Lovers Supreme",
+        image: "/images/burger.jpg",
+        offer: "10% OFF UPTO ₹40",
+        rating: 4.3,
+        eta: "45-50 mins",
+        cuisines: "Fast Food, Burgers, Pizzas",
+        area: "Dombivli East",
+      },
+      {
+        name: "Chicken Keema Burst",
+        image: "/images/Chinese.jpg",
+        offer: "60% OFF UPTO ₹120",
+        rating: 3.4,
+        eta: "35-40 mins",
+        cuisines: "Snacks, Chinese, Pizzas",
+        area: "Dombivli",
+      },
+      {
+        name: "Peri Peri Chicken Pizza",
+        image: "/images/Pizza.jpg",
+        offer: "15% OFF UPTO ₹80",
+        rating: 4.3,
+        eta: "60-70 mins",
+        cuisines: "Indian, Pizza, Fast Food",
+        area: "Nehru Chowk",
+      },
+    ],
   },
   {
     id: "cake",
@@ -280,6 +827,121 @@ export const deliveryRestaurants = [
     highlights: ["Fried Rice", "Manchurian", "Noodle Combo"],
   },
 ];
+
+const IMAGE_BY_KEYWORD = [
+  { keywords: ["biryani", "dum"], image: "/images/Biryani.jpg" },
+  { keywords: ["burger", "patty"], image: "/images/burger.jpg" },
+  { keywords: ["pizza", "margherita", "pepperoni", "cheese"], image: "/images/Pizza.jpg" },
+  { keywords: ["pasta", "penne", "alfredo", "arrabbiata"], image: "/images/pasta.jpg" },
+  { keywords: ["noodle", "hakka", "schezwan"], image: "/images/Noodles.jpg" },
+  { keywords: ["chinese", "manchurian", "fried rice"], image: "/images/Chinese.jpg" },
+  { keywords: ["cake", "pastry", "velvet", "chocolate"], image: "/images/Cakes.jpg" },
+  { keywords: ["shake", "oreo"], image: "/images/shake.jpg" },
+  { keywords: ["gulab", "syrup", "sweet"], image: "/images/rasgulla.jpg" },
+  { keywords: ["paratha"], image: "/images/paratha.jpg" },
+  { keywords: ["dosa"], image: "/images/masala-dosa.jpg" },
+  { keywords: ["idli", "vada"], image: "/images/south-indian.jpg" },
+  { keywords: ["roll"], image: "/images/Rolls.jpg" },
+  { keywords: ["shawarma"], image: "/images/Shawarma.jpg" },
+  { keywords: ["salad", "fruit", "veggie"], image: "/images/Fruits.jpg" },
+];
+
+function clamp(value, min, max) {
+  return Math.min(max, Math.max(min, value));
+}
+
+function parsePriceFromText(text) {
+  if (!text) return null;
+  const match = String(text).match(/₹\s?(\d+)/);
+  return match ? Number(match[1]) : null;
+}
+
+function resolveHighlightImage(name, fallbackImage) {
+  const normalized = String(name || "").toLowerCase();
+  const mapped = IMAGE_BY_KEYWORD.find(({ keywords }) =>
+    keywords.some((keyword) => normalized.includes(keyword))
+  );
+  return mapped?.image || fallbackImage;
+}
+
+function buildGeneratedHighlight(name, restaurant, index, section = "veg") {
+  const basePrice = Math.max(
+    59,
+    Math.round((restaurant.priceForTwo * (0.34 + (index % 3) * 0.08)) / 10) * 10
+  );
+
+  const offerVariants = [
+    `ITEMS AT ₹${basePrice}`,
+    `FLAT ₹${Math.max(20, Math.round(basePrice * 0.35 / 10) * 10)} OFF`,
+    `${15 + ((index + restaurant.name.length) % 3) * 5}% OFF UPTO ₹${Math.max(
+      30,
+      Math.round(basePrice * 0.4 / 10) * 10
+    )}`,
+  ];
+
+  const ratingDelta = [0.0, -0.2, 0.1, -0.1][index % 4];
+  const rating = Number(clamp(restaurant.rating + ratingDelta, 3.2, 4.9).toFixed(1));
+  const etaMin = Math.max(10, restaurant.etaMin + (index % 3) * 2 + (section === "nonveg" ? 4 : 0));
+  const etaMax = etaMin + (restaurant.etaMax - restaurant.etaMin) + 2;
+  const baseCuisines = restaurant.cuisines.join(", ");
+  const cuisines =
+    section === "nonveg" && !baseCuisines.toLowerCase().includes("non-veg")
+      ? `${baseCuisines}, Non-Veg`
+      : baseCuisines;
+
+  return {
+    name,
+    image: resolveHighlightImage(name, restaurant.image),
+    offer: offerVariants[index % offerVariants.length],
+    rating,
+    eta: `${etaMin}-${etaMax} mins`,
+    cuisines,
+    area: restaurant.area,
+    price: basePrice,
+  };
+}
+
+function normalizeHighlightItem(item, restaurant, index, section = "veg") {
+  const name = typeof item === "string" ? item : item?.name || "Popular item";
+  const generated = buildGeneratedHighlight(name, restaurant, index, section);
+
+  if (typeof item === "string") {
+    return generated;
+  }
+
+  const parsedOfferPrice = parsePriceFromText(item.offer);
+  return {
+    ...generated,
+    ...item,
+    name,
+    image: item.image || generated.image,
+    offer: item.offer || generated.offer,
+    rating: item.rating ?? generated.rating,
+    eta: item.eta || generated.eta,
+    cuisines: item.cuisines || generated.cuisines,
+    area: item.area || generated.area,
+    price: item.price ?? parsedOfferPrice ?? generated.price,
+  };
+}
+
+export const deliveryRestaurants = baseDeliveryRestaurants.map((restaurant) => {
+  const normalized = {
+    ...restaurant,
+    highlights: Array.isArray(restaurant.highlights)
+      ? restaurant.highlights.map((item, index) =>
+          normalizeHighlightItem(item, restaurant, index, "veg")
+        )
+      : [],
+  };
+
+  if (Array.isArray(restaurant.nonVegHighlights)) {
+    normalized.nonVegHighlights = restaurant.nonVegHighlights.map((item, index) =>
+      normalizeHighlightItem(item, restaurant, index, "nonveg")
+    );
+  }
+
+  return normalized;
+});
 
 export function getRestaurantById(id) {
   return deliveryRestaurants.find((restaurant) => restaurant.id === id);

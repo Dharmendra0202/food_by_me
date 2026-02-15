@@ -20,6 +20,7 @@ import ChinesePage from "./pages/ChinesePage";
 import NoodlesPage from "./pages/NoodlesPage";
 import PureVegPage from "./pages/PureVegPage";
 import RestaurantDetailsPage from "./pages/RestaurantDetailsPage";
+import CheckoutPage from "./pages/CheckoutPage";
 import ScrollToTop from "./components/ScrollToTop";
 import "./App.css";
 
@@ -45,6 +46,7 @@ export default function App() {
           <Route path="/signup" element={<Signup />} />{" "}
           <Route path="/login" element={<Login />} />{" "}
           <Route path="/restaurant/:id" element={<RestaurantDetailsPage />} />{" "}
+          <Route path="/checkout" element={<CheckoutPage />} />{" "}
           <Route path="/category/:name" element={<CategoryPage />} />{" "}
           <Route path="/biryani" element={<BiryaniPage />} />{" "}
           <Route path="/paratha" element={<ParathaPage />} />{" "}
