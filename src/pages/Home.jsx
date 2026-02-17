@@ -65,6 +65,22 @@ export default function Home() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCuisine, setSelectedCuisine] = useState("All");
   const [sortBy, setSortBy] = useState("relevance");
+  const [heroSearchValue, setHeroSearchValue] = useState("");
+  const [locationStatus, setLocationStatus] = useState("");
+  const [locationError, setLocationError] = useState("");
+  const [locationLoading, setLocationLoading] = useState(false);
+
+  const knownAreas = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          deliveryRestaurants
+            .map((restaurant) => restaurant.area)
+            .filter((area) => Boolean(area))
+        )
+      ),
+    []
+  );
 
   
 
@@ -163,10 +179,152 @@ export default function Home() {
     selectedCuisine !== "All" ||
     sortBy !== "relevance";
 
+  const scrollToSwiggy = () => {
+    const el = document.getElementById("swiggy");
+    if (!el) return;
+    el.scrollIntoView({ behavior: "smooth", block: "start" });
+    el.focus({ preventScroll: true });
+  };
+
+  const findMatchingArea = (value) => {
+    const query = value.trim().toLowerCase();
+    if (!query) return "";
+    return (
+      knownAreas.find((area) => {
+        const normalizedArea = area.toLowerCase();
+        return (
+          normalizedArea.includes(query) ||
+          query.includes(normalizedArea)
+        );
+      }) || ""
+    );
+  };
+
+  const runHeroSearch = (value) => {
+    const rawQuery = value.trim();
+    const matchedArea = findMatchingArea(rawQuery);
+    const nextSearch = matchedArea || rawQuery;
+
+    setSearchTerm(nextSearch);
+    setSelectedCuisine("All");
+    setSortBy("relevance");
+    setLocationError("");
+
+    if (!nextSearch) {
+      setLocationStatus("Showing all restaurants");
+    } else if (matchedArea) {
+      setLocationStatus(`Showing restaurants near ${matchedArea}`);
+    } else {
+      setLocationStatus(`Showing results for "${rawQuery}"`);
+    }
+
+    scrollToSwiggy();
+  };
+
+  const getGeoErrorMessage = (error) => {
+    if (!error) return "Unable to fetch location right now.";
+    if (error.code === 1)
+      return "Location permission denied. Please allow location access.";
+    if (error.code === 2)
+      return "Could not detect your location. Please try again.";
+    if (error.code === 3)
+      return "Location request timed out. Please try again.";
+    return "Unable to fetch location right now.";
+  };
+
+  const reverseGeocode = async (latitude, longitude) => {
+    const endpoint = new URL("https://nominatim.openstreetmap.org/reverse");
+    endpoint.searchParams.set("format", "jsonv2");
+    endpoint.searchParams.set("lat", String(latitude));
+    endpoint.searchParams.set("lon", String(longitude));
+    endpoint.searchParams.set("zoom", "16");
+    endpoint.searchParams.set("addressdetails", "1");
+
+    const response = await fetch(endpoint.toString(), {
+      headers: { Accept: "application/json" },
+    });
+    if (!response.ok) {
+      throw new Error("Reverse geocoding failed");
+    }
+
+    const data = await response.json();
+    const address = data?.address || {};
+    const shortLabel =
+      address.suburb ||
+      address.neighbourhood ||
+      address.city_district ||
+      address.city ||
+      address.town ||
+      address.village ||
+      "";
+
+    return {
+      shortLabel,
+      fullLabel: data?.display_name || shortLabel,
+    };
+  };
+
+  const handleUseCurrentLocation = async () => {
+    if (!navigator.geolocation) {
+      setLocationError("Geolocation is not supported by this browser.");
+      return;
+    }
+
+    setLocationLoading(true);
+    setLocationError("");
+    setLocationStatus("");
+
+    try {
+      const position = await new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject, {
+          enableHighAccuracy: true,
+          timeout: 12000,
+          maximumAge: 300000,
+        });
+      });
+
+      const { latitude, longitude } = position.coords;
+      let areaHint = "";
+      let locationLabel = "";
+
+      try {
+        const geocode = await reverseGeocode(latitude, longitude);
+        areaHint = geocode.shortLabel || geocode.fullLabel || "";
+        locationLabel = geocode.shortLabel || geocode.fullLabel || "";
+      } catch (error) {
+        areaHint = `${latitude.toFixed(3)}, ${longitude.toFixed(3)}`;
+        locationLabel = `Lat ${latitude.toFixed(3)}, Lon ${longitude.toFixed(3)}`;
+      }
+
+      const matchedArea = findMatchingArea(areaHint);
+
+      if (matchedArea) {
+        setHeroSearchValue(matchedArea);
+        setSearchTerm(matchedArea);
+        setLocationStatus(`Location detected: ${matchedArea}`);
+      } else {
+        setHeroSearchValue("");
+        setSearchTerm("");
+        setLocationStatus(`Location detected: ${locationLabel}. Showing all restaurants near you.`);
+      }
+
+      setSelectedCuisine("All");
+      setSortBy("relevance");
+      scrollToSwiggy();
+    } catch (error) {
+      setLocationError(getGeoErrorMessage(error));
+    } finally {
+      setLocationLoading(false);
+    }
+  };
+
   const resetSwiggyFilters = () => {
     setSearchTerm("");
     setSelectedCuisine("All");
     setSortBy("relevance");
+    setLocationStatus("");
+    setLocationError("");
+    setHeroSearchValue("");
   };
 
   return (
@@ -228,8 +386,11 @@ export default function Home() {
           </div>
 
           <h1 className="hero-title">
-            Delicious Food <span className="accent">Delivered</span>
-            <br /> To Your Doorstep
+            <span className="hero-title-main">
+              Delicious Food <span className="accent">Delivered</span>
+            </span>
+            <br />
+            <span className="hero-title-secondary">To Your Doorstep</span>
           </h1>
 
           {/* <p className="hero-sub">
@@ -241,49 +402,74 @@ export default function Home() {
           <div className="hero-search">
             <div className="search-box">
               {/* Location Icon */}
-              <span className="search-icon" aria-hidden="true">
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M12 22s7-5.2 7-12a7 7 0 1 0-14 0c0 6.8 7 12 7 12Z"
-                    stroke="#FF7A45"
-                    strokeWidth="2"
-                  />
-                  <circle
-                    cx="12"
-                    cy="10"
-                    r="2.5"
-                    stroke="#FF7A45"
-                    strokeWidth="2"
-                  />
-                </svg>
-              </span>
+              <button
+                type="button"
+                className="search-icon-btn"
+                onClick={handleUseCurrentLocation}
+                disabled={locationLoading}
+                aria-label="Use current location"
+                title="Use current location"
+              >
+                <span className="search-icon" aria-hidden="true">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M12 22s7-5.2 7-12a7 7 0 1 0-14 0c0 6.8 7 12 7 12Z"
+                      stroke="#FF7A45"
+                      strokeWidth="2"
+                    />
+                    <circle
+                      cx="12"
+                      cy="10"
+                      r="2.5"
+                      stroke="#FF7A45"
+                      strokeWidth="2"
+                    />
+                  </svg>
+                </span>
+              </button>
 
               <input
-                type="text"
+                type="search"
                 className="search-input"
                 placeholder="Enter delivery address..."
+                value={heroSearchValue}
+                onChange={(e) => setHeroSearchValue(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    runHeroSearch(heroSearchValue);
+                  }
+                }}
+                disabled={locationLoading}
               />
 
               <button
+                type="button"
                 className="search-btn"
-                onClick={() => {
-                  const el = document.getElementById("restaurants");
-                  if (el)
-                    el.scrollIntoView({ behavior: "smooth", block: "start" });
-                }}
+                onClick={() => runHeroSearch(heroSearchValue)}
+                disabled={locationLoading}
               >
-                Find Food
+                {locationLoading ? "Finding..." : "Find Food"}
                 <span className="arrow" aria-hidden="true">
                   ›
                 </span>
               </button>
             </div>
+
+            {(locationStatus || locationError) && (
+              <p
+                className={`search-feedback${
+                  locationError ? " search-feedback-error" : ""
+                }`}
+              >
+                {locationError || locationStatus}
+              </p>
+            )}
 
             <div className="search-meta">
               {/* Clock */}
@@ -351,7 +537,11 @@ export default function Home() {
       <WhatsOnYourMind onSelect={handleCategorySelect} speed={230} />
 
       {/* SWIGGY STYLE RESTAURANT LIST SECTION */}
-      <section className="swiggy-section container fade-in" id="swiggy">
+      <section
+        className="swiggy-section container fade-in"
+        id="swiggy"
+        tabIndex={-1}
+      >
         <div className="swiggy-head">
           <div>
             <h2 className="swiggy-title">
