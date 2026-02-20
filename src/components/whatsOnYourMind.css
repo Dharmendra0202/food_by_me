@@ -32,7 +32,7 @@
 ----------------------------------------- */
 .mind-container {
   display: flex;
-  gap: 20px;                   /* IMPORTANT: JS reads this value */
+  gap: 20px;
   overflow-x: hidden;          /* must hide native scrollbar for continuous loop */
   scroll-behavior: smooth;
   padding: 12px 6px;
@@ -256,7 +256,7 @@ section.mind-section > .mind-header h2 {
 .mind-item:focus {
   outline: none;
 }
-.mind-item:focus ~ .marquee-track {
+.mind-container:focus-within .marquee-track {
   animation-play-state: paused !important;
 }
 .mind-highlight {
