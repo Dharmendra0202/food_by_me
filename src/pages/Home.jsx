@@ -2,15 +2,45 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import "./Home.css";
 import WhatsOnYourMind from "../components/WhatsOnYourMind";
-import { deliveryRestaurants } from "../data/restaurants";
+import { deliveryRestaurants, getRestaurantRoute } from "../data/restaurants";
+
+const popularRestaurantFallbackImages = {
+  biryani: "/images/Biryani.jpg",
+  burger: "/images/burger.jpg",
+  pizza: "/images/Pizza.jpg",
+  cake: "/images/Cakes.jpg",
+  khichdi: "/images/khichdi.jpg",
+  "ice-cream": "/images/ice-cream.jpg",
+};
+
+const popularRestaurantImageOverrides = {
+  biryani:
+    "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1200&q=80",
+  burger:
+    "https://images.unsplash.com/photo-1552566626-52f8b828add9?auto=format&fit=crop&w=1200&q=80",
+  pizza:
+    "https://images.unsplash.com/photo-1559329007-40df8a9345d8?auto=format&fit=crop&w=1200&q=80",
+  cake:
+    "https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?auto=format&fit=crop&w=1200&q=80",
+  khichdi:
+    "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1200&q=80",
+  "ice-cream":
+    "https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=1200&q=80",
+};
 
 const sampleRestaurants = deliveryRestaurants.slice(0, 6).map((restaurant) => ({
   id: restaurant.id,
   name: restaurant.name,
+  category: restaurant.name,
   cuisine: restaurant.cuisines.join(" • "),
   eta: `${restaurant.etaMin}-${restaurant.etaMax} min`,
   price: `₹${restaurant.priceForTwo} for two`,
   rating: restaurant.rating.toFixed(1),
+  image: popularRestaurantImageOverrides[restaurant.id] || restaurant.image,
+  fallbackImage:
+    popularRestaurantFallbackImages[restaurant.id] || "/images/Pizza.jpg",
+  area: restaurant.area,
+  offer: restaurant.offer,
 }));
 
 const cuisineOptions = [
@@ -29,30 +59,55 @@ const adRestaurantIds = new Set([
   "pav-bhaji",
 ]);
 
+function applyPopularCardFallback(event, fallbackImage) {
+  const image = event.currentTarget;
+  if (!fallbackImage || image.dataset.fallbackApplied === "true") return;
+  image.dataset.fallbackApplied = "true";
+  image.src = fallbackImage;
+}
 
 function RestaurantCard({ r }) {
   return (
     <article
       className="restaurant-card fade-in"
       tabIndex={0}
-      aria-label={`${r.name} restaurant`}
+      aria-label={`${r.name} in ${r.area}`}
     >
-      <div className="restaurant-thumb" aria-hidden="true">
-        <div className="thumb-placeholder">{r.name.split(" ")[0]}</div>
+      <div className="restaurant-thumb">
+        <img
+          src={r.image}
+          alt={r.name}
+          loading="lazy"
+          onError={(event) => applyPopularCardFallback(event, r.fallbackImage)}
+        />
+        {r.offer ? <span className="restaurant-offer">{r.offer}</span> : null}
       </div>
 
       <div className="restaurant-info">
-        <h3 className="restaurant-name">{r.name}</h3>
+        <div className="restaurant-top">
+          <h3 className="restaurant-name">{r.name}</h3>
+          <div
+            className="restaurant-rating"
+            aria-label={`Rated ${r.rating} out of 5`}
+          >
+            <span aria-hidden="true">★</span>
+            <span>{r.rating}</span>
+          </div>
+        </div>
+
+        <p className="restaurant-location">{r.area}</p>
 
         <div className="restaurant-meta">
           <span className="cuisine">{r.cuisine}</span>
-          <span className="dot">•</span>
+          <span className="dot" aria-hidden="true">
+            •
+          </span>
           <span className="eta">{r.eta}</span>
         </div>
 
         <div className="restaurant-bottom">
           <div className="price">{r.price}</div>
-          <div className="rating">⭐ {r.rating}</div>
+          <span className="restaurant-chip">{r.category}</span>
         </div>
       </div>
     </article>
@@ -134,9 +189,12 @@ export default function Home() {
   const filtered = sampleRestaurants.filter((r) => {
     if (!selectedCategory) return true;
     const s = selectedCategory.toLowerCase();
+    const category = (r.category || "").toLowerCase();
     return (
       r.name.toLowerCase().includes(s) ||
-      (r.cuisine || "").toLowerCase().includes(s)
+      (r.cuisine || "").toLowerCase().includes(s) ||
+      category.includes(s) ||
+      s.includes(category)
     );
   });
 
@@ -599,7 +657,7 @@ export default function Home() {
             filteredSwiggyRestaurants.map((restaurant) => (
               <Link
                 key={restaurant.id}
-                to={`/restaurant/${restaurant.id}`}
+                to={getRestaurantRoute(restaurant.id)}
                 className="swiggy-card swiggy-card-link"
                 aria-label={`Open ${restaurant.name}`}
               >
@@ -773,65 +831,85 @@ export default function Home() {
         <div className="app-inner">
           <div className="app-left">
             <h2 className="app-title">
-              Get Food Delivered <span className="accent">Faster 🚀</span>
+              Get Food Delivered <span className="accent">Faster</span>
             </h2>
 
             <p className="app-sub">
-              Download our app and enjoy lightning-fast delivery, exclusive
-              offers, and easy ordering anytime, anywhere!
+              Built for speed and consistency, our delivery workflow keeps
+              orders on time from kitchen handoff to your doorstep.
             </p>
 
-            <div className="app-features">
-              <div className="app-feature">📍 Live Order Tracking</div>
-              <div className="app-feature">💳 Easy Payments</div>
-              <div className="app-feature">🎁 Daily Offers & Rewards</div>
-              <div className="app-feature">🍔 1000+ Restaurants</div>
+            <div className="app-highlights">
+              <article className="app-highlight">
+                <h3>Real-time Dispatch</h3>
+                <p>Smart assignment sends orders to the nearest active rider.</p>
+              </article>
+              <article className="app-highlight">
+                <h3>Reliable Packaging</h3>
+                <p>Temperature-safe handling keeps every order fresh in transit.</p>
+              </article>
+              <article className="app-highlight">
+                <h3>Predictable ETA</h3>
+                <p>Live updates improve timing accuracy throughout delivery.</p>
+              </article>
+              <article className="app-highlight">
+                <h3>Scaled Network</h3>
+                <p>Coverage across local hubs for faster city-wide fulfillment.</p>
+              </article>
             </div>
 
-            <div className="app-buttons">
-              <button
-                className="btn btn-primary"
-                onClick={() => window.alert("📲 App Store link coming soon!")}
-              >
-                🍎 Download on App Store
-              </button>
-
-              <button
-                className="btn btn-outline"
-                onClick={() => window.alert("📲 Play Store link coming soon!")}
-              >
-                🤖 Get it on Google Play
-              </button>
+            <div className="app-metrics" aria-label="Delivery performance metrics">
+              <div className="app-metric-row">
+                <span>Average handoff time</span>
+                <div className="app-metric-track">
+                  <span className="app-metric-fill app-metric-fill-one" />
+                </div>
+                <strong>11 min</strong>
+              </div>
+              <div className="app-metric-row">
+                <span>On-time delivery rate</span>
+                <div className="app-metric-track">
+                  <span className="app-metric-fill app-metric-fill-two" />
+                </div>
+                <strong>97%</strong>
+              </div>
+              <div className="app-metric-row">
+                <span>Active service zones</span>
+                <div className="app-metric-track">
+                  <span className="app-metric-fill app-metric-fill-three" />
+                </div>
+                <strong>120+</strong>
+              </div>
             </div>
           </div>
 
           <div className="app-right">
             <div className="app-card">
-              <h3>🤝 Want to Partner with Us?</h3>
+              <h3>Want to Partner with Us?</h3>
               <p>
                 Grow your restaurant business with more orders and more
                 customers.
               </p>
               <button
-                className="btn btn-link"
+                className="app-action-btn"
                 onClick={() =>
-                  window.alert("📩 Partner registration coming soon!")
+                  window.alert("Partner registration coming soon!")
                 }
               >
-                ➕ Register Your Restaurant
+                Register Your Restaurant
               </button>
             </div>
 
             <div className="app-card">
-              <h3>🛵 Become a Delivery Partner</h3>
+              <h3>Become a Delivery Partner</h3>
               <p>Earn money with flexible working hours and daily payouts.</p>
               <button
-                className="btn btn-link"
+                className="app-action-btn"
                 onClick={() =>
-                  window.alert("🛵 Delivery partner signup coming soon!")
+                  window.alert("Delivery partner signup coming soon!")
                 }
               >
-                ➕ Join as Delivery Partner
+                Join as Delivery Partner
               </button>
             </div>
           </div>
@@ -839,16 +917,96 @@ export default function Home() {
       </section>
 
       {/* FOOTER */}
-      <footer className="site-footer container gradient-footer">
-        <div className="footer-inner">
-          <div>
-            © {new Date().getFullYear()} <b>FoodByMe</b> — Made with ❤️, 🍔 & ☕
+      <footer className="site-footer" role="contentinfo">
+        <div className="site-footer-inner container">
+          <div className="site-footer-top">
+            <div className="footer-brand-block">
+              <h3 className="footer-brand-title">FoodByMe</h3>
+              <p className="footer-brand-text">
+                A modern food delivery platform connecting customers, local
+                restaurants, and delivery partners through fast, dependable
+                order fulfillment.
+              </p>
+
+              <div className="footer-contact-list">
+                <p>Support: support@foodbyme.com</p>
+                <p>Partnerships: partners@foodbyme.com</p>
+                <p>Helpline: +91 83839 99973</p>
+              </div>
+            </div>
+
+            <div className="footer-nav-grid">
+              <div className="footer-nav-col">
+                <h4>Explore</h4>
+                <a href="/">Restaurants</a>
+                <a href="/">Top Rated</a>
+                <a href="/">Offers</a>
+                <a href="/">Cities</a>
+              </div>
+
+              <div className="footer-nav-col">
+                <h4>Company</h4>
+                <a href="/">About Us</a>
+                <a href="/">Careers</a>
+                <a href="/">Press</a>
+                <a href="/">Blog</a>
+              </div>
+
+              <div className="footer-nav-col">
+                <h4>For Business</h4>
+                <a href="/">Restaurant Partners</a>
+                <a href="/">Delivery Partners</a>
+                <a href="/">Enterprise Orders</a>
+                <a href="/">Business Support</a>
+              </div>
+
+              <div className="footer-nav-col">
+                <h4>Legal</h4>
+                <a href="/terms">Terms</a>
+                <a href="/privacy">Privacy</a>
+                <a href="/">Cookie Policy</a>
+                <a href="/">Refund Policy</a>
+              </div>
+            </div>
           </div>
 
-          <div className="footer-links">
-            <a href="/terms">📜 Terms</a>
-            <a href="/privacy">🔒 Privacy</a>
-            <a href="/contact">📞 Contact</a>
+          <div className="footer-stats-strip">
+            <div className="footer-stat">
+              <strong>1200+</strong>
+              <span>Restaurant Partners</span>
+            </div>
+            <div className="footer-stat">
+              <strong>300K+</strong>
+              <span>Monthly Orders</span>
+            </div>
+            <div className="footer-stat">
+              <strong>98%</strong>
+              <span>On-time Delivery</span>
+            </div>
+            <div className="footer-stat">
+              <strong>24x7</strong>
+              <span>Customer Support</span>
+            </div>
+          </div>
+
+          <div className="footer-newsletter">
+            <div>
+              <h4>Stay Updated</h4>
+              <p>Get city launches, restaurant highlights, and exclusive deals.</p>
+            </div>
+            <form className="footer-newsletter-form" onSubmit={(e) => e.preventDefault()}>
+              <input type="email" placeholder="Enter your email" aria-label="Email for updates" />
+              <button type="submit">Subscribe</button>
+            </form>
+          </div>
+
+          <div className="site-footer-bottom">
+            <p>© {new Date().getFullYear()} FoodByMe Pvt. Ltd. All rights reserved.</p>
+            <div className="site-footer-links">
+              <a href="/terms">Terms</a>
+              <a href="/privacy">Privacy</a>
+              <a href="/contact">Contact</a>
+            </div>
           </div>
         </div>
       </footer>

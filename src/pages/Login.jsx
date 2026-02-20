@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { API_ENDPOINTS, apiRequest } from "../config/api";
 import "./AuthPages.css";
 
 export default function Login() {
@@ -10,11 +11,13 @@ export default function Login() {
 
   const validateForm = () => {
     const next = {};
+    const normalizedEmail = formData.email.trim();
+    const normalizedPassword = formData.password.trim();
 
-    if (!formData.email.trim()) next.email = "Email is required";
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) next.email = "Enter a valid email";
+    if (!normalizedEmail) next.email = "Email is required";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) next.email = "Enter a valid email";
 
-    if (!formData.password) next.password = "Password is required";
+    if (!normalizedPassword) next.password = "Password is required";
 
     setErrors(next);
     return Object.keys(next).length === 0;
@@ -26,27 +29,36 @@ export default function Login() {
     if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     if (!validateForm()) return;
 
     setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      const payload = {
+        email: formData.email.trim().toLowerCase(),
+        password: formData.password.trim(),
+      };
+
+      const data = await apiRequest(API_ENDPOINTS.AUTH.LOGIN, {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      });
+
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('fullName', data.fullName);
       navigate("/");
-    }, 1100);
+    } catch (error) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('fullName');
+      setErrors({ password: error.message || 'Login failed. Please try again.' });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <section className="auth-premium auth-login">
-      <aside className="auth-rail" aria-hidden="true">
-        <div className="auth-rail-track">
-          {["Secure", "Quick", "Fresh", "Premium", "Fast", "Curated", "Trusted", "Ready", "Daily", "Smart", "Secure", "Quick"].map((text, index) => (
-            <span key={`${text}-${index}`}>{text}</span>
-          ))}
-        </div>
-      </aside>
-
       <div className="auth-card">
         <div className="auth-headline">Sign in</div>
         <h1>Welcome back</h1>

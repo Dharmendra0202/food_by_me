@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { getRestaurantById } from "../data/restaurants";
+import { getRestaurantById, getRestaurantRoute } from "../data/restaurants";
+import { API_ENDPOINTS, apiRequest } from "../config/api";
 import "./CheckoutPage.css";
 
 const PAYMENT_METHODS = [
@@ -32,6 +33,11 @@ export default function CheckoutPage() {
   const [paymentMethod, setPaymentMethod] = useState("upi");
   const [isPaying, setIsPaying] = useState(false);
   const [isPaid, setIsPaid] = useState(false);
+  const [deliveryDetails, setDeliveryDetails] = useState({
+    fullName: "",
+    phone: "",
+    address: "",
+  });
 
   const restaurantId = location.state?.restaurantId;
   const selectedItem = location.state?.item;
@@ -79,14 +85,41 @@ export default function CheckoutPage() {
   const taxesAndCharges = Math.round(item.price * 0.05);
   const total = item.price + deliveryFee + taxesAndCharges;
 
-  const handlePayment = (event) => {
+  const handlePayment = async (event) => {
     event.preventDefault();
     setIsPaying(true);
 
-    window.setTimeout(() => {
-      setIsPaying(false);
+    try {
+      const orderData = {
+        item: {
+          name: item.name,
+          price: item.price,
+          image: item.image,
+        },
+        restaurant: {
+          id: restaurant.id,
+          name: restaurant.name,
+        },
+        address: deliveryDetails.address,
+        phone: deliveryDetails.phone,
+        fullName: deliveryDetails.fullName,
+        paymentMethod,
+        total,
+        deliveryFee,
+        taxesAndCharges,
+      };
+
+      await apiRequest(API_ENDPOINTS.ORDERS.PLACE_ORDER, {
+        method: "POST",
+        body: JSON.stringify(orderData),
+      });
+
       setIsPaid(true);
-    }, 900);
+    } catch (error) {
+      alert(error.message || "Payment failed. Please try again.");
+    } finally {
+      setIsPaying(false);
+    }
   };
 
   const allowOnlyDigits = (event, maxLength) => {
@@ -123,7 +156,7 @@ export default function CheckoutPage() {
               Your order for <strong>{item.name}</strong> is confirmed. Estimated delivery in {item.eta}.
             </p>
             <div className="checkout-success-actions">
-              <Link to={`/restaurant/${restaurant.id}`} className="checkout-back-link">
+              <Link to={getRestaurantRoute(restaurant.id)} className="checkout-back-link">
                 Back to restaurant
               </Link>
               <Link to="/" className="checkout-home-link">
@@ -180,6 +213,8 @@ export default function CheckoutPage() {
                   autoComplete="name"
                   inputMode="text"
                   pattern="[A-Za-z][A-Za-z\\s'.-]*"
+                  value={deliveryDetails.fullName}
+                  onChange={(e) => setDeliveryDetails({ ...deliveryDetails, fullName: e.target.value })}
                   onInput={allowOnlyNameChars}
                   title="Use letters and spaces only"
                 />
@@ -195,6 +230,8 @@ export default function CheckoutPage() {
                   autoComplete="tel"
                   pattern="[0-9]{10}"
                   maxLength={10}
+                  value={deliveryDetails.phone}
+                  onChange={(e) => setDeliveryDetails({ ...deliveryDetails, phone: e.target.value })}
                   onInput={(event) => allowOnlyDigits(event, 10)}
                   title="Enter a 10-digit mobile number"
                 />
@@ -202,7 +239,13 @@ export default function CheckoutPage() {
 
               <label className="checkout-field">
                 <span>Delivery address</span>
-                <textarea required rows={3} placeholder="House no, street, area" />
+                <textarea 
+                  required 
+                  rows={3} 
+                  placeholder="House no, street, area"
+                  value={deliveryDetails.address}
+                  onChange={(e) => setDeliveryDetails({ ...deliveryDetails, address: e.target.value })}
+                />
               </label>
 
               <h2>Payment method</h2>

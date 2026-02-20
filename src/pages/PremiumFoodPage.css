@@ -41,86 +41,7 @@
 .premium-shell {
   position: relative;
   z-index: 2;
-  display: grid;
-  grid-template-columns: 165px 1fr;
-  align-items: start;
-  gap: 8px;
-}
-
-.premium-rail {
-  position: sticky;
-  top: 116px;
-  width: 165px;
-  height: 425px;
-  border-radius: 18px;
-  background: linear-gradient(170deg, rgba(10, 16, 26, 0.9), rgba(10, 16, 26, 0.65));
-  border: none;
-  box-shadow: 0 24px 42px rgba(10, 14, 22, 0.35);
-  overflow: hidden;
-}
-
-.premium-rail-window {
-  height: 100%;
-  overflow: hidden;
-  perspective: 850px;
-  mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
-}
-
-.premium-rail-track {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  padding: 8px;
-  transform-style: preserve-3d;
-  animation: rail-loop-3d 18s linear infinite;
-}
-
-.premium-rail-item {
-  position: relative;
-  border-radius: 12px;
-  min-height: 82px;
-  overflow: hidden;
-  border: none;
-  background: rgba(255, 255, 255, 0.07);
-  transform: rotateY(-14deg) translateZ(14px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.26);
-}
-
-.premium-rail-item:nth-child(2n) {
-  transform: rotateY(-10deg) translateZ(10px);
-}
-
-.premium-rail-item:nth-child(3n) {
-  transform: rotateY(-18deg) translateZ(16px);
-}
-
-.premium-rail-item img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
   display: block;
-  transform: scale(1.04);
-}
-
-.premium-rail-item::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top, rgba(10, 14, 21, 0.88), rgba(10, 14, 21, 0.08));
-}
-
-.premium-rail-item span {
-  position: absolute;
-  left: 8px;
-  right: 8px;
-  bottom: 7px;
-  font-size: 11px;
-  color: #f5f9ff;
-  z-index: 1;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .premium-main {
@@ -281,15 +202,6 @@
   filter: brightness(1.08);
 }
 
-@keyframes rail-loop-3d {
-  from {
-    transform: translateY(0) rotateX(4deg);
-  }
-  to {
-    transform: translateY(-50%) rotateX(4deg);
-  }
-}
-
 @keyframes pulse {
   0% {
     box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.8);
@@ -320,14 +232,6 @@
 @media (max-width: 980px) {
   .premium-page {
     padding: 95px 16px 42px;
-  }
-
-  .premium-shell {
-    grid-template-columns: 1fr;
-  }
-
-  .premium-rail {
-    display: none;
   }
 
   .premium-hero {

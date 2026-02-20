@@ -40,14 +40,9 @@ export default function PremiumFoodPage({ theme }) {
     items = [],
     basePrice = 99,
     priceStep = 8,
-    rail = [],
     accent = "#476184",
     accentSoft = "#d1def5",
   } = theme;
-
-  const railSource =
-    items.length > 0 ? items : rail.map((label) => ({ name: label, image }));
-  const railItems = [...railSource, ...railSource, ...railSource];
 
   return (
     <section
@@ -61,19 +56,6 @@ export default function PremiumFoodPage({ theme }) {
       <div className="premium-bg premium-bg-two" aria-hidden="true" />
 
       <div className="premium-shell">
-        <aside className="premium-rail" aria-label={`${title} variety loop`}>
-          <div className="premium-rail-window">
-            <div className="premium-rail-track">
-              {railItems.map((entry, idx) => (
-                <article className="premium-rail-item" key={`${entry.name}-${idx}`}>
-                  <img src={`/images/${entry.image || image}`} alt={entry.name} />
-                  <span>{entry.name}</span>
-                </article>
-              ))}
-            </div>
-          </div>
-        </aside>
-
         <div className="premium-main">
           <header className="premium-hero">
             <button className="premium-back" onClick={() => navigate(-1)}>

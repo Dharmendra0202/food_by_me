@@ -1275,6 +1275,16 @@ export const deliveryRestaurants = baseDeliveryRestaurants.map((restaurant) => {
   return normalized;
 });
 
+export const RESTAURANT_ROUTE_BASE = "/restaurant";
+export const RESTAURANT_ROUTE_PATTERN = `${RESTAURANT_ROUTE_BASE}/:id`;
+
 export function getRestaurantById(id) {
   return deliveryRestaurants.find((restaurant) => restaurant.id === id);
+}
+
+export function getRestaurantRoute(id) {
+  const normalized = String(id || "").trim();
+  return normalized
+    ? `${RESTAURANT_ROUTE_BASE}/${encodeURIComponent(normalized)}`
+    : RESTAURANT_ROUTE_BASE;
 }

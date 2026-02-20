@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./whatsOnYourMind.css";
 import { useNavigate } from "react-router-dom";
+import { getThemeRoute } from "../pages/catalogThemes";
 
 
 /**
@@ -39,32 +40,11 @@ export default function WhatsOnYourMind({
 
   const navigate = useNavigate();
 
-  // Map category names to their routes
-  const getCategoryRoute = (name) => {
-    const routeMap = {
-      "noodles": "/noodles",
-      "chinese": "/chinese",
-      "pure veg": "/pureveg",
-      "paratha": "/paratha",
-      "tea": "/tea",
-      "coffee": "/coffee",
-      "kebabs": "/kebabs",
-      "fruits": "/fruits",
-      "biryani": "/biryani",
-      "desserts": "/desserts",
-      "khichdi": "/khichdi",
-      "shake": "/shake",
-      "rasgulla": "/rasgulla",
-      "cakes": "/cakes",
-    };
-    return routeMap[name.toLowerCase()] || `/category/${name.toLowerCase().replace(/\s+/g, "-")}`;
-  };
-
   const navigateToCategory = (name) => {
     window.scrollTo({ top: 0, left: 0, behavior: "auto" });
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0;
-    navigate(getCategoryRoute(name));
+    navigate(getThemeRoute(name));
   };
 
 

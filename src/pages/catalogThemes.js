@@ -375,6 +375,13 @@ const ALIASES = {
   rasgula: "rasgulla",
 };
 
+function normalizeSlug(input) {
+  return String(input || "")
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, "-");
+}
+
 export const catalogThemes = THEMES_WITH_IMAGES;
 
 export function listCatalogThemes() {
@@ -382,11 +389,7 @@ export function listCatalogThemes() {
 }
 
 export function getThemeBySlug(input) {
-  const slug = String(input || "")
-    .trim()
-    .toLowerCase()
-    .replace(/\s+/g, "-");
-
+  const slug = normalizeSlug(input);
   const normalized = ALIASES[slug] || slug;
   const theme = THEMES_WITH_IMAGES[normalized];
 
@@ -417,4 +420,13 @@ export function getThemeBySlug(input) {
       { name: "Weekend Special", note: "Limited batch kitchen run" },
     ],
   };
+}
+
+export function getThemeRoute(input) {
+  const slug = normalizeSlug(input);
+  const normalized = ALIASES[slug] || slug;
+  const theme = THEMES_WITH_IMAGES[normalized];
+
+  if (theme) return theme.route;
+  return normalized ? `/category/${normalized}` : "/";
 }
