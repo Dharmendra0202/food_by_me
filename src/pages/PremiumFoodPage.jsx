@@ -74,7 +74,13 @@ export default function PremiumFoodPage({ theme }) {
               return (
                 <article className="premium-card" key={item.name}>
                   <div className="premium-card-media">
-                    <img src={`/images/${item.image || image}`} alt={item.name} />
+                    <img
+                      src={`/images/${item.image || image}`}
+                      alt={item.name}
+                      loading="lazy"
+                      decoding="async"
+                      fetchPriority="low"
+                    />
                     <span className="premium-price">INR {price}</span>
                   </div>
 

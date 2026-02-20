@@ -78,6 +78,8 @@ function RestaurantCard({ r }) {
           src={r.image}
           alt={r.name}
           loading="lazy"
+          decoding="async"
+          fetchPriority="low"
           onError={(event) => applyPopularCardFallback(event, r.fallbackImage)}
         />
         {r.offer ? <span className="restaurant-offer">{r.offer}</span> : null}
@@ -349,7 +351,7 @@ export default function Home() {
         const geocode = await reverseGeocode(latitude, longitude);
         areaHint = geocode.shortLabel || geocode.fullLabel || "";
         locationLabel = geocode.shortLabel || geocode.fullLabel || "";
-      } catch (error) {
+      } catch {
         areaHint = `${latitude.toFixed(3)}, ${longitude.toFixed(3)}`;
         locationLabel = `Lat ${latitude.toFixed(3)}, Lon ${longitude.toFixed(3)}`;
       }
@@ -662,7 +664,13 @@ export default function Home() {
                 aria-label={`Open ${restaurant.name}`}
               >
                 <div className="swiggy-img">
-                  <img src={restaurant.image} alt={restaurant.name} />
+                  <img
+                    src={restaurant.image}
+                    alt={restaurant.name}
+                    loading="lazy"
+                    decoding="async"
+                    fetchPriority="low"
+                  />
                   <span className="swiggy-offer">{restaurant.offer}</span>
                 </div>
 

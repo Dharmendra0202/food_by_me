@@ -54,7 +54,13 @@ export default function WhatsOnYourMind({
               key={i}
               onClick={() => navigateToCategory(it.name)}
             >
-              <img src={it.img} alt={it.name} />
+              <img
+                src={it.img}
+                alt={it.name}
+                loading="lazy"
+                decoding="async"
+                fetchPriority="low"
+              />
               <p>{it.name}</p>
             </button>
           ))}
@@ -67,7 +73,13 @@ export default function WhatsOnYourMind({
               onClick={() => navigateToCategory(it.name)}
               aria-label={`Browse ${it.name}`}
             >
-              <img src={it.img} alt={it.name} />
+              <img
+                src={it.img}
+                alt={it.name}
+                loading="lazy"
+                decoding="async"
+                fetchPriority="low"
+              />
               <p>{it.name}</p>
             </button>
           ))}

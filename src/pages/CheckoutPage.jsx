@@ -169,7 +169,12 @@ export default function CheckoutPage() {
             <aside className="checkout-summary">
               <div className="checkout-item-card">
                 <div className="checkout-item-image-wrap">
-                  <img src={item.image} alt={item.name} />
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    decoding="async"
+                    fetchPriority="high"
+                  />
                   <span className="checkout-item-offer">{item.offer}</span>
                 </div>
 

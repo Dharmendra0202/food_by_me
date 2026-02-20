@@ -85,6 +85,8 @@ export default function RestaurantDetailsPage() {
                     src={itemImage}
                     alt={itemName}
                     loading="lazy"
+                    decoding="async"
+                    fetchPriority="low"
                     onError={(event) => {
                       const image = event.currentTarget;
                       if (image.src === window.location.origin + restaurant.image) return;
@@ -161,7 +163,12 @@ export default function RestaurantDetailsPage() {
     <section className="restaurant-details-page">
       <div className="restaurant-details-shell container">
         <header className="restaurant-details-hero">
-          <img src={restaurant.image} alt={restaurant.name} />
+          <img
+            src={restaurant.image}
+            alt={restaurant.name}
+            decoding="async"
+            fetchPriority="high"
+          />
           <div className="restaurant-details-content">
             <p className="restaurant-details-kicker">Online Delivery Partner</p>
             <h1>{restaurant.name}</h1>
