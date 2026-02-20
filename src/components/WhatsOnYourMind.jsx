@@ -27,12 +27,14 @@ export default function WhatsOnYourMind({
     { name: "Cakes", img: "/images/Cakes.jpg" },
   ],
   speed = 230,
+  onSelect = () => {},
 }) {
   const navigate = useNavigate();
   const safeSpeed = Number.isFinite(speed) ? Math.max(1, speed) : 230;
   const marqueeDuration = `${Math.min(60, Math.max(8, (25 * 230) / safeSpeed)).toFixed(2)}s`;
 
   const navigateToCategory = (name) => {
+    onSelect(name);
     window.scrollTo({ top: 0, left: 0, behavior: "auto" });
     navigate(getThemeRoute(name));
   };

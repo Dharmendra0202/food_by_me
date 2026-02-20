@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { API_ENDPOINTS, apiRequest } from "../config/api";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { API_ENDPOINTS, apiRequest, dispatchAppSync, notifyApp } from "../config/api";
 import "./AuthPages.css";
 
 export default function Login() {
@@ -8,6 +8,7 @@ export default function Login() {
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const validateForm = () => {
     const next = {};
@@ -47,10 +48,18 @@ export default function Login() {
 
       localStorage.setItem('token', data.token);
       localStorage.setItem('fullName', data.fullName);
-      navigate("/");
+      dispatchAppSync();
+      notifyApp("Login successful", "success");
+      const redirectTarget =
+        typeof location.state?.from === "string" && location.state.from.startsWith("/")
+          ? location.state.from
+          : "/";
+      navigate(redirectTarget, { replace: true });
     } catch (error) {
       localStorage.removeItem('token');
       localStorage.removeItem('fullName');
+      dispatchAppSync();
+      notifyApp(error.message || "Login failed. Please try again.", "error");
       setErrors({ password: error.message || 'Login failed. Please try again.' });
     } finally {
       setIsLoading(false);

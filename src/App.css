@@ -1,83 +1,94 @@
-
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-}
-
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
-}
-
-
-/* src/App.css - layout + z-index safety */
 .app-root {
   position: relative;
   min-height: 100vh;
-  overflow-x: hidden;
   margin: 0;
   padding: 0;
+  overflow-x: hidden;
 }
 
-/* Ensure root content area is above decorative backgrounds */
 .app-content {
   position: relative;
-  z-index: 20; /* must be larger than any background z-index */
+  z-index: 20;
 }
 
-/* Keep navbar above everything */
-.app-navbar {
+.app-toast-stack {
   position: fixed;
-  top: 0;
-  width: 100%;
-  z-index: 1000; /* keep navbar always on top */
+  right: 18px;
+  bottom: 18px;
+  z-index: 1200;
+  display: grid;
+  gap: 10px;
+  width: min(360px, calc(100vw - 24px));
 }
 
-/* container utility */
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
+.app-toast {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 12px 12px 14px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.25);
+  color: #fff;
+  animation: app-toast-in 0.25s ease-out;
 }
 
-/* keep decorative dots behind */
-.bg-dots {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: -900;
+.app-toast p {
+  margin: 0;
+  text-align: left;
+  color: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.4;
 }
 
+.app-toast-info {
+  background: linear-gradient(120deg, #1d4ed8, #2563eb);
+}
+
+.app-toast-success {
+  background: linear-gradient(120deg, #15803d, #16a34a);
+}
+
+.app-toast-warning {
+  background: linear-gradient(120deg, #b45309, #d97706);
+}
+
+.app-toast-error {
+  background: linear-gradient(120deg, #b91c1c, #dc2626);
+}
+
+.app-toast-close {
+  border: 0;
+  border-radius: 999px;
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  line-height: 1;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  cursor: pointer;
+}
+
+@keyframes app-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 680px) {
+  .app-toast-stack {
+    left: 12px;
+    right: 12px;
+    width: auto;
+    bottom: 12px;
+  }
+}

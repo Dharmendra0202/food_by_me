@@ -1,5 +1,13 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import {
+  APP_SYNC_EVENT,
+  addCartItem,
+  getCartCount,
+  getCartItems,
+  isFavoriteRestaurant,
+  toggleFavoriteRestaurant,
+} from "../config/api";
 import { getRestaurantById } from "../data/restaurants";
 import "./RestaurantDetailsPage.css";
 
@@ -7,9 +15,33 @@ export default function RestaurantDetailsPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const restaurant = getRestaurantById(id);
+  const [cartCount, setCartCount] = useState(0);
+  const [feedback, setFeedback] = useState("");
   const formatRating = (value) => (typeof value === "number" ? value.toFixed(1) : value);
   const isImageHighlights = (items) =>
     Array.isArray(items) && items.length > 0 && typeof items[0] === "object";
+  const isFavorite = restaurant ? isFavoriteRestaurant(restaurant.id) : false;
+
+  useEffect(() => {
+    const syncCartCount = () => {
+      setCartCount(getCartCount(getCartItems()));
+    };
+
+    syncCartCount();
+    window.addEventListener(APP_SYNC_EVENT, syncCartCount);
+    window.addEventListener("storage", syncCartCount);
+
+    return () => {
+      window.removeEventListener(APP_SYNC_EVENT, syncCartCount);
+      window.removeEventListener("storage", syncCartCount);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!feedback) return undefined;
+    const timeoutId = setTimeout(() => setFeedback(""), 1800);
+    return () => clearTimeout(timeoutId);
+  }, [feedback]);
 
   const extractPriceFromText = (text) => {
     if (!text) return null;
@@ -45,15 +77,24 @@ export default function RestaurantDetailsPage() {
     };
   };
 
-  const goToCheckout = (item) => {
+  const addItemToCart = (item, { goToCheckout = false } = {}) => {
     if (!restaurant) return;
     const normalizedItem = normalizeItem(item);
-    navigate("/checkout", {
-      state: {
-        restaurantId: restaurant.id,
-        item: normalizedItem,
-      },
+    addCartItem({
+      restaurantId: restaurant.id,
+      restaurantName: restaurant.name,
+      item: normalizedItem,
+      quantity: 1,
     });
+    setFeedback(`${normalizedItem.name} added to cart`);
+    if (goToCheckout) navigate("/cart");
+  };
+
+  const handleFavoriteToggle = () => {
+    if (!restaurant) return;
+    const ids = toggleFavoriteRestaurant(restaurant.id);
+    const next = ids.includes(restaurant.id);
+    setFeedback(next ? `${restaurant.name} saved` : `${restaurant.name} removed from saved`);
   };
 
   const renderHighlights = (items) => {
@@ -77,7 +118,7 @@ export default function RestaurantDetailsPage() {
                 type="button"
                 className="restaurant-highlight-card"
                 key={`${itemName}-${index}`}
-                onClick={() => goToCheckout(normalizedItem)}
+                onClick={() => addItemToCart(normalizedItem, { goToCheckout: true })}
                 aria-label={`Order ${itemName} from ${restaurant.name}`}
               >
                 <div className="restaurant-highlight-media">
@@ -96,8 +137,8 @@ export default function RestaurantDetailsPage() {
                   <p className="restaurant-highlight-offer">{itemOffer}</p>
                 </div>
 
-                <div className="restaurant-highlight-content">
-                  <h3>{itemName}</h3>
+              <div className="restaurant-highlight-content">
+                <h3>{itemName}</h3>
                   <p className="restaurant-highlight-meta">
                     <span className="restaurant-highlight-rating">
                       <span className="restaurant-highlight-rating-icon" aria-hidden="true">
@@ -127,10 +168,10 @@ export default function RestaurantDetailsPage() {
             <button
               type="button"
               className="restaurant-highlight-list-btn"
-              onClick={() => goToCheckout(item)}
+              onClick={() => addItemToCart(item, { goToCheckout: true })}
             >
               <span>{item}</span>
-              <span className="restaurant-highlight-list-cta">Order</span>
+              <span className="restaurant-highlight-list-cta">Add</span>
             </button>
           </li>
         ))}
@@ -171,8 +212,22 @@ export default function RestaurantDetailsPage() {
           />
           <div className="restaurant-details-content">
             <p className="restaurant-details-kicker">Online Delivery Partner</p>
+            <div className="restaurant-top-actions">
+              <button
+                type="button"
+                className={`restaurant-favorite-btn${isFavorite ? " active" : ""}`}
+                onClick={handleFavoriteToggle}
+                aria-label={isFavorite ? "Remove from saved restaurants" : "Save restaurant"}
+              >
+                {isFavorite ? "♥ Saved" : "♡ Save"}
+              </button>
+              <Link to="/cart" className="restaurant-cart-link">
+                Cart ({cartCount})
+              </Link>
+            </div>
             <h1>{restaurant.name}</h1>
             <p className="restaurant-details-copy">{restaurant.description}</p>
+            {feedback ? <p className="restaurant-feedback">{feedback}</p> : null}
 
             <div className="restaurant-details-pills">
               <span>⭐ {restaurant.rating.toFixed(1)}</span>
@@ -213,7 +268,7 @@ export default function RestaurantDetailsPage() {
             <section className="restaurant-quick-picks" aria-label="Quick picks">
               <div className="restaurant-quick-picks-head">
                 <h3>Quick picks</h3>
-                <p>Tap to order instantly</p>
+                <p>Tap to add instantly</p>
               </div>
               <div className="restaurant-quick-picks-list">
                 {quickPicks.map((item) => (
@@ -221,8 +276,8 @@ export default function RestaurantDetailsPage() {
                     type="button"
                     key={item.name}
                     className="restaurant-quick-pick-btn"
-                    onClick={() => goToCheckout(item)}
-                    aria-label={`Order ${item.name}`}
+                    onClick={() => addItemToCart(item)}
+                    aria-label={`Add ${item.name} to cart`}
                   >
                     <span>{item.name}</span>
                     <span>₹{item.price}</span>
@@ -238,7 +293,11 @@ export default function RestaurantDetailsPage() {
               <button
                 type="button"
                 className="restaurant-order-btn"
-                onClick={() => goToCheckout(restaurant.highlights?.[0] || restaurant.name)}
+                onClick={() =>
+                  addItemToCart(restaurant.highlights?.[0] || restaurant.name, {
+                    goToCheckout: true,
+                  })
+                }
               >
                 Order now
               </button>

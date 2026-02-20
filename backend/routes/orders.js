@@ -6,9 +6,32 @@ const orders = []; // Temporary storage (in production, use a database)
 
 router.post('/place-order', authMiddleware, (req, res) => {
   try {
-    const { item, restaurant, address, phone, fullName, paymentMethod, total, deliveryFee, taxesAndCharges } = req.body;
+    const {
+      item,
+      items,
+      restaurant,
+      address,
+      phone,
+      fullName,
+      paymentMethod,
+      total,
+      deliveryFee,
+      taxesAndCharges,
+      discount,
+      couponCode,
+      deliveryNote,
+      platformFee,
+      subtotal,
+      addressLabel,
+    } = req.body;
 
-    if (!item?.name || !restaurant?.name || !address || !phone || !fullName || !paymentMethod) {
+    const normalizedItems = Array.isArray(items) && items.length > 0
+      ? items
+      : item
+      ? [item]
+      : [];
+
+    if (!normalizedItems.length || !restaurant?.name || !address || !phone || !fullName || !paymentMethod) {
       return res.status(400).json({ error: 'Missing required order details' });
     }
 
@@ -22,18 +45,26 @@ router.post('/place-order', authMiddleware, (req, res) => {
       fullName,
       phone,
       address,
-      item,
+      addressLabel: String(addressLabel || 'Address'),
+      item: normalizedItems[0],
+      items: normalizedItems,
       restaurant,
       paymentMethod,
+      subtotal: Number(subtotal || 0),
       total,
       deliveryFee,
+      platformFee: Number(platformFee || 0),
+      discount: Number(discount || 0),
+      couponCode: couponCode || null,
+      deliveryNote: String(deliveryNote || ''),
       taxesAndCharges,
       status: 'confirmed',
       createdAt: new Date().toISOString()
     };
     
     orders.push(order);
-    console.log(`✓ New Order: ${item.name} from ${restaurant.name} - ₹${total}`);
+    const firstItemName = normalizedItems[0]?.name || 'items';
+    console.log(`✓ New Order: ${firstItemName} from ${restaurant.name} - ₹${total}`);
     
     res.status(200).json({ 
       success: true, 

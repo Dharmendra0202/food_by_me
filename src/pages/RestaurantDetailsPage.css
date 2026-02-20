@@ -49,10 +49,52 @@
   color: #ff7a45;
 }
 
+.restaurant-top-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.restaurant-favorite-btn {
+  border: 1px solid rgba(17, 24, 39, 0.15);
+  border-radius: 999px;
+  background: #fff;
+  color: #111827;
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 6px 11px;
+  cursor: pointer;
+}
+
+.restaurant-favorite-btn.active {
+  background: #fff1f2;
+  color: #be123c;
+  border-color: rgba(225, 29, 72, 0.28);
+}
+
+.restaurant-cart-link {
+  border: 1px solid rgba(17, 24, 39, 0.15);
+  border-radius: 999px;
+  background: #f8fafc;
+  color: #0f172a;
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 6px 11px;
+}
+
 .restaurant-details-copy {
   margin: 0 0 14px;
   color: rgba(17, 24, 39, 0.76);
   font-weight: 600;
+}
+
+.restaurant-feedback {
+  margin: 2px 0 12px;
+  font-size: 0.85rem;
+  color: #065f46;
+  font-weight: 700;
 }
 
 .restaurant-details-pills {

@@ -1,26 +1,65 @@
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { getRestaurantById, getRestaurantRoute } from "../data/restaurants";
-import { API_ENDPOINTS, apiRequest } from "../config/api";
+import {
+  API_ENDPOINTS,
+  APP_SYNC_EVENT,
+  addCartItem,
+  addRecentOrderLocal,
+  addSavedAddress,
+  apiRequest,
+  clearCartItems,
+  getCartItems,
+  getCartSubtotal,
+  getRecentOrdersLocal,
+  getSavedAddresses,
+  notifyApp,
+  removeCartItem,
+  removeSavedAddress,
+  updateCartItemQuantity,
+} from "../config/api";
+import { getRestaurantById } from "../data/restaurants";
 import "./CheckoutPage.css";
 
 const PAYMENT_METHODS = [
-  {
-    id: "upi",
-    label: "UPI",
-    description: "PhonePe, GPay, Paytm",
-  },
-  {
-    id: "card",
-    label: "Card",
-    description: "Credit or debit card",
-  },
-  {
-    id: "cod",
-    label: "Cash on Delivery",
-    description: "Pay when order arrives",
-  },
+  { id: "upi", label: "UPI", description: "PhonePe, GPay, Paytm" },
+  { id: "card", label: "Card", description: "Credit or debit card" },
+  { id: "cod", label: "Cash on Delivery", description: "Pay when order arrives" },
 ];
+
+const COUPONS = {
+  WELCOME10: {
+    label: "10% off up to ₹120",
+    minSubtotal: 199,
+    getDiscount: ({ subtotal }) => Math.min(120, Math.round(subtotal * 0.1)),
+  },
+  SAVE50: {
+    label: "Flat ₹50 off",
+    minSubtotal: 299,
+    getDiscount: () => 50,
+  },
+  FREESHIP: {
+    label: "Free delivery",
+    minSubtotal: 149,
+    getDiscount: ({ deliveryFee }) => deliveryFee,
+  },
+};
+
+const ORDER_STATUS_OPTIONS = [
+  { id: "all", label: "All" },
+  { id: "confirmed", label: "Confirmed" },
+  { id: "preparing", label: "Preparing" },
+  { id: "on_the_way", label: "On the way" },
+  { id: "delivered", label: "Delivered" },
+  { id: "cancelled", label: "Cancelled" },
+];
+
+const ORDER_STATUS_LABELS = {
+  confirmed: "Confirmed",
+  preparing: "Preparing",
+  on_the_way: "On the way",
+  delivered: "Delivered",
+  cancelled: "Cancelled",
+};
 
 function parsePrice(text) {
   if (!text) return null;
@@ -28,98 +67,393 @@ function parsePrice(text) {
   return match ? Number(match[1]) : null;
 }
 
-export default function CheckoutPage() {
+function normalizeLocationItem(stateItem, restaurant) {
+  if (!stateItem && !restaurant) return null;
+  const fallbackPrice = restaurant ? Math.round(restaurant.priceForTwo / 2) : 199;
+  const parsedFromOffer = parsePrice(stateItem?.offer);
+  return {
+    name: stateItem?.name || restaurant?.name || "Food item",
+    image: stateItem?.image || restaurant?.image || "/images/Pizza.jpg",
+    offer: stateItem?.offer || restaurant?.offer || "SPECIAL OFFER",
+    eta: stateItem?.eta || (restaurant ? `${restaurant.etaMin}-${restaurant.etaMax} mins` : ""),
+    cuisines: stateItem?.cuisines || restaurant?.cuisines?.join(", ") || "Fast Food",
+    area: stateItem?.area || restaurant?.area || "City Center",
+    price: stateItem?.price ?? parsedFromOffer ?? fallbackPrice,
+  };
+}
+
+function getAddressById(savedAddresses, selectedAddressId) {
+  if (!selectedAddressId) return null;
+  return savedAddresses.find((address) => address.id === selectedAddressId) || null;
+}
+
+function getOrderItems(order) {
+  if (Array.isArray(order?.items) && order.items.length > 0) return order.items;
+  if (order?.item) return [order.item];
+  return [];
+}
+
+function normalizeOrderStatus(value) {
+  const normalized = String(value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, "_");
+
+  if (!normalized) return "confirmed";
+  if (normalized === "out_for_delivery" || normalized === "on_the_way") return "on_the_way";
+  if (normalized === "cancelled" || normalized === "canceled") return "cancelled";
+  if (normalized === "confirmed" || normalized === "preparing" || normalized === "delivered") {
+    return normalized;
+  }
+  return "confirmed";
+}
+
+function formatOrderStatus(value) {
+  return ORDER_STATUS_LABELS[value] || "Confirmed";
+}
+
+function formatOrderDate(value) {
+  const parsed = new Date(value);
+  return Number.isNaN(parsed.getTime()) ? "Just now" : parsed.toLocaleString();
+}
+
+export default function CheckoutPage({ view = "cart" }) {
   const location = useLocation();
+  const didImportLocationItemRef = useRef(false);
+  const [cartItems, setCartState] = useState(() => getCartItems());
+  const [savedAddresses, setSavedAddresses] = useState(() => getSavedAddresses());
+  const [selectedAddressId, setSelectedAddressId] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("upi");
   const [isPaying, setIsPaying] = useState(false);
   const [isPaid, setIsPaid] = useState(false);
+  const [recentOrders, setRecentOrders] = useState(() => getRecentOrdersLocal());
+  const [remoteOrders, setRemoteOrders] = useState([]);
+  const [ordersLoading, setOrdersLoading] = useState(false);
+  const [ordersError, setOrdersError] = useState("");
+  const [orderSearch, setOrderSearch] = useState("");
+  const [orderStatusFilter, setOrderStatusFilter] = useState("all");
+  const [couponInput, setCouponInput] = useState("");
+  const [appliedCouponCode, setAppliedCouponCode] = useState("");
+  const [couponError, setCouponError] = useState("");
+  const [successOrderMeta, setSuccessOrderMeta] = useState(null);
   const [deliveryDetails, setDeliveryDetails] = useState({
-    fullName: "",
+    fullName: localStorage.getItem("fullName") || "",
     phone: "",
     address: "",
+    addressLabel: "Home",
+    deliveryNote: "",
   });
 
-  const restaurantId = location.state?.restaurantId;
-  const selectedItem = location.state?.item;
-  const restaurant = getRestaurantById(restaurantId);
+  const showOrdersView = view === "orders";
+  const hasToken = Boolean(localStorage.getItem("token"));
 
-  const item = useMemo(() => {
-    if (!restaurant && !selectedItem) return null;
-
-    const fallbackName = selectedItem?.name || restaurant?.name || "Food item";
-    const fallbackImage = selectedItem?.image || restaurant?.image || "/images/Pizza.jpg";
-    const fallbackOffer = selectedItem?.offer || restaurant?.offer || "SPECIAL OFFER";
-    const fallbackEta =
-      selectedItem?.eta ||
-      (restaurant ? `${restaurant.etaMin}-${restaurant.etaMax} mins` : "30-40 mins");
-
-    const fallbackPrice = restaurant ? Math.round(restaurant.priceForTwo / 2) : 199;
-    const parsedFromOffer = parsePrice(selectedItem?.offer);
-
-    return {
-      name: fallbackName,
-      image: fallbackImage,
-      offer: fallbackOffer,
-      eta: fallbackEta,
-      cuisines: selectedItem?.cuisines || restaurant?.cuisines?.join(", ") || "Fast Food",
-      area: selectedItem?.area || restaurant?.area || "City Center",
-      price: selectedItem?.price ?? parsedFromOffer ?? fallbackPrice,
+  useEffect(() => {
+    const sync = () => {
+      setCartState(getCartItems());
+      setSavedAddresses(getSavedAddresses());
+      setRecentOrders(getRecentOrdersLocal());
     };
-  }, [restaurant, selectedItem]);
 
-  if (!restaurant || !item) {
-    return (
-      <section className="checkout-page">
-        <div className="checkout-shell container checkout-empty">
-          <h1>No order selected</h1>
-          <p>Select a dish from restaurant page to continue to payment.</p>
-          <Link to="/" className="checkout-back-link">
-            Back to home
-          </Link>
-        </div>
-      </section>
-    );
-  }
+    sync();
+    window.addEventListener(APP_SYNC_EVENT, sync);
+    window.addEventListener("storage", sync);
+    return () => {
+      window.removeEventListener(APP_SYNC_EVENT, sync);
+      window.removeEventListener("storage", sync);
+    };
+  }, []);
 
-  const deliveryFee = 39;
-  const taxesAndCharges = Math.round(item.price * 0.05);
-  const total = item.price + deliveryFee + taxesAndCharges;
+  useEffect(() => {
+    if (didImportLocationItemRef.current) return;
+    if (!location.state?.item || !location.state?.restaurantId) return;
+    const restaurant = getRestaurantById(location.state.restaurantId);
+    const normalized = normalizeLocationItem(location.state.item, restaurant);
+    if (!normalized) return;
+
+    addCartItem({
+      restaurantId: location.state.restaurantId,
+      restaurantName: restaurant?.name || "Restaurant",
+      item: normalized,
+      quantity: 1,
+    });
+    didImportLocationItemRef.current = true;
+  }, [location.state]);
+
+  useEffect(() => {
+    if (!savedAddresses.length) return;
+    if (!selectedAddressId) {
+      setSelectedAddressId(savedAddresses[0].id);
+      return;
+    }
+    const selected = getAddressById(savedAddresses, selectedAddressId);
+    if (!selected) {
+      setSelectedAddressId(savedAddresses[0].id);
+    }
+  }, [savedAddresses, selectedAddressId]);
+
+  useEffect(() => {
+    const selected = getAddressById(savedAddresses, selectedAddressId);
+    if (!selected) return;
+    setDeliveryDetails((prev) => ({
+      ...prev,
+      fullName: selected.fullName || prev.fullName,
+      phone: selected.phone || prev.phone,
+      address: selected.address || prev.address,
+      addressLabel: selected.label || prev.addressLabel,
+    }));
+  }, [savedAddresses, selectedAddressId]);
+
+  const subtotal = getCartSubtotal(cartItems);
+  const deliveryFee = subtotal <= 0 ? 0 : subtotal >= 399 ? 0 : 39;
+  const platformFee = subtotal <= 0 ? 0 : 6;
+  const taxesAndCharges = Math.round(subtotal * 0.05);
+
+  const appliedCoupon = appliedCouponCode ? COUPONS[appliedCouponCode] : null;
+  const discount = appliedCoupon
+    ? appliedCoupon.getDiscount({ subtotal, deliveryFee, platformFee, taxesAndCharges })
+    : 0;
+
+  const total = Math.max(0, subtotal + deliveryFee + platformFee + taxesAndCharges - discount);
+  const orderList = remoteOrders.length ? remoteOrders : recentOrders;
+
+  const filteredOrderList = useMemo(() => {
+    const search = orderSearch.trim().toLowerCase();
+
+    return [...orderList]
+      .sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0))
+      .filter((order) => {
+        const normalizedStatus = normalizeOrderStatus(order?.status);
+        if (orderStatusFilter !== "all" && normalizedStatus !== orderStatusFilter) return false;
+
+        if (!search) return true;
+        const orderId = String(order?.orderId || order?.id || "").toLowerCase();
+        const restaurantName = String(order?.restaurant?.name || "").toLowerCase();
+        const itemNames = getOrderItems(order)
+          .map((item) => String(item?.name || "").toLowerCase())
+          .join(" ");
+        return (
+          orderId.includes(search) ||
+          restaurantName.includes(search) ||
+          itemNames.includes(search)
+        );
+      });
+  }, [orderList, orderSearch, orderStatusFilter]);
+
+  const loadOrders = useCallback(async () => {
+    if (!hasToken) {
+      setRemoteOrders([]);
+      return;
+    }
+
+    setOrdersLoading(true);
+    setOrdersError("");
+    try {
+      const data = await apiRequest(API_ENDPOINTS.ORDERS.GET_MY_ORDERS, { method: "GET" });
+      setRemoteOrders(Array.isArray(data) ? data : []);
+    } catch (error) {
+      setOrdersError(error.message || "Unable to load orders right now.");
+      setRemoteOrders([]);
+    } finally {
+      setOrdersLoading(false);
+    }
+  }, [hasToken]);
+
+  useEffect(() => {
+    loadOrders();
+  }, [loadOrders]);
+
+  const handleQtyChange = (cartItem, delta) => {
+    const nextQuantity = Number(cartItem.quantity) + delta;
+    if (nextQuantity <= 0) {
+      removeCartItem(cartItem.id);
+      return;
+    }
+    updateCartItemQuantity(cartItem.id, nextQuantity);
+  };
+
+  const handleRemoveItem = (cartItemId) => {
+    removeCartItem(cartItemId);
+  };
+
+  const applyCoupon = () => {
+    const normalized = couponInput.trim().toUpperCase();
+    if (!normalized) {
+      const message = "Enter coupon code";
+      setCouponError(message);
+      notifyApp(message, "warning");
+      return;
+    }
+
+    const coupon = COUPONS[normalized];
+    if (!coupon) {
+      const message = "Invalid coupon code";
+      setCouponError(message);
+      notifyApp(message, "error");
+      return;
+    }
+
+    if (subtotal < coupon.minSubtotal) {
+      const message = `Minimum subtotal ₹${coupon.minSubtotal} required for ${normalized}`;
+      setCouponError(message);
+      notifyApp(message, "warning");
+      return;
+    }
+
+    setAppliedCouponCode(normalized);
+    setCouponError("");
+    notifyApp(`${normalized} applied`, "success");
+  };
+
+  const clearCoupon = () => {
+    setAppliedCouponCode("");
+    setCouponError("");
+    setCouponInput("");
+    notifyApp("Coupon removed", "info");
+  };
+
+  const saveCurrentAddress = () => {
+    const payload = {
+      label: deliveryDetails.addressLabel,
+      fullName: deliveryDetails.fullName,
+      phone: deliveryDetails.phone,
+      address: deliveryDetails.address,
+    };
+
+    if (!payload.address.trim()) {
+      notifyApp("Enter address before saving", "warning");
+      return;
+    }
+
+    const updated = addSavedAddress(payload);
+    setSavedAddresses(updated);
+    if (updated.length > 0) {
+      setSelectedAddressId(updated[0].id);
+    }
+    notifyApp("Address saved", "success");
+  };
+
+  const handleDeleteAddress = (addressId) => {
+    const updated = removeSavedAddress(addressId);
+    setSavedAddresses(updated);
+    if (selectedAddressId === addressId) {
+      setSelectedAddressId(updated[0]?.id || "");
+    }
+    notifyApp("Address removed", "info");
+  };
 
   const handlePayment = async (event) => {
     event.preventDefault();
-    setIsPaying(true);
+    if (!cartItems.length) {
+      notifyApp("Your cart is empty", "warning");
+      return;
+    }
+    if (
+      !deliveryDetails.fullName.trim() ||
+      !deliveryDetails.phone.trim() ||
+      !deliveryDetails.address.trim()
+    ) {
+      notifyApp("Complete delivery details first", "warning");
+      return;
+    }
 
+    setIsPaying(true);
     try {
+      const firstItem = cartItems[0];
       const orderData = {
-        item: {
+        items: cartItems.map((item) => ({
           name: item.name,
           price: item.price,
+          quantity: item.quantity,
           image: item.image,
+        })),
+        item: {
+          name: firstItem.name,
+          price: firstItem.price,
+          image: firstItem.image,
         },
         restaurant: {
-          id: restaurant.id,
-          name: restaurant.name,
+          id: firstItem.restaurantId,
+          name: firstItem.restaurantName,
         },
-        address: deliveryDetails.address,
-        phone: deliveryDetails.phone,
-        fullName: deliveryDetails.fullName,
+        address: deliveryDetails.address.trim(),
+        addressLabel: deliveryDetails.addressLabel.trim() || "Address",
+        phone: deliveryDetails.phone.trim(),
+        fullName: deliveryDetails.fullName.trim(),
         paymentMethod,
+        subtotal,
         total,
         deliveryFee,
+        platformFee,
+        discount,
+        couponCode: appliedCouponCode || null,
+        deliveryNote: deliveryDetails.deliveryNote.trim(),
         taxesAndCharges,
       };
 
-      await apiRequest(API_ENDPOINTS.ORDERS.PLACE_ORDER, {
+      const response = await apiRequest(API_ENDPOINTS.ORDERS.PLACE_ORDER, {
         method: "POST",
         body: JSON.stringify(orderData),
       });
 
+      const orderMeta = {
+        orderId: response.orderId,
+        createdAt: new Date().toISOString(),
+        total,
+        items: orderData.items,
+        restaurant: orderData.restaurant,
+        status: "confirmed",
+      };
+
+      addRecentOrderLocal(orderMeta);
+      setSuccessOrderMeta(orderMeta);
       setIsPaid(true);
+      clearCartItems();
+      setAppliedCouponCode("");
+      setCouponInput("");
+      notifyApp(`Order ${response.orderId} placed successfully`, "success");
+      await loadOrders();
     } catch (error) {
-      alert(error.message || "Payment failed. Please try again.");
+      const message = error.message || "Payment failed. Please try again.";
+      setCouponError(message);
+      notifyApp(message, "error");
     } finally {
       setIsPaying(false);
     }
+  };
+
+  const handleReorder = (order) => {
+    const items = getOrderItems(order);
+    if (!items.length) {
+      notifyApp("No items available to reorder", "warning");
+      return;
+    }
+
+    const restaurantId = String(order?.restaurant?.id || order?.orderId || order?.id || "previous");
+    const restaurantName = order?.restaurant?.name || "Previous order";
+
+    items.forEach((item) => {
+      const parsedPrice = Number(item?.price);
+      const fallbackPrice = parsePrice(item?.offer) || 99;
+      const normalizedPrice = Number.isFinite(parsedPrice) && parsedPrice > 0 ? parsedPrice : fallbackPrice;
+
+      addCartItem({
+        restaurantId,
+        restaurantName,
+        item: {
+          name: item?.name || "Food item",
+          image: item?.image || "/images/Pizza.jpg",
+          offer: item?.offer || "REORDERED ITEM",
+          eta: item?.eta || "",
+          cuisines: item?.cuisines || "",
+          area: item?.area || "",
+          price: normalizedPrice,
+        },
+        quantity: Number(item?.quantity) > 0 ? Number(item.quantity) : 1,
+      });
+    });
+
+    const itemCount = items.reduce((sum, item) => sum + (Number(item?.quantity) > 0 ? Number(item.quantity) : 1), 0);
+    notifyApp(`${itemCount} item${itemCount === 1 ? "" : "s"} added to cart`, "success");
   };
 
   const allowOnlyDigits = (event, maxLength) => {
@@ -138,67 +472,116 @@ export default function CheckoutPage() {
     input.value = digits.length > 2 ? `${digits.slice(0, 2)}/${digits.slice(2)}` : digits;
   };
 
+  if (!cartItems.length && !showOrdersView && !isPaid) {
+    return (
+      <section className="checkout-page">
+        <div className="checkout-shell container checkout-empty">
+          <h1>Your cart is empty</h1>
+          <p>Add dishes from restaurant pages to continue checkout.</p>
+          <Link to="/" className="checkout-back-link">
+            Browse restaurants
+          </Link>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="checkout-page">
       <div className="checkout-shell container">
         <header className="checkout-head">
           <p className="checkout-kicker">Secure Checkout</p>
-          <h1>Place your order</h1>
+          <h1>{showOrdersView ? "My orders" : "Place your order"}</h1>
           <p className="checkout-subtitle">
-            {restaurant.name} - {item.name}
+            {showOrdersView
+              ? "Track your recent order activity"
+              : `${cartItems.length} item${cartItems.length === 1 ? "" : "s"} in cart`}
           </p>
+          <nav className="checkout-view-switch" aria-label="Checkout views">
+            <Link to="/cart" className={`checkout-view-link${!showOrdersView ? " active" : ""}`}>
+              Checkout
+            </Link>
+            <Link to="/orders" className={`checkout-view-link${showOrdersView ? " active" : ""}`}>
+              Orders
+            </Link>
+          </nav>
         </header>
 
-        {isPaid ? (
+        {!showOrdersView && isPaid ? (
           <div className="checkout-success">
             <h2>Payment successful</h2>
             <p>
-              Your order for <strong>{item.name}</strong> is confirmed. Estimated delivery in {item.eta}.
+              Order <strong>{successOrderMeta?.orderId || "confirmed"}</strong> placed.
             </p>
             <div className="checkout-success-actions">
-              <Link to={getRestaurantRoute(restaurant.id)} className="checkout-back-link">
-                Back to restaurant
-              </Link>
               <Link to="/" className="checkout-home-link">
-                Go to home
+                Continue shopping
+              </Link>
+              <Link to="/orders" className="checkout-back-link">
+                View my orders
               </Link>
             </div>
           </div>
-        ) : (
+        ) : null}
+
+        {!showOrdersView ? (
           <div className="checkout-layout">
             <aside className="checkout-summary">
-              <div className="checkout-item-card">
-                <div className="checkout-item-image-wrap">
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    decoding="async"
-                    fetchPriority="high"
-                  />
-                  <span className="checkout-item-offer">{item.offer}</span>
-                </div>
-
-                <div className="checkout-item-info">
-                  <h2>{item.name}</h2>
-                  <p>{item.cuisines}</p>
-                  <p>{item.area}</p>
-                </div>
+              <div className="checkout-item-card checkout-item-card-list">
+                {cartItems.map((item) => (
+                  <article key={item.id} className="checkout-item-row">
+                    <img src={item.image} alt={item.name} decoding="async" fetchPriority="high" />
+                    <div className="checkout-item-row-info">
+                      <h2>{item.name}</h2>
+                      <p>{item.restaurantName}</p>
+                      <div className="checkout-item-row-meta">
+                        <span>₹{item.price}</span>
+                        <div className="checkout-qty-control">
+                          <button type="button" onClick={() => handleQtyChange(item, -1)}>
+                            −
+                          </button>
+                          <strong>{item.quantity}</strong>
+                          <button type="button" onClick={() => handleQtyChange(item, 1)}>
+                            +
+                          </button>
+                        </div>
+                        <button
+                          type="button"
+                          className="checkout-remove-btn"
+                          onClick={() => handleRemoveItem(item.id)}
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </div>
+                  </article>
+                ))}
               </div>
 
               <div className="checkout-bill">
                 <h3>Bill details</h3>
                 <div className="checkout-bill-row">
                   <span>Item total</span>
-                  <strong>₹{item.price}</strong>
+                  <strong>₹{subtotal}</strong>
                 </div>
                 <div className="checkout-bill-row">
                   <span>Delivery fee</span>
-                  <strong>₹{deliveryFee}</strong>
+                  <strong>{deliveryFee === 0 ? "FREE" : `₹${deliveryFee}`}</strong>
+                </div>
+                <div className="checkout-bill-row">
+                  <span>Platform fee</span>
+                  <strong>₹{platformFee}</strong>
                 </div>
                 <div className="checkout-bill-row">
                   <span>Taxes and charges</span>
                   <strong>₹{taxesAndCharges}</strong>
                 </div>
+                {discount > 0 ? (
+                  <div className="checkout-bill-row checkout-discount-row">
+                    <span>Coupon discount</span>
+                    <strong>-₹{discount}</strong>
+                  </div>
+                ) : null}
                 <div className="checkout-bill-row checkout-bill-total">
                   <span>To pay</span>
                   <strong>₹{total}</strong>
@@ -207,7 +590,47 @@ export default function CheckoutPage() {
             </aside>
 
             <form className="checkout-form" onSubmit={handlePayment}>
+              <h2>Saved addresses</h2>
+              {savedAddresses.length ? (
+                <div className="checkout-addresses">
+                  {savedAddresses.map((address) => (
+                    <label key={address.id} className="checkout-address-item">
+                      <input
+                        type="radio"
+                        name="savedAddress"
+                        checked={selectedAddressId === address.id}
+                        onChange={() => setSelectedAddressId(address.id)}
+                      />
+                      <div>
+                        <strong>{address.label}</strong>
+                        <p>{address.address}</p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteAddress(address.id)}
+                        className="checkout-address-delete"
+                      >
+                        Remove
+                      </button>
+                    </label>
+                  ))}
+                </div>
+              ) : (
+                <p className="checkout-cod-note">No saved addresses yet.</p>
+              )}
+
               <h2>Delivery details</h2>
+              <label className="checkout-field">
+                <span>Label</span>
+                <input
+                  type="text"
+                  placeholder="Home / Work"
+                  value={deliveryDetails.addressLabel}
+                  onChange={(e) =>
+                    setDeliveryDetails((prev) => ({ ...prev, addressLabel: e.target.value }))
+                  }
+                />
+              </label>
 
               <label className="checkout-field">
                 <span>Full name</span>
@@ -219,7 +642,9 @@ export default function CheckoutPage() {
                   inputMode="text"
                   pattern="[A-Za-z][A-Za-z\\s'.-]*"
                   value={deliveryDetails.fullName}
-                  onChange={(e) => setDeliveryDetails({ ...deliveryDetails, fullName: e.target.value })}
+                  onChange={(e) =>
+                    setDeliveryDetails((prev) => ({ ...prev, fullName: e.target.value }))
+                  }
                   onInput={allowOnlyNameChars}
                   title="Use letters and spaces only"
                 />
@@ -236,7 +661,9 @@ export default function CheckoutPage() {
                   pattern="[0-9]{10}"
                   maxLength={10}
                   value={deliveryDetails.phone}
-                  onChange={(e) => setDeliveryDetails({ ...deliveryDetails, phone: e.target.value })}
+                  onChange={(e) =>
+                    setDeliveryDetails((prev) => ({ ...prev, phone: e.target.value }))
+                  }
                   onInput={(event) => allowOnlyDigits(event, 10)}
                   title="Enter a 10-digit mobile number"
                 />
@@ -244,24 +671,63 @@ export default function CheckoutPage() {
 
               <label className="checkout-field">
                 <span>Delivery address</span>
-                <textarea 
-                  required 
-                  rows={3} 
+                <textarea
+                  required
+                  rows={3}
                   placeholder="House no, street, area"
                   value={deliveryDetails.address}
-                  onChange={(e) => setDeliveryDetails({ ...deliveryDetails, address: e.target.value })}
+                  onChange={(e) =>
+                    setDeliveryDetails((prev) => ({ ...prev, address: e.target.value }))
+                  }
                 />
               </label>
 
-              <h2>Payment method</h2>
+              <label className="checkout-field">
+                <span>Delivery note (optional)</span>
+                <textarea
+                  rows={2}
+                  placeholder="Landmark, gate code, leave at door..."
+                  value={deliveryDetails.deliveryNote}
+                  onChange={(e) =>
+                    setDeliveryDetails((prev) => ({ ...prev, deliveryNote: e.target.value }))
+                  }
+                />
+              </label>
 
+              <button type="button" className="checkout-home-link" onClick={saveCurrentAddress}>
+                Save this address
+              </button>
+
+              <h2>Coupon</h2>
+              <div className="checkout-coupon-row">
+                <input
+                  type="text"
+                  placeholder="Enter coupon (WELCOME10, SAVE50, FREESHIP)"
+                  value={couponInput}
+                  onChange={(e) => setCouponInput(e.target.value)}
+                />
+                <button type="button" className="checkout-back-link" onClick={applyCoupon}>
+                  Apply
+                </button>
+                {appliedCouponCode ? (
+                  <button type="button" className="checkout-remove-btn" onClick={clearCoupon}>
+                    Remove
+                  </button>
+                ) : null}
+              </div>
+              {appliedCoupon ? (
+                <p className="checkout-coupon-success">
+                  {appliedCouponCode} applied: {appliedCoupon.label}
+                </p>
+              ) : null}
+              {couponError ? <p className="checkout-coupon-error">{couponError}</p> : null}
+
+              <h2>Payment method</h2>
               <div className="checkout-pay-grid">
                 {PAYMENT_METHODS.map((method) => (
                   <label
                     key={method.id}
-                    className={`checkout-pay-option ${
-                      paymentMethod === method.id ? "active" : ""
-                    }`}
+                    className={`checkout-pay-option ${paymentMethod === method.id ? "active" : ""}`}
                   >
                     <input
                       type="radio"
@@ -276,14 +742,14 @@ export default function CheckoutPage() {
                 ))}
               </div>
 
-              {paymentMethod === "upi" && (
+              {paymentMethod === "upi" ? (
                 <label className="checkout-field">
                   <span>UPI ID</span>
                   <input type="text" required placeholder="name@bank" />
                 </label>
-              )}
+              ) : null}
 
-              {paymentMethod === "card" && (
+              {paymentMethod === "card" ? (
                 <div className="checkout-card-grid">
                   <label className="checkout-field">
                     <span>Card number</span>
@@ -328,19 +794,115 @@ export default function CheckoutPage() {
                     />
                   </label>
                 </div>
-              )}
+              ) : null}
 
-              {paymentMethod === "cod" && (
+              {paymentMethod === "cod" ? (
                 <p className="checkout-cod-note">
                   Cash on delivery selected. Keep exact amount handy for quick handover.
                 </p>
-              )}
+              ) : null}
 
-              <button type="submit" className="checkout-pay-btn" disabled={isPaying}>
-                {isPaying ? "Processing payment..." : `Pay ₹${total}`}
+              <button type="submit" className="checkout-pay-btn" disabled={isPaying || !hasToken}>
+                {!hasToken
+                  ? "Login required to place order"
+                  : isPaying
+                  ? "Processing payment..."
+                  : `Pay ₹${total}`}
               </button>
             </form>
           </div>
+        ) : null}
+
+        {showOrdersView ? (
+          <section className="checkout-orders-panel" id="orders-panel">
+            <div className="checkout-orders-head">
+              <h2>Recent orders</h2>
+              <button type="button" className="checkout-back-link" onClick={loadOrders}>
+                Refresh
+              </button>
+            </div>
+
+            <div className="checkout-orders-toolbar">
+              <input
+                type="search"
+                className="checkout-order-search"
+                value={orderSearch}
+                onChange={(event) => setOrderSearch(event.target.value)}
+                placeholder="Search by order ID, restaurant, or item"
+                aria-label="Search orders"
+              />
+              <div className="checkout-order-filters" aria-label="Filter orders by status">
+                {ORDER_STATUS_OPTIONS.map((option) => (
+                  <button
+                    key={option.id}
+                    type="button"
+                    className={`checkout-filter-chip${orderStatusFilter === option.id ? " active" : ""}`}
+                    onClick={() => setOrderStatusFilter(option.id)}
+                  >
+                    {option.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {ordersLoading ? <p className="checkout-cod-note">Loading orders...</p> : null}
+            {ordersError ? <p className="checkout-coupon-error">{ordersError}</p> : null}
+            {!ordersLoading && !orderList.length ? (
+              <p className="checkout-cod-note">No orders found yet.</p>
+            ) : null}
+            {!ordersLoading && orderList.length > 0 && !filteredOrderList.length ? (
+              <p className="checkout-cod-note">No orders match your current filters.</p>
+            ) : null}
+
+            <div className="checkout-order-list">
+              {filteredOrderList.map((order) => {
+                const items = getOrderItems(order);
+                const normalizedStatus = normalizeOrderStatus(order?.status);
+                const restaurantName = order?.restaurant?.name || "";
+                const totalAmount = Number.isFinite(Number(order?.total)) ? Number(order.total) : 0;
+
+                return (
+                  <article key={order.orderId || order.id} className="checkout-order-card">
+                    <div className="checkout-order-card-head">
+                      <strong>{order.orderId || order.id}</strong>
+                      <span>{formatOrderDate(order.createdAt)}</span>
+                    </div>
+                    {restaurantName ? <p className="checkout-order-restaurant">{restaurantName}</p> : null}
+                    <p>
+                      {items.length} item{items.length === 1 ? "" : "s"} • ₹{totalAmount}
+                    </p>
+                    <ul>
+                      {items.slice(0, 3).map((item, index) => (
+                        <li key={`${item.name}-${index}`}>
+                          {item.name} x{item.quantity || 1}
+                        </li>
+                      ))}
+                    </ul>
+                    <div className="checkout-order-card-footer">
+                      <span className={`checkout-status-chip checkout-status-${normalizedStatus}`}>
+                        {formatOrderStatus(normalizedStatus)}
+                      </span>
+                      <button
+                        type="button"
+                        className="checkout-reorder-btn"
+                        onClick={() => handleReorder(order)}
+                      >
+                        Reorder
+                      </button>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          </section>
+        ) : (
+          <section className="checkout-orders-shortcut">
+            <h3>Want to track your orders?</h3>
+            <p>Open your order history for status updates and past invoices.</p>
+            <Link to="/orders" className="checkout-back-link">
+              View order history
+            </Link>
+          </section>
         )}
       </div>
     </section>
