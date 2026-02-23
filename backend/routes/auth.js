@@ -79,6 +79,14 @@ function maskPhoneNumber(phone = '') {
   return `${phone.slice(0, 1)}${'*'.repeat(maskedCount)}${visibleDigits}`;
 }
 
+function generateEmailSignupPhone() {
+  // Generate an E.164-like synthetic phone (+1XXXXXXXXXX) for email-only accounts.
+  // This satisfies NOT NULL + UNIQUE phone constraints without collecting user phone.
+  const epochTail = String(Date.now()).slice(-7);
+  const randomTail = String(Math.floor(100 + Math.random() * 900));
+  return `+1${epochTail}${randomTail}`;
+}
+
 function sanitizeSignupInput(body = {}) {
   return {
     fullName: String(body.fullName || '').trim(),
@@ -410,19 +418,46 @@ router.post('/signup-email', async (req, res) => {
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create user directly (no OTP verification)
-    await createUser({
-      fullName: fullName.trim(),
-      email: normalizedEmail,
-      phone: '', // Optional phone field
-      passwordHash: hashedPassword,
-    });
+    // Create user directly (no OTP verification).
+    // users.phone is UNIQUE NOT NULL in schema, so generate a synthetic unique value.
+    const maxPhoneAttempts = 5;
+    let created = false;
+    let lastCreateError = null;
+
+    for (let attempt = 0; attempt < maxPhoneAttempts; attempt += 1) {
+      try {
+        await createUser({
+          fullName: fullName.trim(),
+          email: normalizedEmail,
+          phone: generateEmailSignupPhone(),
+          passwordHash: hashedPassword,
+        });
+        created = true;
+        break;
+      } catch (createError) {
+        lastCreateError = createError;
+        const isPhoneUniqueViolation =
+          createError?.code === '23505' && String(createError?.message || '').includes('users_phone_key');
+
+        if (isPhoneUniqueViolation) {
+          continue;
+        }
+        throw createError;
+      }
+    }
+
+    if (!created) {
+      throw lastCreateError || new Error('Failed to allocate synthetic phone');
+    }
 
     return res.status(201).json({ 
       message: 'Account created successfully! You can now log in.' 
     });
   } catch (error) {
     console.error('Email signup error:', error);
+    if (error?.code === '23505' && String(error?.message || '').includes('users_email_key')) {
+      return res.status(400).json({ message: 'User already exists with this email' });
+    }
     return res.status(500).json({ message: 'Failed to create account' });
   }
 });
