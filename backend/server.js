@@ -26,11 +26,12 @@ const allowedOrigins = new Set([
 ]);
 
 const localDevOriginPattern = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/;
+const vercelPattern = /^https:\/\/.*\.vercel\.app$/;
 
 const corsOptions = {
   origin(origin, callback) {
     if (!origin) return callback(null, true);
-    if (allowedOrigins.has(origin) || localDevOriginPattern.test(origin)) {
+    if (allowedOrigins.has(origin) || localDevOriginPattern.test(origin) || vercelPattern.test(origin)) {
       return callback(null, true);
     }
     return callback(new Error(`CORS blocked for origin: ${origin}`));
@@ -73,3 +74,6 @@ app.listen(PORT, () => {
   console.log(`   - Restaurants: http://localhost:${PORT}/api/restaurants`);
   console.log(`   - Orders: http://localhost:${PORT}/api/orders`);
 });
+
+// Export for Vercel serverless
+module.exports = app;
