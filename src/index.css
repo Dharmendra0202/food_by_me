@@ -58,11 +58,9 @@ body::before {
   transform-origin: center;
   transform: translate(-8vmin, 0) scale(0.12); /* start small and slightly offset left */
   opacity: 0;
-  filter: blur(36px);
+  filter: blur(22px);
   will-change: transform, opacity;
-  animation:
-    blob-left-enter 1.0s cubic-bezier(.22,.9,.35,1) 0s forwards,
-    blob-left-pulse 12s ease-in-out 1s infinite alternate;
+  animation: blob-left-enter 1.0s cubic-bezier(.22,.9,.35,1) 0s forwards;
 }
 
 /* Right blob — same but staggered (appears after left) */
@@ -80,11 +78,9 @@ body::after {
   transform-origin: center;
   transform: translate(8vmin, 0) scale(0.12); /* start small and slightly offset right */
   opacity: 0;
-  filter: blur(36px);
+  filter: blur(22px);
   will-change: transform, opacity;
-  animation:
-    blob-right-enter 1.2s cubic-bezier(.22,.9,.35,1) 0.7s forwards, /* 0.7s delay after left */
-    blob-right-pulse 14s ease-in-out 1.8s infinite alternate;
+  animation: blob-right-enter 1.2s cubic-bezier(.22,.9,.35,1) 0.7s forwards; /* 0.7s delay after left */
 }
 
 /* Entrance: scale up (mini -> large) and fade in */
@@ -98,17 +94,6 @@ body::after {
   0%   { transform: translate(8vmin, 6vmin) scale(0.12); opacity: 0; }
   60%  { transform: translate(6vmin, 2vmin) scale(0.82); opacity: 0.9; }
   100% { transform: translate(0, 0) scale(1); opacity: 0.62; }
-}
-
-/* Gentle ongoing pulse so they breathe slightly */
-@keyframes blob-left-pulse {
-  from { opacity: 0.72; transform: translate(0,0) scale(1); }
-  to   { opacity: 0.86; transform: translate(-0.6vmin, 0.2vmin) scale(1.03); }
-}
-
-@keyframes blob-right-pulse {
-  from { opacity: 0.50; transform: translate(0,0) scale(1); }
-  to   { opacity: 0.66; transform: translate(0.6vmin, -0.2vmin) scale(1.02); }
 }
 
 /* Accessibility — stop animations for reduced-motion users */

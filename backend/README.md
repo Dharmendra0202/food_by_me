@@ -31,6 +31,24 @@ Open browser and visit:
 - http://localhost:5001/api/health - Health check
 - http://localhost:5001/api/restaurants - Restaurant list
 
+## Supabase Setup
+
+### 1. Create Tables
+Run the SQL in `backend/supabase/schema.sql` inside the Supabase SQL editor.
+
+### 2. Configure Environment
+Add these to `backend/.env` (do not expose service role key to the frontend):
+```
+SUPABASE_URL=your_supabase_project_url
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
+```
+
+### 3. Seed Restaurants
+```bash
+cd backend
+npm run seed:restaurants
+```
+
 ## API Endpoints
 
 ### Public Endpoints
@@ -59,6 +77,8 @@ TWILIO_ACCOUNT_SID=ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 TWILIO_AUTH_TOKEN=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 TWILIO_VERIFY_SERVICE_SID=VAxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ALLOW_DEV_OTP_FALLBACK=false
+SUPABASE_URL=your_supabase_project_url
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
 ```
 
 ### Twilio Setup (Real Mobile OTP)
@@ -82,6 +102,8 @@ For OTP and login from your mobile or any other device:
 backend/
 ├── data/
 │   └── restaurants.json    # Restaurant data
+├── lib/
+│   └── supabase.js         # Supabase client
 ├── middleware/
 │   └── auth.js            # JWT authentication
 ├── routes/
@@ -89,6 +111,10 @@ backend/
 │   ├── health.js         # Health check
 │   ├── orders.js         # Order management
 │   └── restaurants.js    # Restaurant endpoints
+├── scripts/
+│   └── seed-restaurants.js # Seed Supabase with restaurants
+├── supabase/
+│   └── schema.sql         # Supabase schema
 ├── .env                  # Environment variables
 ├── .gitignore           # Git ignore file
 ├── package.json         # Dependencies
@@ -107,8 +133,7 @@ curl http://localhost:5001/api/restaurants
 ```
 
 ## Notes
-- Users are persisted in `backend/data/users.json` for local/dev use
-- In production, replace with a real database (MongoDB, PostgreSQL, etc.)
+- Users, restaurants, and orders are stored in Supabase.
 - JWT tokens expire after 24 hours
 - OTP is sent via Twilio Verify SMS when configured.
 - In production, SMS OTP config is required.

@@ -141,15 +141,7 @@ section.mind-section > .mind-header h2 {
 /* -----------------------------------------
    EXTRA: smooth rendering + stable layout
 ----------------------------------------- */
-.mind-container,
-.mind-item,
-.mind-item img {
-  will-change: transform;
-}
-
-
 .mind-container {
-  will-change: transform, scroll-position;
   transform: translateZ(0);
 }
 .mind-item img {
@@ -184,6 +176,7 @@ section.mind-section > .mind-header h2 {
   gap: var(--gap);
   width: max-content;
   animation: marquee-scroll var(--marquee-speed) linear infinite;
+  will-change: transform;
 }
 
 /* MARQUEE ITEMS */
@@ -258,6 +251,13 @@ section.mind-section > .mind-header h2 {
 }
 .mind-container:focus-within .marquee-track {
   animation-play-state: paused !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mind-container .marquee-track {
+    animation: none !important;
+    transform: translateX(0) !important;
+  }
 }
 .mind-highlight {
   background: inherit;            /* takes parent background */

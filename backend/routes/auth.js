@@ -2,10 +2,7 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const fs = require('fs');
-const path = require('path');
-
-const USERS_FILE_PATH = path.join(__dirname, '..', 'data', 'users.json');
+const supabase = require('../lib/supabase');
 const pendingSignups = new Map(); // email -> pending signup payload
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const E164_PHONE_REGEX = /^\+[1-9]\d{7,14}$/;
@@ -20,29 +17,43 @@ function normalizeCountryCode(value) {
 
 const DEFAULT_COUNTRY_CODE = normalizeCountryCode(process.env.DEFAULT_COUNTRY_CODE || '+91');
 
-function ensureUsersFileExists() {
-  if (!fs.existsSync(USERS_FILE_PATH)) {
-    fs.writeFileSync(USERS_FILE_PATH, '[]', 'utf8');
+async function findUsersByEmailOrPhone(email, phone) {
+  const { data, error } = await supabase
+    .from('users')
+    .select('id,email,phone')
+    .or(`email.eq.${email},phone.eq.${phone}`);
+
+  if (error) {
+    throw error;
+  }
+  return Array.isArray(data) ? data : [];
+}
+
+async function findUserByEmail(email) {
+  const { data, error } = await supabase
+    .from('users')
+    .select('id,full_name,email,phone,password_hash')
+    .eq('email', email)
+    .maybeSingle();
+
+  if (error) {
+    throw error;
+  }
+  return data || null;
+}
+
+async function createUser({ fullName, email, phone, passwordHash }) {
+  const { error } = await supabase.from('users').insert({
+    full_name: fullName,
+    email,
+    phone,
+    password_hash: passwordHash,
+  });
+
+  if (error) {
+    throw error;
   }
 }
-
-function loadUsers() {
-  try {
-    ensureUsersFileExists();
-    const content = fs.readFileSync(USERS_FILE_PATH, 'utf8');
-    const parsed = JSON.parse(content || '[]');
-    return Array.isArray(parsed) ? parsed : [];
-  } catch (error) {
-    console.error('Failed to load users from file:', error.message);
-    return [];
-  }
-}
-
-function persistUsers(userList) {
-  fs.writeFileSync(USERS_FILE_PATH, JSON.stringify(userList, null, 2), 'utf8');
-}
-
-const users = loadUsers();
 
 function generateOtp() {
   return String(Math.floor(100000 + Math.random() * 900000));
@@ -200,8 +211,8 @@ router.post('/signup', async (req, res) => {
       return res.status(400).json({ message: validationError });
     }
 
-    const existingUser = users.find((u) => u.email === email || u.phone === phone);
-    if (existingUser) {
+    const existingUsers = await findUsersByEmailOrPhone(email, phone);
+    if (existingUsers.length > 0) {
       return res.status(400).json({ message: 'User already exists' });
     }
 
@@ -224,7 +235,7 @@ router.post('/signup', async (req, res) => {
       fullName,
       email,
       phone,
-      password: hashedPassword,
+      passwordHash: hashedPassword,
       otp,
       expiresAt,
       attempts: 0,
@@ -313,19 +324,18 @@ router.post('/signup/verify-otp', async (req, res) => {
       return res.status(400).json({ message: 'Invalid OTP' });
     }
 
-    const existingUser = users.find((u) => u.email === pending.email || u.phone === pending.phone);
-    if (existingUser) {
+    const existingUsers = await findUsersByEmailOrPhone(pending.email, pending.phone);
+    if (existingUsers.length > 0) {
       pendingSignups.delete(email);
       return res.status(400).json({ message: 'User already exists' });
     }
 
-    users.push({
+    await createUser({
       fullName: pending.fullName,
       email: pending.email,
       phone: pending.phone,
-      password: pending.password,
+      passwordHash: pending.passwordHash,
     });
-    persistUsers(users);
 
     pendingSignups.delete(email);
 
@@ -344,7 +354,7 @@ router.post('/login', async (req, res) => {
     }
 
     const normalizedEmail = String(email).trim().toLowerCase();
-    const user = users.find(u => u.email === normalizedEmail);
+    const user = await findUserByEmail(normalizedEmail);
 
     if (!user) {
       if (pendingSignups.has(normalizedEmail)) {
@@ -353,7 +363,7 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    const isValidPassword = await bcrypt.compare(password, user.password);
+    const isValidPassword = await bcrypt.compare(password, user.password_hash);
     
     if (!isValidPassword) {
       return res.status(401).json({ message: 'Invalid credentials' });
@@ -365,7 +375,7 @@ router.post('/login', async (req, res) => {
       { expiresIn: '24h' }
     );
     
-    res.json({ token, fullName: user.fullName });
+    res.json({ token, fullName: user.full_name });
   } catch (error) {
     res.status(500).json({ message: 'Error logging in' });
   }
