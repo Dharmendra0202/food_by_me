@@ -7,61 +7,34 @@ const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
 let supabase;
 
 if (!supabaseUrl || !supabaseServiceRoleKey) {
-  console.warn("⚠️  Supabase credentials not configured. Some features will not work.");
-  console.warn(`   SUPABASE_URL: ${supabaseUrl ? 'SET' : 'MISSING'}`);
-  console.warn(`   SUPABASE_SERVICE_ROLE_KEY: ${supabaseServiceRoleKey ? 'SET' : 'MISSING'}`);
+  console.error("❌ CRITICAL: Supabase credentials not configured!");
+  console.error(`   SUPABASE_URL: ${supabaseUrl ? 'SET' : 'MISSING'}`);
+  console.error(`   SUPABASE_SERVICE_ROLE_KEY: ${supabaseServiceRoleKey ? 'SET' : 'MISSING'}`);
   
-  // Return a mock client that won't crash
-  supabase = {
-    from: () => ({
-      select: () => Promise.resolve({ data: [], error: new Error("Supabase not configured") }),
-      insert: () => Promise.resolve({ data: null, error: new Error("Supabase not configured") }),
-      update: () => Promise.resolve({ data: null, error: new Error("Supabase not configured") }),
-      delete: () => Promise.resolve({ data: null, error: new Error("Supabase not configured") }),
-      eq: function() { return this; },
-      or: function() { return this; },
-      maybeSingle: function() { return this; }
-    }),
-    auth: {
-      signInWithOtp: () => Promise.resolve({ data: null, error: new Error("Supabase not configured") }),
-      verifyOtp: () => Promise.resolve({ data: null, error: new Error("Supabase not configured") }),
-      signInWithPassword: () => Promise.resolve({ data: null, error: new Error("Supabase not configured") }),
-      signOut: () => Promise.resolve({ error: null })
-    }
-  };
-} else {
-  try {
-    // Use service role key for admin operations (database access)
-    supabase = createClient(supabaseUrl, supabaseServiceRoleKey, {
-      auth: { 
-        persistSession: false,
-        autoRefreshToken: false,
-      },
-    });
-    
-    console.log("✅ Supabase client initialized");
-    console.log(`   Using ${supabaseAnonKey ? 'anon key for auth' : 'service role key'}`);
-  } catch (error) {
-    console.error("❌ Failed to initialize Supabase:", error.message);
-    // Fallback to mock client
-    supabase = {
-      from: () => ({
-        select: () => Promise.resolve({ data: [], error: new Error("Supabase initialization failed") }),
-        insert: () => Promise.resolve({ data: null, error: new Error("Supabase initialization failed") }),
-        update: () => Promise.resolve({ data: null, error: new Error("Supabase initialization failed") }),
-        delete: () => Promise.resolve({ data: null, error: new Error("Supabase initialization failed") }),
-        eq: function() { return this; },
-        or: function() { return this; },
-        maybeSingle: function() { return this; }
-      }),
-      auth: {
-        signInWithOtp: () => Promise.resolve({ data: null, error: new Error("Supabase initialization failed") }),
-        verifyOtp: () => Promise.resolve({ data: null, error: new Error("Supabase initialization failed") }),
-        signInWithPassword: () => Promise.resolve({ data: null, error: new Error("Supabase initialization failed") }),
-        signOut: () => Promise.resolve({ error: null })
-      }
-    };
+  // Throw error instead of returning mock - this will make issues obvious
+  throw new Error("Supabase credentials are required. Please set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY environment variables.");
+}
+
+try {
+  // Validate URL format
+  if (!supabaseUrl.startsWith('http://') && !supabaseUrl.startsWith('https://')) {
+    throw new Error(`Invalid SUPABASE_URL format: ${supabaseUrl}. Must start with http:// or https://`);
   }
+
+  // Use service role key for admin operations (database access)
+  supabase = createClient(supabaseUrl, supabaseServiceRoleKey, {
+    auth: { 
+      persistSession: false,
+      autoRefreshToken: false,
+    },
+  });
+  
+  console.log("✅ Supabase client initialized successfully");
+  console.log(`   URL: ${supabaseUrl}`);
+  console.log(`   Using service role key for database operations`);
+} catch (error) {
+  console.error("❌ Failed to initialize Supabase:", error.message);
+  throw error;
 }
 
 module.exports = supabase;
