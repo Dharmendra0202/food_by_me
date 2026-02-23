@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import "./Navbar.css";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import {
   APP_SYNC_EVENT,
   dispatchAppSync,
@@ -9,6 +9,7 @@ import {
 } from "../config/api";
 
 function Navbar() {
+  const location = useLocation();
   const [snapshot, setSnapshot] = useState({
     isLoggedIn: false,
     fullName: "",
@@ -42,6 +43,22 @@ function Navbar() {
       window.removeEventListener("storage", sync);
     };
   }, []);
+
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [location.pathname]);
+
+  useEffect(() => {
+    if (!menuOpen) {
+      document.body.style.overflow = "";
+      return;
+    }
+
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [menuOpen]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");

@@ -12,6 +12,12 @@
   --font: system-ui, Avenir, Helvetica, Arial, sans-serif;
 }
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 /* baseline */
 html, body, #root {
   height: 100%;
@@ -21,6 +27,20 @@ html, body, #root {
   color: var(--text);
   overflow-x: hidden;
   position: relative;
+}
+
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
+}
+
+input,
+select,
+textarea,
+button {
+  font: inherit;
 }
 
 /* base static gradient (keeps warm cream overall) */

@@ -499,3 +499,56 @@
     grid-template-columns: 1fr;
   }
 }
+
+@media (max-width: 768px) {
+  .restaurant-details-page {
+    padding: 94px 14px 36px;
+  }
+
+  .restaurant-details-hero {
+    gap: 14px;
+    padding: 14px;
+  }
+
+  .restaurant-details-hero img {
+    min-height: 220px;
+  }
+
+  .restaurant-details-content h1 {
+    font-size: clamp(1.45rem, 7vw, 2rem);
+  }
+
+  .restaurant-top-actions {
+    flex-wrap: wrap;
+  }
+
+  .restaurant-details-actions {
+    flex-direction: column;
+  }
+
+  .restaurant-back-link,
+  .restaurant-order-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .restaurant-highlights {
+    padding: 14px;
+  }
+}
+
+@media (max-width: 420px) {
+  .restaurant-highlight-offer {
+    font-size: 0.95rem;
+  }
+
+  .restaurant-highlight-content h3 {
+    font-size: 0.95rem;
+  }
+
+  .restaurant-highlight-meta,
+  .restaurant-highlight-cuisines,
+  .restaurant-highlight-area {
+    font-size: 0.84rem;
+  }
+}

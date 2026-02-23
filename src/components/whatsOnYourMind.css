@@ -298,3 +298,51 @@ section.mind-section > .mind-header h2 {
   height: 4px;
   background: currentColor;
 }
+
+/* Final responsive hardening */
+@media (max-width: 768px) {
+  .mind-section {
+    margin: 26px 0;
+    padding: 6px 12px;
+  }
+
+  .mind-header h2,
+  .mind-section h2,
+  .whatsOnYourMind h2,
+  .whats-on-your-mind h2,
+  section.mind-section > .mind-header h2 {
+    font-size: clamp(1.15rem, 6vw, 1.7rem) !important;
+    margin-bottom: 12px !important;
+  }
+
+  .mind-container {
+    --item-size: 74px;
+    --gap: 14px;
+    --marquee-speed: 16s;
+    height: auto;
+    padding: 10px 0;
+  }
+
+  .mind-item {
+    width: calc(var(--item-size) + 16px);
+  }
+
+  .mind-item p {
+    font-size: 0.76rem;
+  }
+}
+
+@media (max-width: 520px) {
+  .mind-container {
+    --item-size: 64px;
+    --gap: 10px;
+  }
+
+  .mind-item {
+    width: calc(var(--item-size) + 12px);
+  }
+
+  .mind-item p {
+    font-size: 0.7rem;
+  }
+}

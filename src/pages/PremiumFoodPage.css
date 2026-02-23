@@ -244,3 +244,37 @@
     border-width: 7px;
   }
 }
+
+@media (max-width: 700px) {
+  .premium-page {
+    padding: 88px 12px 32px;
+  }
+
+  .premium-hero {
+    border-radius: 18px;
+    padding: 14px;
+  }
+
+  .premium-hero-pulse {
+    display: none;
+  }
+
+  .premium-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+}
+
+@media (max-width: 420px) {
+  .premium-card-body {
+    padding: 12px;
+  }
+
+  .premium-card-body h3 {
+    font-size: 0.95rem;
+  }
+
+  .premium-card-body p {
+    font-size: 0.84rem;
+  }
+}

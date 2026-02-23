@@ -184,3 +184,33 @@
   font-size: 14px;
   line-height: 1.5;
 }
+
+@media (max-width: 640px) {
+  .auth-premium {
+    padding: 92px 12px 24px;
+    align-items: flex-start;
+  }
+
+  .auth-card {
+    width: 100%;
+    border-radius: 18px;
+    padding: 18px 14px;
+  }
+
+  .auth-links {
+    flex-direction: column;
+    gap: 4px;
+  }
+}
+
+@media (max-width: 420px) {
+  .auth-card h1 {
+    font-size: 1.45rem;
+  }
+
+  .auth-form input,
+  .auth-submit,
+  .auth-secondary-btn {
+    padding: 10px;
+  }
+}
