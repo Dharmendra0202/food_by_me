@@ -65,15 +65,18 @@ app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' });
 });
 
-app.listen(PORT, () => {
-  console.log(`✅ Server running on http://localhost:${PORT}`);
-  console.log(`📝 Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`🔗 API Endpoints:`);
-  console.log(`   - Health: http://localhost:${PORT}/api/health`);
-  console.log(`   - Auth: http://localhost:${PORT}/api/auth`);
-  console.log(`   - Restaurants: http://localhost:${PORT}/api/restaurants`);
-  console.log(`   - Orders: http://localhost:${PORT}/api/orders`);
-});
+// Don't call listen in serverless environment
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`✅ Server running on http://localhost:${PORT}`);
+    console.log(`📝 Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`🔗 API Endpoints:`);
+    console.log(`   - Health: http://localhost:${PORT}/api/health`);
+    console.log(`   - Auth: http://localhost:${PORT}/api/auth`);
+    console.log(`   - Restaurants: http://localhost:${PORT}/api/restaurants`);
+    console.log(`   - Orders: http://localhost:${PORT}/api/orders`);
+  });
+}
 
 // Export for Vercel serverless
 module.exports = app;
