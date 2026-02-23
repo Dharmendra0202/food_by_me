@@ -2,17 +2,16 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const connectDB = require('./config/database');
 const authRoutes = require('./routes/auth');
 const restaurantRoutes = require('./routes/restaurants');
 const orderRoutes = require('./routes/orders');
 const healthRoutes = require('./routes/health');
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 
-// Connect to MongoDB
-connectDB();
+// Log startup
+console.log('🚀 Starting FoodByMe Backend Server...');
 
 const allowedOriginsFromEnv = (process.env.CORS_ORIGIN || '')
   .split(',')
@@ -66,6 +65,11 @@ app.use((req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`✅ Server running on http://localhost:${PORT}`);
+  console.log(`📝 Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`🔗 API Endpoints:`);
+  console.log(`   - Health: http://localhost:${PORT}/api/health`);
+  console.log(`   - Auth: http://localhost:${PORT}/api/auth`);
+  console.log(`   - Restaurants: http://localhost:${PORT}/api/restaurants`);
+  console.log(`   - Orders: http://localhost:${PORT}/api/orders`);
 });
