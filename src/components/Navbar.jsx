@@ -14,6 +14,7 @@ function Navbar() {
     fullName: "",
     cartCount: 0,
   });
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const shortName = useMemo(() => {
     const words = snapshot.fullName.trim().split(/\s+/).filter(Boolean);
@@ -46,24 +47,38 @@ function Navbar() {
     localStorage.removeItem("token");
     localStorage.removeItem("fullName");
     dispatchAppSync();
+    setMenuOpen(false);
   };
+
+  const closeMenu = () => setMenuOpen(false);
 
   return (
     <nav className="app-navbar" role="navigation">
       <div className="nav-inner">
         <h2 className="brand">
-          <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
+          <Link to="/" style={{ textDecoration: "none", color: "inherit" }} onClick={closeMenu}>
             FoodByMe
           </Link>
         </h2>
 
-        <ul className="nav-links">
+        <button 
+          className="hamburger-btn" 
+          onClick={() => setMenuOpen(!menuOpen)}
+          aria-label="Toggle menu"
+          aria-expanded={menuOpen}
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
+        <ul className={`nav-links ${menuOpen ? 'nav-open' : ''}`}>
           <li>
-            <Link to="/">Restaurant</Link>
+            <Link to="/" onClick={closeMenu}>Restaurant</Link>
           </li>
 
           <li>
-            <NavLink to="/cart" className={({ isActive }) => (isActive ? "active" : "")}>
+            <NavLink to="/cart" className={({ isActive }) => (isActive ? "active" : "")} onClick={closeMenu}>
               Cart
               {snapshot.cartCount > 0 ? (
                 <span className="cart-badge" aria-label={`${snapshot.cartCount} items in cart`}>
@@ -74,7 +89,7 @@ function Navbar() {
           </li>
 
           <li>
-            <NavLink to="/orders" className={({ isActive }) => (isActive ? "active" : "")}>
+            <NavLink to="/orders" className={({ isActive }) => (isActive ? "active" : "")} onClick={closeMenu}>
               Orders
             </NavLink>
           </li>
@@ -98,12 +113,13 @@ function Navbar() {
                 <NavLink
                   to="/login"
                   className={({ isActive }) => (isActive ? "active" : "")}
+                  onClick={closeMenu}
                 >
                   Login
                 </NavLink>
               </li>
               <li>
-                <Link to="/signup" className="signup-btn">
+                <Link to="/signup" className="signup-btn" onClick={closeMenu}>
                   Sign Up
                 </Link>
               </li>
@@ -111,6 +127,7 @@ function Navbar() {
           )}
         </ul>
       </div>
+      {menuOpen && <div className="nav-overlay" onClick={closeMenu}></div>}
     </nav>
   );
 }
