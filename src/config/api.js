@@ -4,6 +4,7 @@ export const API_ENDPOINTS = {
   HEALTH: `${API_BASE_URL}/api/health`,
   AUTH: {
     SIGNUP: `${API_BASE_URL}/api/auth/signup`,
+    SIGNUP_EMAIL: `${API_BASE_URL}/api/auth/signup-email`,
     RESEND_SIGNUP_OTP: `${API_BASE_URL}/api/auth/signup/resend-otp`,
     VERIFY_SIGNUP_OTP: `${API_BASE_URL}/api/auth/signup/verify-otp`,
     LOGIN: `${API_BASE_URL}/api/auth/login`,
@@ -259,6 +260,10 @@ export function addRecentOrderLocal(order) {
 }
 
 export const apiRequest = async (url, options = {}) => {
+  if (!url || typeof url !== "string") {
+    throw new Error("API endpoint is not configured");
+  }
+
   const token = hasWindow() ? localStorage.getItem("token") : null;
 
   const config = {
@@ -273,10 +278,25 @@ export const apiRequest = async (url, options = {}) => {
   try {
     const response = await fetch(url, config);
     const raw = await response.text();
-    const data = raw ? parseStoredJson(raw, {}) : {};
+    let data = {};
+    if (raw) {
+      try {
+        data = JSON.parse(raw);
+      } catch {
+        data = {};
+      }
+    }
 
     if (!response.ok) {
-      throw new Error(data.message || data.error || "Something went wrong");
+      const compactRaw = typeof raw === "string" ? raw.replace(/\s+/g, " ").trim() : "";
+      const isHtmlResponse =
+        compactRaw.toLowerCase().startsWith("<!doctype") ||
+        compactRaw.toLowerCase().startsWith("<html");
+      const fallbackMessage = isHtmlResponse
+        ? `Request failed (${response.status})`
+        : compactRaw || `Request failed (${response.status})`;
+
+      throw new Error(data.message || data.error || fallbackMessage);
     }
 
     return data;
