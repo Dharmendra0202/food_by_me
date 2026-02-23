@@ -381,4 +381,50 @@ router.post('/login', async (req, res) => {
   }
 });
 
+// Email-only signup (no phone/OTP required)
+router.post('/signup-email', async (req, res) => {
+  try {
+    const { fullName, email, password } = req.body;
+
+    // Validate input
+    if (!fullName || !email || !password) {
+      return res.status(400).json({ message: 'fullName, email, and password are required' });
+    }
+
+    const normalizedEmail = String(email).trim().toLowerCase();
+    
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
+      return res.status(400).json({ message: 'Enter a valid email' });
+    }
+
+    if (password.length < 6) {
+      return res.status(400).json({ message: 'Password must be at least 6 characters' });
+    }
+
+    // Check if user already exists
+    const existingUser = await findUserByEmail(normalizedEmail);
+    if (existingUser) {
+      return res.status(400).json({ message: 'User already exists with this email' });
+    }
+
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Create user directly (no OTP verification)
+    await createUser({
+      fullName: fullName.trim(),
+      email: normalizedEmail,
+      phone: '', // Optional phone field
+      passwordHash: hashedPassword,
+    });
+
+    return res.status(201).json({ 
+      message: 'Account created successfully! You can now log in.' 
+    });
+  } catch (error) {
+    console.error('Email signup error:', error);
+    return res.status(500).json({ message: 'Failed to create account' });
+  }
+});
+
 module.exports = router;

@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
-import Signup from "./pages/Signup";
+import Signup from "./pages/SignupSimple";
 import Login from "./pages/Login";
 import CategoryPage from "./pages/CategoryPage";
 import PremiumFoodPage from "./pages/PremiumFoodPage";
