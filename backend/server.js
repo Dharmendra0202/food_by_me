@@ -45,11 +45,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 try {
   const healthRoutes = require('./routes/health');
   const authRoutes = require('./routes/auth');
+  const authSupabaseRoutes = require('./routes/auth-supabase');
   const restaurantRoutes = require('./routes/restaurants');
   const orderRoutes = require('./routes/orders');
 
   app.use('/api/health', healthRoutes);
-  app.use('/api/auth', authRoutes);
+  app.use('/api/auth', authRoutes); // Keep old auth for backward compatibility
+  app.use('/api/auth-supabase', authSupabaseRoutes); // New Supabase auth
   app.use('/api/restaurants', restaurantRoutes);
   app.use('/api/orders', orderRoutes);
   
