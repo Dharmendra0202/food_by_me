@@ -2,16 +2,13 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const authRoutes = require('./routes/auth');
-const restaurantRoutes = require('./routes/restaurants');
-const orderRoutes = require('./routes/orders');
-const healthRoutes = require('./routes/health');
 
 const app = express();
 const PORT = process.env.PORT || 5001;
 
 // Log startup
 console.log('🚀 Starting FoodByMe Backend Server...');
+console.log(`📝 Environment: ${process.env.NODE_ENV || 'development'}`);
 
 const allowedOriginsFromEnv = (process.env.CORS_ORIGIN || '')
   .split(',')
@@ -44,11 +41,23 @@ app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Routes
-app.use('/api/health', healthRoutes);
-app.use('/api/auth', authRoutes);
-app.use('/api/restaurants', restaurantRoutes);
-app.use('/api/orders', orderRoutes);
+// Load routes with error handling
+try {
+  const healthRoutes = require('./routes/health');
+  const authRoutes = require('./routes/auth');
+  const restaurantRoutes = require('./routes/restaurants');
+  const orderRoutes = require('./routes/orders');
+
+  app.use('/api/health', healthRoutes);
+  app.use('/api/auth', authRoutes);
+  app.use('/api/restaurants', restaurantRoutes);
+  app.use('/api/orders', orderRoutes);
+  
+  console.log('✅ Routes loaded successfully');
+} catch (error) {
+  console.error('❌ Error loading routes:', error.message);
+  console.error(error.stack);
+}
 
 app.get('/', (req, res) => {
   res.json({ message: 'FoodByMe API Server', status: 'running' });
