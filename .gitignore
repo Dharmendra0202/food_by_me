@@ -26,3 +26,8 @@ dist-ssr
 backend/node_modules
 backend/package-lock.json
 backend/package.json
+
+# Env files
+.env
+.env.production
+.env.local
