@@ -2782,6 +2782,24 @@ html { scroll-behavior: smooth; } /* smooth anchor scroll */
     transform: none !important;
   }
 
+  .why-title {
+    line-height: 1.12;
+  }
+
+  .why-sub {
+    margin: 0 0 10px !important;
+    line-height: 1.42;
+  }
+
+  .why-extra {
+    margin-top: 0 !important;
+    margin-bottom: 14px !important;
+    line-height: 1.28;
+    font-size: 0.95rem;
+    text-wrap: balance;
+    transform: none !important;
+  }
+
   .search-box {
     backdrop-filter: none;
   }
