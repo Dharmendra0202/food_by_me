@@ -380,6 +380,7 @@ html { scroll-behavior: smooth; } /* smooth anchor scroll */
 
 .restaurants-section {
   padding: 104px 20px 124px;
+  scroll-margin-top: 92px;
   position: relative;
   z-index: 30;
 }
@@ -2809,6 +2810,19 @@ html { scroll-behavior: smooth; } /* smooth anchor scroll */
   .app-card,
   .why-card {
     box-shadow: 0 6px 14px rgba(15, 23, 42, 0.08) !important;
+  }
+
+  .swiggy-card,
+  .restaurant-card {
+    content-visibility: auto;
+    contain-intrinsic-size: 360px;
+  }
+
+  .swiggy-card,
+  .restaurant-card,
+  .swiggy-img img,
+  .restaurant-thumb img {
+    transition: none !important;
   }
 }
 

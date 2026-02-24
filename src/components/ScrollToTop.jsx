@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigationType } from "react-router-dom";
 
 function resetAllScrollPositions() {
   const html = document.documentElement;
@@ -28,14 +28,43 @@ function resetAllScrollPositions() {
 
 export default function ScrollToTop() {
   const location = useLocation();
+  const navigationType = useNavigationType();
 
   useEffect(() => {
     if ("scrollRestoration" in window.history) {
-      window.history.scrollRestoration = "manual";
+      window.history.scrollRestoration = "auto";
     }
   }, []);
 
   useLayoutEffect(() => {
+    const targetHash = location.hash ? location.hash.replace("#", "") : "";
+
+    if (targetHash) {
+      let rafId = 0;
+      let timeoutId = 0;
+
+      const scrollToHashTarget = () => {
+        const hashTarget = document.getElementById(targetHash);
+        if (!hashTarget) return false;
+        hashTarget.scrollIntoView({ behavior: "auto", block: "start" });
+        return true;
+      };
+
+      if (!scrollToHashTarget()) {
+        rafId = requestAnimationFrame(scrollToHashTarget);
+        timeoutId = setTimeout(scrollToHashTarget, 120);
+      }
+
+      return () => {
+        cancelAnimationFrame(rafId);
+        clearTimeout(timeoutId);
+      };
+    }
+
+    if (navigationType === "POP") {
+      return undefined;
+    }
+
     resetAllScrollPositions();
     const rafId = requestAnimationFrame(() => resetAllScrollPositions());
     const timeoutId = setTimeout(() => resetAllScrollPositions(), 80);
@@ -44,7 +73,12 @@ export default function ScrollToTop() {
       cancelAnimationFrame(rafId);
       clearTimeout(timeoutId);
     };
-  }, [location.key, location.pathname, location.search, location.hash]);
+  }, [
+    location.pathname,
+    location.search,
+    location.hash,
+    navigationType,
+  ]);
 
   return null;
 }

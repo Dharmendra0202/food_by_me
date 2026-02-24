@@ -1,47 +1,107 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { Link, useNavigationType } from "react-router-dom";
 import "./Home.css";
 import WhatsOnYourMind from "../components/WhatsOnYourMind";
 import { deliveryRestaurants, getRestaurantRoute } from "../data/restaurants";
 
+const HOME_SCROLL_RETURN_KEY = "foodbyme:return-home-scroll-y";
+const HOME_SCROLL_RETURN_PENDING_KEY = "foodbyme:return-home-scroll-pending";
+
 const popularRestaurantFallbackImages = {
-  biryani: "/images/Biryani.jpg",
-  burger: "/images/burger.jpg",
-  pizza: "/images/Pizza.jpg",
-  cake: "/images/Cakes.jpg",
-  khichdi: "/images/khichdi.jpg",
-  "ice-cream": "/images/ice-cream.jpg",
+  "spice-symphony": "/images/Biryani.jpg",
+  "urban-tandoor": "/images/burger.jpg",
+  "royal-rasoi": "/images/Pizza.jpg",
+  "hungry-haveli": "/images/Cakes.jpg",
+  "flame-and-feast": "/images/khichdi.jpg",
+  "saffron-stories": "/images/ice-cream.jpg",
 };
 
-const popularRestaurantImageOverrides = {
-  biryani:
-    "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1200&q=80",
-  burger:
-    "https://images.unsplash.com/photo-1552566626-52f8b828add9?auto=format&fit=crop&w=1200&q=80",
-  pizza:
-    "https://images.unsplash.com/photo-1559329007-40df8a9345d8?auto=format&fit=crop&w=1200&q=80",
-  cake:
-    "https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?auto=format&fit=crop&w=1200&q=80",
-  khichdi:
-    "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1200&q=80",
-  "ice-cream":
-    "https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=1200&q=80",
-};
-
-const sampleRestaurants = deliveryRestaurants.slice(0, 6).map((restaurant) => ({
-  id: restaurant.id,
-  name: restaurant.name,
-  category: restaurant.name,
-  cuisine: restaurant.cuisines.join(" • "),
-  eta: `${restaurant.etaMin}-${restaurant.etaMax} min`,
-  price: `₹${restaurant.priceForTwo} for two`,
-  rating: restaurant.rating.toFixed(1),
-  image: popularRestaurantImageOverrides[restaurant.id] || restaurant.image,
-  fallbackImage:
-    popularRestaurantFallbackImages[restaurant.id] || "/images/Pizza.jpg",
-  area: restaurant.area,
-  offer: restaurant.offer,
-}));
+const sampleRestaurants = [
+  {
+    id: "spice-symphony",
+    name: "Spice Symphony",
+    category: "Signature Dining",
+    cuisine: "North Indian • Mughlai • Tandoor",
+    eta: "25-35 min",
+    price: "₹900 for two",
+    rating: "4.8",
+    image:
+      "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1200&q=80",
+    fallbackImage: popularRestaurantFallbackImages["spice-symphony"],
+    area: "City Center",
+    offer: "TABLE BOOKING OPEN",
+  },
+  {
+    id: "urban-tandoor",
+    name: "Urban Tandoor",
+    category: "Urban Grill",
+    cuisine: "Tandoori • Indian • Fusion",
+    eta: "22-30 min",
+    price: "₹780 for two",
+    rating: "4.6",
+    image:
+      "https://images.unsplash.com/photo-1552566626-52f8b828add9?auto=format&fit=crop&w=1200&q=80",
+    fallbackImage: popularRestaurantFallbackImages["urban-tandoor"],
+    area: "Station Road",
+    offer: "15% OFF ON DINING",
+  },
+  {
+    id: "royal-rasoi",
+    name: "Royal Rasoi",
+    category: "Family Fine Dine",
+    cuisine: "Royal Thali • Curry • Indian",
+    eta: "28-36 min",
+    price: "₹850 for two",
+    rating: "4.7",
+    image:
+      "https://images.unsplash.com/photo-1559329007-40df8a9345d8?auto=format&fit=crop&w=1200&q=80",
+    fallbackImage: popularRestaurantFallbackImages["royal-rasoi"],
+    area: "Nehru Chowk",
+    offer: "BUY 1 GET 1 STARTER",
+  },
+  {
+    id: "hungry-haveli",
+    name: "The Hungry Haveli",
+    category: "Heritage Kitchen",
+    cuisine: "Awadhi • Dum • Biryani",
+    eta: "24-34 min",
+    price: "₹720 for two",
+    rating: "4.6",
+    image:
+      "https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?auto=format&fit=crop&w=1200&q=80",
+    fallbackImage: popularRestaurantFallbackImages["hungry-haveli"],
+    area: "Main Market",
+    offer: "FLAT 20% OFF",
+  },
+  {
+    id: "flame-and-feast",
+    name: "Flame & Feast",
+    category: "Grill Lounge",
+    cuisine: "Charcoal Grill • Continental • Sizzlers",
+    eta: "20-29 min",
+    price: "₹980 for two",
+    rating: "4.7",
+    image:
+      "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1200&q=80",
+    fallbackImage: popularRestaurantFallbackImages["flame-and-feast"],
+    area: "Old City",
+    offer: "CHEF'S SPECIAL ₹199",
+  },
+  {
+    id: "saffron-stories",
+    name: "Saffron Stories",
+    category: "Premium Bistro",
+    cuisine: "Mediterranean • Indian • Desserts",
+    eta: "18-28 min",
+    price: "₹860 for two",
+    rating: "4.8",
+    image:
+      "https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=1200&q=80",
+    fallbackImage: popularRestaurantFallbackImages["saffron-stories"],
+    area: "Town Hall",
+    offer: "LIVE MUSIC NIGHTS",
+  },
+];
 
 const cuisineOptions = [
   "All",
@@ -66,20 +126,63 @@ function applyPopularCardFallback(event, fallbackImage) {
   image.src = fallbackImage;
 }
 
+function getOptimizedImageSource(src, width = 760) {
+  const raw = String(src || "").trim();
+  if (!raw) return raw;
+
+  try {
+    if (raw.includes("images.unsplash.com")) {
+      const url = new URL(raw);
+      url.searchParams.set("auto", "format");
+      url.searchParams.set("fit", "crop");
+      url.searchParams.set("w", String(width));
+      if (!url.searchParams.has("q")) {
+        url.searchParams.set("q", "72");
+      }
+      return url.toString();
+    }
+
+    if (raw.includes("unsplash.com/photos/") && raw.includes("/download")) {
+      const url = new URL(raw);
+      url.searchParams.set("w", String(width));
+      return url.toString();
+    }
+  } catch {
+    return raw;
+  }
+
+  return raw;
+}
+
+function saveHomeScrollForReturn() {
+  try {
+    const currentY =
+      window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
+    sessionStorage.setItem(HOME_SCROLL_RETURN_KEY, String(Math.max(0, Math.round(currentY))));
+    sessionStorage.setItem(HOME_SCROLL_RETURN_PENDING_KEY, "1");
+  } catch {
+    // ignore storage errors
+  }
+}
+
 function RestaurantCard({ r }) {
   return (
-    <article
-      className="restaurant-card fade-in"
-      tabIndex={0}
-      aria-label={`${r.name} in ${r.area}`}
+    <Link
+      to={getRestaurantRoute(r.id)}
+      className="restaurant-card fade-in swiggy-card-link"
+      aria-label={`Open ${r.name} in ${r.area}`}
+      onClick={saveHomeScrollForReturn}
+      onPointerDown={saveHomeScrollForReturn}
     >
       <div className="restaurant-thumb">
         <img
-          src={r.image}
+          src={getOptimizedImageSource(r.image, 720)}
           alt={r.name}
           loading="lazy"
           decoding="async"
           fetchPriority="low"
+          width="720"
+          height="430"
           onError={(event) => applyPopularCardFallback(event, r.fallbackImage)}
         />
         {r.offer ? <span className="restaurant-offer">{r.offer}</span> : null}
@@ -112,12 +215,13 @@ function RestaurantCard({ r }) {
           <span className="restaurant-chip">{r.category}</span>
         </div>
       </div>
-    </article>
+    </Link>
   );
 }
 
 export default function Home() {
   const badgeRef = useRef(null);
+  const navigationType = useNavigationType();
   const [selectedCategory, setSelectedCategory] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCuisine, setSelectedCuisine] = useState("All");
@@ -139,7 +243,61 @@ export default function Home() {
     []
   );
 
-  
+  useLayoutEffect(() => {
+    if (navigationType !== "POP") {
+      return undefined;
+    }
+
+    let rafId = 0;
+    let timeoutOne = 0;
+    let timeoutTwo = 0;
+
+    let shouldRestore = false;
+    try {
+      shouldRestore =
+        sessionStorage.getItem(HOME_SCROLL_RETURN_PENDING_KEY) === "1";
+    } catch {
+      shouldRestore = false;
+    }
+
+    if (!shouldRestore) {
+      return undefined;
+    }
+
+    let savedY = NaN;
+    try {
+      savedY = Number(sessionStorage.getItem(HOME_SCROLL_RETURN_KEY));
+    } catch {
+      savedY = NaN;
+    }
+
+    if (!Number.isFinite(savedY) || savedY < 0) {
+      return undefined;
+    }
+
+    const restoreHomeScroll = () => {
+      window.scrollTo({ top: savedY, left: 0, behavior: "auto" });
+    };
+
+    restoreHomeScroll();
+    rafId = requestAnimationFrame(restoreHomeScroll);
+    timeoutOne = setTimeout(restoreHomeScroll, 120);
+    timeoutTwo = setTimeout(() => {
+      restoreHomeScroll();
+      try {
+        sessionStorage.removeItem(HOME_SCROLL_RETURN_PENDING_KEY);
+        sessionStorage.removeItem(HOME_SCROLL_RETURN_KEY);
+      } catch {
+        // ignore storage errors
+      }
+    }, 350);
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      clearTimeout(timeoutOne);
+      clearTimeout(timeoutTwo);
+    };
+  }, [navigationType]);
 
   useEffect(() => {
     const badge = badgeRef.current;
@@ -188,15 +346,15 @@ export default function Home() {
     }
   };
 
-  const filtered = sampleRestaurants.filter((r) => {
+  const filtered = sampleRestaurants.filter((restaurant) => {
     if (!selectedCategory) return true;
-    const s = selectedCategory.toLowerCase();
-    const category = (r.category || "").toLowerCase();
+    const query = selectedCategory.toLowerCase();
+    const category = (restaurant.category || "").toLowerCase();
     return (
-      r.name.toLowerCase().includes(s) ||
-      (r.cuisine || "").toLowerCase().includes(s) ||
-      category.includes(s) ||
-      s.includes(category)
+      restaurant.name.toLowerCase().includes(query) ||
+      (restaurant.cuisine || "").toLowerCase().includes(query) ||
+      category.includes(query) ||
+      query.includes(category)
     );
   });
 
@@ -662,14 +820,18 @@ export default function Home() {
                 to={getRestaurantRoute(restaurant.id)}
                 className="swiggy-card swiggy-card-link"
                 aria-label={`Open ${restaurant.name}`}
+                onClick={saveHomeScrollForReturn}
+                onPointerDown={saveHomeScrollForReturn}
               >
                 <div className="swiggy-img">
                   <img
-                    src={restaurant.image}
+                    src={getOptimizedImageSource(restaurant.image, 760)}
                     alt={restaurant.name}
                     loading="lazy"
                     decoding="async"
                     fetchPriority="low"
+                    width="760"
+                    height="460"
                   />
                   <span className="swiggy-offer">{restaurant.offer}</span>
                 </div>
