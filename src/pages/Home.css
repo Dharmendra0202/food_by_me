@@ -2811,3 +2811,43 @@ html { scroll-behavior: smooth; } /* smooth anchor scroll */
     box-shadow: 0 6px 14px rgba(15, 23, 42, 0.08) !important;
   }
 }
+
+/* Desktop spacing correction */
+@media (min-width: 769px) {
+  .swiggy-section {
+    padding-top: 42px;
+    padding-bottom: 40px;
+  }
+
+  .swiggy-section::after {
+    height: 0;
+  }
+
+  #why.why-section,
+  .why-section {
+    margin-top: 30px !important;
+    padding-top: 24px;
+    padding-bottom: 68px;
+  }
+
+  .restaurants-section {
+    padding-top: 54px;
+    padding-bottom: 84px;
+  }
+
+  .section-head,
+  .restaurants-section .section-head {
+    margin-top: 0 !important;
+    margin-bottom: 20px !important;
+  }
+
+  .app-section {
+    margin-top: 32px;
+    padding-top: 22px;
+    padding-bottom: 24px;
+  }
+
+  .site-footer {
+    margin-top: 34px;
+  }
+}
