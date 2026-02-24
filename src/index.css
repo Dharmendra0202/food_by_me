@@ -194,3 +194,15 @@ h1,h2,h3,p { margin: 0; padding: 0; color: var(--text, #111827); }
 @media (prefers-reduced-motion: reduce) {
   .bg-dots .dot { animation: none !important; opacity: 0.75; filter: blur(8px); transform: scale(1); }
 }
+
+/* Mobile performance mode: reduce expensive global effects */
+@media (max-width: 768px) {
+  body::before,
+  body::after {
+    content: none !important;
+  }
+
+  .bg-dots {
+    display: none !important;
+  }
+}

@@ -87,6 +87,44 @@ function generateEmailSignupPhone() {
   return `+1${epochTail}${randomTail}`;
 }
 
+function mapSignupEmailError(error) {
+  const code = String(error?.code || '');
+  const message = String(error?.message || '');
+  const normalizedMessage = message.toLowerCase();
+
+  if (code === '23505' && normalizedMessage.includes('users_email_key')) {
+    return { status: 400, message: 'User already exists with this email' };
+  }
+
+  if (code === '42501' || normalizedMessage.includes('row-level security')) {
+    return {
+      status: 500,
+      message: 'Database permission issue. Configure SUPABASE_SERVICE_ROLE_KEY on backend.',
+    };
+  }
+
+  if (code === '42P01') {
+    return { status: 500, message: 'Database table "users" not found. Run schema setup.' };
+  }
+
+  if (code === '42703') {
+    return {
+      status: 500,
+      message:
+        'Database schema mismatch in users table. Expected columns: full_name, email, phone, password_hash.',
+    };
+  }
+
+  if (code === '23502') {
+    return { status: 500, message: 'Database rejected signup because a required field is missing.' };
+  }
+
+  return {
+    status: 500,
+    message: isProduction() ? 'Failed to create account' : `Failed to create account: ${message || 'Unknown error'}`,
+  };
+}
+
 function sanitizeSignupInput(body = {}) {
   return {
     fullName: String(body.fullName || '').trim(),
@@ -455,10 +493,16 @@ router.post('/signup-email', async (req, res) => {
     });
   } catch (error) {
     console.error('Email signup error:', error);
-    if (error?.code === '23505' && String(error?.message || '').includes('users_email_key')) {
-      return res.status(400).json({ message: 'User already exists with this email' });
-    }
-    return res.status(500).json({ message: 'Failed to create account' });
+    const mapped = mapSignupEmailError(error);
+    return res.status(mapped.status).json({
+      message: mapped.message,
+      ...(isProduction()
+        ? {}
+        : {
+            code: String(error?.code || ''),
+            details: String(error?.details || ''),
+          }),
+    });
   }
 });
 

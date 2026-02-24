@@ -2756,3 +2756,40 @@ html { scroll-behavior: smooth; } /* smooth anchor scroll */
     width: 100%;
   }
 }
+
+/* Mobile performance mode */
+@media (max-width: 768px) {
+  .hero-badge .truck,
+  .hero-icons span,
+  .why-extra,
+  .animated-blobs .blob,
+  .app-highlight,
+  .app-card,
+  .app-metric-fill,
+  .fade-in {
+    animation: none !important;
+  }
+
+  .hero-icons span {
+    transform: none !important;
+    filter: none;
+  }
+
+  .app-highlight,
+  .app-card,
+  .why-card {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .search-box {
+    backdrop-filter: none;
+  }
+
+  .swiggy-img,
+  .restaurant-card,
+  .app-card,
+  .why-card {
+    box-shadow: 0 6px 14px rgba(15, 23, 42, 0.08) !important;
+  }
+}

@@ -346,3 +346,27 @@ section.mind-section > .mind-header h2 {
     font-size: 0.7rem;
   }
 }
+
+/* Mobile performance mode */
+@media (max-width: 768px) {
+  .mind-container {
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .mind-container .marquee-track {
+    animation: none !important;
+    transform: none !important;
+    will-change: auto;
+  }
+
+  .mind-item {
+    scroll-snap-align: start;
+  }
+
+  .mind-item:focus,
+  .mind-item:hover {
+    transform: none;
+  }
+}
