@@ -2417,10 +2417,26 @@ html { scroll-behavior: smooth; } /* smooth anchor scroll */
 
   .hero-icons {
     position: relative !important;
+    left: auto;
+    transform: none;
     bottom: auto !important;
-    margin-top: 8px;
-    height: auto;
+    width: 100%;
+    margin: 8px auto 10px !important;
+    margin-bottom: 10px !important;
+    height: auto !important;
+    padding: 4px 0;
+    justify-content: center;
+    align-items: center;
     gap: 12px !important;
+    overflow: visible !important;
+    z-index: 35;
+  }
+
+  .hero-icons span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
   }
 
   .search-box {
@@ -2469,50 +2485,73 @@ html { scroll-behavior: smooth; } /* smooth anchor scroll */
 
 @media (max-width: 680px) {
   .home-hero {
-    padding: 92px 14px 52px;
+    padding: 84px 12px 32px;
   }
 
   .hero-title {
-    margin-top: 10px;
-    line-height: 1.1;
+    margin-top: 6px;
+    line-height: 1.08;
+    font-size: clamp(1.75rem, 9vw, 2.5rem);
   }
 
   .hero-title-secondary {
-    margin-top: 6px;
+    margin-top: 4px;
+  }
+
+  .hero-icons {
+    margin: 6px auto 8px !important;
+    padding: 2px 0;
+    gap: 8px !important;
   }
 
   .search-box {
     flex-direction: column;
     align-items: stretch;
+    padding: 9px 10px;
+    gap: 8px;
   }
 
   .search-icon-btn {
     width: 100%;
-    height: 42px;
-    border-radius: 12px;
+    height: 38px;
+    border-radius: 10px;
   }
 
   .search-btn {
     width: 100%;
     justify-content: center;
-    padding: 12px 16px;
-    border-radius: 12px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 0.95rem;
   }
 
   .search-meta {
-    margin-top: 10px;
-    gap: 12px;
+    margin-top: 8px;
+    gap: 8px;
     flex-wrap: wrap;
   }
 
   .meta-item {
-    flex: 1 1 150px;
+    flex: 1 1 140px;
     justify-content: center;
+    font-size: 0.86rem;
   }
 
   .swiggy-head,
   .section-head {
     text-align: left;
+  }
+
+  .swiggy-section {
+    padding: 24px 12px 42px;
+  }
+
+  .swiggy-head {
+    margin-bottom: 12px;
+  }
+
+  .swiggy-title {
+    font-size: clamp(1.15rem, 5.6vw, 1.45rem);
   }
 
   .swiggy-controls > * {
@@ -2526,42 +2565,68 @@ html { scroll-behavior: smooth; } /* smooth anchor scroll */
 
   .swiggy-grid {
     grid-template-columns: 1fr;
+    gap: 12px;
   }
 
   .swiggy-img {
-    height: 188px;
+    height: 172px;
   }
 
   .why-section {
-    padding-left: 14px;
-    padding-right: 14px;
+    margin-top: 28px;
+    padding: 6px 12px 28px;
   }
 
   .why-inner {
-    padding: 22px 16px;
+    padding: 16px 12px;
   }
 
   .why-cards {
     grid-template-columns: 1fr !important;
+    gap: 12px !important;
+    margin-top: 14px;
+  }
+
+  .why-title {
+    font-size: clamp(1.3rem, 6vw, 1.7rem);
+    margin-bottom: 10px;
+  }
+
+  .why-sub {
+    margin-bottom: 12px !important;
+    font-size: 0.92rem;
   }
 
   .why-card {
     min-height: auto;
     align-items: flex-start !important;
+    padding: 14px !important;
+    gap: 10px;
   }
 
   .why-icon {
-    width: 56px !important;
-    height: 56px !important;
-    min-width: 56px !important;
+    width: 48px !important;
+    height: 48px !important;
+    min-width: 48px !important;
+    font-size: 1.2rem !important;
   }
 
   .restaurants-section {
-    padding: 70px 14px 82px;
+    padding: 40px 12px 52px;
+  }
+
+  .section-head {
+    margin-top: 18px !important;
+    margin-bottom: 16px !important;
+  }
+
+  .section-head h2 {
+    font-size: clamp(1.2rem, 5.8vw, 1.55rem);
   }
 
   .restaurants-grid {
     grid-template-columns: 1fr;
+    gap: 12px;
   }
 
   .restaurant-top {
@@ -2573,23 +2638,46 @@ html { scroll-behavior: smooth; } /* smooth anchor scroll */
   }
 
   .app-section {
-    padding-left: 14px;
-    padding-right: 14px;
+    margin-top: 26px;
+    padding: 8px 12px;
   }
 
   .app-inner {
-    border-radius: 18px;
-    padding: 16px;
-    gap: 18px;
+    border-radius: 14px;
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .app-title {
+    font-size: clamp(1.2rem, 5.8vw, 1.6rem);
+    margin-bottom: 8px;
+  }
+
+  .app-sub {
+    font-size: 0.9rem;
+    margin-bottom: 12px;
   }
 
   .app-card {
-    padding: 14px;
+    padding: 12px;
+  }
+
+  .app-card h3 {
+    font-size: 1.1rem;
+    margin-bottom: 6px;
+  }
+
+  .app-card p {
+    margin-bottom: 10px;
+    font-size: 0.88rem;
+  }
+
+  .site-footer {
+    margin-top: 22px;
   }
 
   .site-footer-inner {
-    padding-left: 14px;
-    padding-right: 14px;
+    padding: 28px 12px 14px;
   }
 
   .footer-nav-grid,
@@ -2597,8 +2685,21 @@ html { scroll-behavior: smooth; } /* smooth anchor scroll */
     grid-template-columns: 1fr;
   }
 
+  .footer-stats-strip {
+    margin-top: 16px;
+    padding: 10px;
+    gap: 8px;
+  }
+
+  .footer-newsletter {
+    margin-top: 10px;
+    padding-top: 10px;
+  }
+
   .site-footer-bottom {
     align-items: flex-start;
+    margin-top: 6px;
+    padding-top: 12px;
   }
 
   .site-footer-links {
@@ -2608,26 +2709,46 @@ html { scroll-behavior: smooth; } /* smooth anchor scroll */
 
 @media (max-width: 420px) {
   .hero-badge {
-    padding: 6px 12px;
+    padding: 5px 10px;
+    font-size: 0.76rem;
   }
 
   .hero-icons span {
-    font-size: 19px !important;
+    font-size: 16px !important;
   }
 
   .swiggy-section {
-    padding-left: 12px;
-    padding-right: 12px;
+    padding: 20px 10px 34px;
   }
 
   .swiggy-name {
-    font-size: 0.93rem;
+    font-size: 0.9rem;
   }
 
   .swiggy-meta,
   .swiggy-cuisine,
   .swiggy-area {
-    font-size: 0.82rem;
+    font-size: 0.79rem;
+  }
+
+  .why-section,
+  .restaurants-section,
+  .app-section {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .why-card {
+    padding: 12px !important;
+  }
+
+  .restaurant-info {
+    padding: 11px 12px 12px;
+  }
+
+  .site-footer-inner {
+    padding-left: 10px;
+    padding-right: 10px;
   }
 
   .footer-newsletter-form input,

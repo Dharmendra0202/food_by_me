@@ -79,9 +79,9 @@ function Navbar() {
         </h2>
 
         <button 
-          className="hamburger-btn" 
+          className={`hamburger-btn ${menuOpen ? "is-open" : ""}`}
           onClick={() => setMenuOpen(!menuOpen)}
-          aria-label="Toggle menu"
+          aria-label={menuOpen ? "Close menu" : "Open menu"}
           aria-expanded={menuOpen}
         >
           <span></span>

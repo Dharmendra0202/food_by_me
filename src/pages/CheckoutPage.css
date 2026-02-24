@@ -699,7 +699,80 @@
   .checkout-order-filters {
     flex-wrap: nowrap;
     overflow-x: auto;
-    padding-bottom: 2px;
+    gap: 10px;
+    padding: 2px 2px 8px;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .checkout-order-filters::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  .checkout-order-filters::-webkit-scrollbar-thumb {
+    background: rgba(100, 116, 139, 0.35);
+    border-radius: 999px;
+  }
+
+  .checkout-filter-chip {
+    flex: 0 0 112px;
+    height: 40px;
+    border-radius: 12px;
+    padding: 0 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    white-space: nowrap;
+    font-size: 0.78rem;
+    border-color: rgba(148, 163, 184, 0.45);
+    background: linear-gradient(180deg, #ffffff, #f8fafc);
+    box-shadow: 0 6px 14px rgba(15, 23, 42, 0.08);
+    scroll-snap-align: start;
+  }
+
+  .checkout-filter-chip::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: #94a3b8;
+    flex: 0 0 auto;
+  }
+
+  .checkout-filter-chip-all::before {
+    background: #64748b;
+  }
+
+  .checkout-filter-chip-confirmed::before {
+    background: #f59e0b;
+  }
+
+  .checkout-filter-chip-preparing::before {
+    background: #f97316;
+  }
+
+  .checkout-filter-chip-on_the_way::before {
+    background: #2563eb;
+  }
+
+  .checkout-filter-chip-delivered::before {
+    background: #16a34a;
+  }
+
+  .checkout-filter-chip-cancelled::before {
+    background: #ef4444;
+  }
+
+  .checkout-filter-chip.active {
+    border-color: transparent;
+    background: linear-gradient(120deg, #ff7a45, #f43f5e);
+    color: #fff;
+    box-shadow: 0 10px 18px rgba(244, 63, 94, 0.28);
+  }
+
+  .checkout-filter-chip.active::before {
+    background: rgba(255, 255, 255, 0.95);
   }
 
   .checkout-order-card-head,
@@ -753,6 +826,13 @@
 
   .checkout-order-card {
     padding: 10px;
+  }
+
+  .checkout-filter-chip {
+    flex-basis: 104px;
+    height: 38px;
+    border-radius: 11px;
+    font-size: 0.74rem;
   }
 
   .checkout-reorder-btn {

@@ -836,7 +836,9 @@ export default function CheckoutPage({ view = "cart" }) {
                   <button
                     key={option.id}
                     type="button"
-                    className={`checkout-filter-chip${orderStatusFilter === option.id ? " active" : ""}`}
+                    className={`checkout-filter-chip checkout-filter-chip-${option.id}${
+                      orderStatusFilter === option.id ? " active" : ""
+                    }`}
                     onClick={() => setOrderStatusFilter(option.id)}
                   >
                     {option.label}
