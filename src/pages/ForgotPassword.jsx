@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { API_ENDPOINTS, apiRequest, notifyApp } from "../config/api";
 import "./AuthPages.css";
 
@@ -7,9 +7,10 @@ export default function ForgotPassword() {
   const [email, setEmail] = useState("");
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
-  const [resetSent, setResetSent] = useState(false);
+  const [step, setStep] = useState(1); // 1 = enter email, 2 = enter new password
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const navigate = useNavigate();
 
   const validateEmail = () => {
     const normalizedEmail = email.trim();
@@ -37,22 +38,27 @@ export default function ForgotPassword() {
     return Object.keys(next).length === 0;
   };
 
-  const handleRequestReset = async (event) => {
+  const handleVerifyEmail = async (event) => {
     event.preventDefault();
     if (!validateEmail()) return;
 
     setIsLoading(true);
     try {
-      await apiRequest(API_ENDPOINTS.AUTH.REQUEST_PASSWORD_RESET, {
+      const response = await apiRequest(API_ENDPOINTS.AUTH.REQUEST_PASSWORD_RESET, {
         method: 'POST',
         body: JSON.stringify({ email: email.trim().toLowerCase() }),
       });
 
-      setResetSent(true);
-      notifyApp("Password reset instructions sent to your email", "success");
+      if (response.emailExists) {
+        setStep(2);
+        notifyApp("Email verified! Now set your new password.", "success");
+      } else {
+        notifyApp("If an account exists with this email, you can now reset the password.", "info");
+        setStep(2);
+      }
     } catch (error) {
-      notifyApp(error.message || "Failed to send reset instructions", "error");
-      setErrors({ email: error.message || "Failed to send reset instructions" });
+      notifyApp(error.message || "Failed to verify email", "error");
+      setErrors({ email: error.message || "Failed to verify email" });
     } finally {
       setIsLoading(false);
     }
@@ -72,9 +78,9 @@ export default function ForgotPassword() {
         }),
       });
 
-      notifyApp("Password reset successful! You can now log in.", "success");
+      notifyApp("Password updated successfully! Redirecting to login...", "success");
       setTimeout(() => {
-        window.location.href = "/login";
+        navigate("/login");
       }, 2000);
     } catch (error) {
       notifyApp(error.message || "Failed to reset password", "error");
@@ -88,15 +94,15 @@ export default function ForgotPassword() {
     <section className="auth-premium auth-login">
       <div className="auth-card">
         <div className="auth-headline">Password Reset</div>
-        <h1>{resetSent ? "Set New Password" : "Forgot Password?"}</h1>
+        <h1>{step === 1 ? "Forgot Password?" : "Create New Password"}</h1>
         <p>
-          {resetSent
-            ? "Enter your new password below"
-            : "Enter your email to reset your password"}
+          {step === 1
+            ? "Enter your email address to reset your password"
+            : `Setting new password for ${email}`}
         </p>
 
-        {!resetSent ? (
-          <form className="auth-form" onSubmit={handleRequestReset}>
+        {step === 1 ? (
+          <form className="auth-form" onSubmit={handleVerifyEmail}>
             <label htmlFor="email">Email</label>
             <input
               id="email"
@@ -108,11 +114,12 @@ export default function ForgotPassword() {
                 setEmail(e.target.value);
                 if (errors.email) setErrors({});
               }}
+              disabled={isLoading}
             />
             {errors.email && <span className="auth-error">{errors.email}</span>}
 
             <button type="submit" className="auth-submit" disabled={isLoading}>
-              {isLoading ? "Sending..." : "Send Reset Instructions"}
+              {isLoading ? "Verifying..." : "Continue"}
             </button>
           </form>
         ) : (
@@ -122,31 +129,48 @@ export default function ForgotPassword() {
               id="newPassword"
               type="password"
               name="newPassword"
-              placeholder="Enter new password"
+              placeholder="Enter new password (min 6 characters)"
               value={newPassword}
               onChange={(e) => {
                 setNewPassword(e.target.value);
                 if (errors.newPassword) setErrors((prev) => ({ ...prev, newPassword: "" }));
               }}
+              disabled={isLoading}
             />
             {errors.newPassword && <span className="auth-error">{errors.newPassword}</span>}
 
-            <label htmlFor="confirmPassword">Confirm Password</label>
+            <label htmlFor="confirmPassword">Confirm New Password</label>
             <input
               id="confirmPassword"
               type="password"
               name="confirmPassword"
-              placeholder="Confirm new password"
+              placeholder="Re-enter new password"
               value={confirmPassword}
               onChange={(e) => {
                 setConfirmPassword(e.target.value);
                 if (errors.confirmPassword) setErrors((prev) => ({ ...prev, confirmPassword: "" }));
               }}
+              disabled={isLoading}
             />
             {errors.confirmPassword && <span className="auth-error">{errors.confirmPassword}</span>}
 
             <button type="submit" className="auth-submit" disabled={isLoading}>
-              {isLoading ? "Resetting..." : "Reset Password"}
+              {isLoading ? "Updating Password..." : "Reset Password"}
+            </button>
+
+            <button
+              type="button"
+              className="auth-submit"
+              style={{ marginTop: '10px', background: '#6c757d' }}
+              onClick={() => {
+                setStep(1);
+                setNewPassword("");
+                setConfirmPassword("");
+                setErrors({});
+              }}
+              disabled={isLoading}
+            >
+              Back to Email
             </button>
           </form>
         )}
