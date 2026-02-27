@@ -11,6 +11,10 @@ router.get('/', (req, res) => {
       commitSha: process.env.VERCEL_GIT_COMMIT_SHA || '',
       signupEmailPatch: 'enabled',
     },
+    config: {
+      jwtSecretConfigured: Boolean(process.env.JWT_SECRET),
+      supabaseConfigured: Boolean(process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY),
+    },
     endpoints: {
       auth: '/api/auth',
       restaurants: '/api/restaurants',
