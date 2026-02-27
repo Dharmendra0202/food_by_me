@@ -44,7 +44,14 @@ export default function ForgotPassword() {
 
     setIsLoading(true);
     try {
-      const response = await apiRequest(API_ENDPOINTS.AUTH.REQUEST_PASSWORD_RESET, {
+      const endpoint = API_ENDPOINTS.AUTH.REQUEST_PASSWORD_RESET;
+      console.log('Password reset endpoint:', endpoint);
+      
+      if (!endpoint) {
+        throw new Error('Password reset endpoint not configured. Please refresh the page.');
+      }
+
+      const response = await apiRequest(endpoint, {
         method: 'POST',
         body: JSON.stringify({ email: email.trim().toLowerCase() }),
       });
