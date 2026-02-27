@@ -102,6 +102,12 @@ export default function Login() {
         </form>
 
         <div className="auth-links">
+          <Link to="/forgot-password" style={{ marginBottom: '10px', display: 'block', textAlign: 'center' }}>
+            Forgot password?
+          </Link>
+        </div>
+
+        <div className="auth-links">
           <span>New here?</span>
           <Link to="/signup">Create account</Link>
         </div>

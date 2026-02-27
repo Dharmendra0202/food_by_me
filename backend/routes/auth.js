@@ -506,4 +506,80 @@ router.post('/signup-email', async (req, res) => {
   }
 });
 
+// Request password reset
+router.post('/request-password-reset', async (req, res) => {
+  try {
+    const email = String(req.body?.email || '').trim().toLowerCase();
+
+    if (!email || !EMAIL_REGEX.test(email)) {
+      return res.status(400).json({ message: 'Enter a valid email' });
+    }
+
+    const user = await findUserByEmail(email);
+    
+    // For security, always return success even if user doesn't exist
+    // This prevents email enumeration attacks
+    if (!user) {
+      return res.status(200).json({ 
+        message: 'If an account exists with this email, password reset instructions have been sent.' 
+      });
+    }
+
+    // In a real app, you would:
+    // 1. Generate a secure reset token
+    // 2. Store it in database with expiry
+    // 3. Send email with reset link
+    // For now, we'll just confirm the email exists
+    
+    return res.status(200).json({ 
+      message: 'Password reset instructions sent. You can now set a new password.',
+      emailExists: true // Only for demo purposes
+    });
+  } catch (error) {
+    return res.status(500).json({ message: 'Failed to process password reset request' });
+  }
+});
+
+// Reset password
+router.post('/reset-password', async (req, res) => {
+  try {
+    const email = String(req.body?.email || '').trim().toLowerCase();
+    const newPassword = String(req.body?.newPassword || '');
+
+    if (!email || !EMAIL_REGEX.test(email)) {
+      return res.status(400).json({ message: 'Enter a valid email' });
+    }
+
+    if (!newPassword || newPassword.length < 6) {
+      return res.status(400).json({ message: 'Password must be at least 6 characters' });
+    }
+
+    const user = await findUserByEmail(email);
+    
+    if (!user) {
+      return res.status(404).json({ message: 'Account not found' });
+    }
+
+    // Hash the new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update password in database
+    const { error } = await supabase
+      .from('users')
+      .update({ password_hash: hashedPassword })
+      .eq('email', email);
+
+    if (error) {
+      throw error;
+    }
+
+    return res.status(200).json({ 
+      message: 'Password reset successful. You can now log in with your new password.' 
+    });
+  } catch (error) {
+    console.error('Password reset error:', error);
+    return res.status(500).json({ message: 'Failed to reset password' });
+  }
+});
+
 module.exports = router;

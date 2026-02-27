@@ -4,6 +4,7 @@ import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import Signup from "./pages/SignupSimple";
 import Login from "./pages/Login";
+import ForgotPassword from "./pages/ForgotPassword";
 import CategoryPage from "./pages/CategoryPage";
 import PremiumFoodPage from "./pages/PremiumFoodPage";
 import RestaurantDetailsPage from "./pages/RestaurantDetailsPage";
@@ -120,6 +121,7 @@ export default function App() {
           <Route path="/test-connection" element={<TestConnection />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path={RESTAURANT_ROUTE_PATTERN} element={<RestaurantDetailsPage />} />
           <Route path="/cart" element={<CheckoutPage />} />
           <Route
