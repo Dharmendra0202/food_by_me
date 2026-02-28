@@ -476,6 +476,49 @@ export default function CheckoutPage({ view = "cart" }) {
     notifyApp(`${itemCount} item${itemCount === 1 ? "" : "s"} added to cart`, "success");
   };
 
+  const handleCancelOrder = async (order) => {
+    const orderId = order?.id;
+    const orderDisplayId = order?.orderId || order?.id;
+
+    if (!orderId) {
+      notifyApp("Invalid order", "error");
+      return;
+    }
+
+    // Check if order can be cancelled
+    const normalizedStatus = normalizeOrderStatus(order?.status);
+    if (normalizedStatus === "delivered") {
+      notifyApp("Cannot cancel delivered order", "warning");
+      return;
+    }
+
+    if (normalizedStatus === "cancelled") {
+      notifyApp("Order already cancelled", "warning");
+      return;
+    }
+
+    const confirmed = window.confirm(
+      `Are you sure you want to cancel order ${orderDisplayId}?`
+    );
+
+    if (!confirmed) return;
+
+    try {
+      await apiRequest(API_ENDPOINTS.ORDERS.CANCEL_ORDER(orderId), {
+        method: "PATCH",
+        body: JSON.stringify({
+          cancelled_reason: "Cancelled by user",
+        }),
+      });
+
+      notifyApp(`Order ${orderDisplayId} cancelled successfully`, "success");
+      await loadOrders(); // Reload orders to show updated status
+    } catch (error) {
+      const message = error.message || "Failed to cancel order";
+      notifyApp(message, "error");
+    }
+  };
+
   const allowOnlyDigits = (event, maxLength) => {
     const input = event.currentTarget;
     input.value = input.value.replace(/\D/g, "").slice(0, maxLength);
@@ -785,34 +828,36 @@ export default function CheckoutPage({ view = "cart" }) {
                       title="Enter a 16-digit card number"
                     />
                   </label>
-                  <label className="checkout-field">
-                    <span>Expiry</span>
-                    <input
-                      type="text"
-                      required
-                      placeholder="MM/YY"
-                      inputMode="numeric"
-                      autoComplete="cc-exp"
-                      pattern="(0[1-9]|1[0-2])\\/([0-9]{2})"
-                      maxLength={5}
-                      onInput={formatExpiry}
-                      title="Use MM/YY format"
-                    />
-                  </label>
-                  <label className="checkout-field">
-                    <span>CVV</span>
-                    <input
-                      type="password"
-                      required
-                      placeholder="123"
-                      inputMode="numeric"
-                      autoComplete="cc-csc"
-                      pattern="[0-9]{3,4}"
-                      maxLength={4}
-                      onInput={(event) => allowOnlyDigits(event, 4)}
-                      title="Enter 3 or 4 digit CVV"
-                    />
-                  </label>
+                  <div className="checkout-card-expiry-cvv">
+                    <label className="checkout-field">
+                      <span>Expiry</span>
+                      <input
+                        type="text"
+                        required
+                        placeholder="MM/YY"
+                        inputMode="numeric"
+                        autoComplete="cc-exp"
+                        pattern="(0[1-9]|1[0-2])\\/([0-9]{2})"
+                        maxLength={5}
+                        onInput={formatExpiry}
+                        title="Use MM/YY format"
+                      />
+                    </label>
+                    <label className="checkout-field">
+                      <span>CVV</span>
+                      <input
+                        type="password"
+                        required
+                        placeholder="123"
+                        inputMode="numeric"
+                        autoComplete="cc-csc"
+                        pattern="[0-9]{3,4}"
+                        maxLength={4}
+                        onInput={(event) => allowOnlyDigits(event, 4)}
+                        title="Enter 3 or 4 digit CVV"
+                      />
+                    </label>
+                  </div>
                 </div>
               ) : null}
 
@@ -917,13 +962,24 @@ export default function CheckoutPage({ view = "cart" }) {
                       <span className={`checkout-status-chip checkout-status-${normalizedStatus}`}>
                         {formatOrderStatus(normalizedStatus)}
                       </span>
-                      <button
-                        type="button"
-                        className="checkout-reorder-btn"
-                        onClick={() => handleReorder(order)}
-                      >
-                        Reorder
-                      </button>
+                      <div style={{ display: 'flex', gap: '8px' }}>
+                        {normalizedStatus !== "delivered" && normalizedStatus !== "cancelled" && (
+                          <button
+                            type="button"
+                            className="checkout-cancel-btn"
+                            onClick={() => handleCancelOrder(order)}
+                          >
+                            Cancel
+                          </button>
+                        )}
+                        <button
+                          type="button"
+                          className="checkout-reorder-btn"
+                          onClick={() => handleReorder(order)}
+                        >
+                          Reorder
+                        </button>
+                      </div>
                     </div>
                   </article>
                 );

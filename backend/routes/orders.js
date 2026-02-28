@@ -138,4 +138,61 @@ router.get('/my-orders', authMiddleware, async (req, res) => {
   }
 });
 
+// Cancel order
+router.patch('/cancel-order/:orderId', authMiddleware, async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const { cancelled_reason } = req.body;
+
+    // First, verify the order belongs to the user
+    const { data: existingOrder, error: fetchError } = await supabase
+      .from('orders')
+      .select('*')
+      .eq('id', orderId)
+      .eq('user_email', req.user.email)
+      .single();
+
+    if (fetchError || !existingOrder) {
+      return res.status(404).json({ error: 'Order not found' });
+    }
+
+    // Check if order can be cancelled (not already delivered or cancelled)
+    if (existingOrder.status === 'delivered') {
+      return res.status(400).json({ error: 'Cannot cancel delivered order' });
+    }
+
+    if (existingOrder.status === 'cancelled') {
+      return res.status(400).json({ error: 'Order already cancelled' });
+    }
+
+    // Update order status to cancelled
+    const { data, error } = await supabase
+      .from('orders')
+      .update({
+        status: 'cancelled',
+        cancelled_reason: cancelled_reason || 'Cancelled by user'
+      })
+      .eq('id', orderId)
+      .eq('user_email', req.user.email)
+      .select()
+      .single();
+
+    if (error) {
+      return res.status(500).json({ error: 'Failed to cancel order' });
+    }
+
+    const cancelledOrder = formatOrderRow(data);
+    console.log(`✓ Order Cancelled: ${existingOrder.order_id} by ${req.user.email}`);
+
+    res.status(200).json({
+      success: true,
+      message: 'Order cancelled successfully',
+      order: cancelledOrder
+    });
+  } catch (error) {
+    console.error('Cancel order error:', error);
+    res.status(500).json({ error: 'Failed to cancel order' });
+  }
+});
+
 module.exports = router;
