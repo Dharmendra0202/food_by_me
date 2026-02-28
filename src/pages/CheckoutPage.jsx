@@ -18,6 +18,8 @@ import {
   updateCartItemQuantity,
 } from "../config/api";
 import { getRestaurantById } from "../data/restaurants";
+import { NotificationManager, OrderPollingService } from "../utils/notifications";
+import LiveTrackingMap from "../components/LiveTrackingMap";
 import "./CheckoutPage.css";
 
 const PAYMENT_METHODS = [
@@ -120,6 +122,7 @@ function formatOrderDate(value) {
 export default function CheckoutPage({ view = "cart" }) {
   const location = useLocation();
   const didImportLocationItemRef = useRef(false);
+  const pollingServiceRef = useRef(null);
   const [cartItems, setCartState] = useState(() => getCartItems());
   const [savedAddresses, setSavedAddresses] = useState(() => getSavedAddresses());
   const [selectedAddressId, setSelectedAddressId] = useState("");
@@ -137,6 +140,9 @@ export default function CheckoutPage({ view = "cart" }) {
   const [couponError, setCouponError] = useState("");
   const [successOrderMeta, setSuccessOrderMeta] = useState(null);
   const [trackingModal, setTrackingModal] = useState({ isOpen: false, order: null });
+  const [notificationsEnabled, setNotificationsEnabled] = useState(
+    Notification?.permission === "granted"
+  );
   const [deliveryDetails, setDeliveryDetails] = useState({
     fullName: localStorage.getItem("fullName") || "",
     phone: "",
@@ -262,6 +268,66 @@ export default function CheckoutPage({ view = "cart" }) {
   useEffect(() => {
     loadOrders();
   }, [loadOrders]);
+
+  // Initialize notification system
+  useEffect(() => {
+    const initNotifications = async () => {
+      const granted = await NotificationManager.requestPermission();
+      setNotificationsEnabled(granted);
+      
+      if (granted) {
+        notifyApp("Notifications enabled! You'll get updates on your orders.", "success");
+      }
+    };
+
+    if (hasToken && Notification?.permission === "default") {
+      initNotifications();
+    }
+  }, [hasToken]);
+
+  // Start order polling for real-time updates
+  useEffect(() => {
+    if (!hasToken || !showOrdersView) {
+      // Stop polling if not logged in or not on orders view
+      if (pollingServiceRef.current) {
+        pollingServiceRef.current.stop();
+      }
+      return;
+    }
+
+    // Initialize polling service
+    if (!pollingServiceRef.current) {
+      pollingServiceRef.current = new OrderPollingService();
+    }
+
+    // Fetch function for polling
+    const fetchOrders = async () => {
+      try {
+        const data = await apiRequest(API_ENDPOINTS.ORDERS.GET_MY_ORDERS, { method: "GET" });
+        return Array.isArray(data) ? data : [];
+      } catch (error) {
+        console.error("Polling error:", error);
+        return [];
+      }
+    };
+
+    // Callback when status changes
+    const handleStatusChange = (order, oldStatus, newStatus) => {
+      notifyApp(`Order ${order.orderId || order.id} status: ${formatOrderStatus(newStatus)}`, "info");
+      // Reload orders to update UI
+      loadOrders();
+    };
+
+    // Start polling
+    pollingServiceRef.current.start(fetchOrders, handleStatusChange);
+
+    // Cleanup on unmount
+    return () => {
+      if (pollingServiceRef.current) {
+        pollingServiceRef.current.stop();
+      }
+    };
+  }, [hasToken, showOrdersView, loadOrders]);
 
   const handleQtyChange = (cartItem, delta) => {
     const nextQuantity = Number(cartItem.quantity) + delta;
@@ -904,9 +970,33 @@ export default function CheckoutPage({ view = "cart" }) {
           <section className="checkout-orders-panel" id="orders-panel">
             <div className="checkout-orders-head">
               <h2>Recent orders</h2>
-              <button type="button" className="checkout-back-link" onClick={loadOrders}>
-                Refresh
-              </button>
+              <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                {notificationsEnabled ? (
+                  <span className="notification-status" title="Notifications enabled">
+                    🔔 Live Updates
+                  </span>
+                ) : (
+                  <button
+                    type="button"
+                    className="checkout-enable-notifications"
+                    onClick={async () => {
+                      const granted = await NotificationManager.requestPermission();
+                      setNotificationsEnabled(granted);
+                      if (granted) {
+                        notifyApp("Notifications enabled!", "success");
+                      } else {
+                        notifyApp("Enable notifications in browser settings", "warning");
+                      }
+                    }}
+                    title="Enable notifications for order updates"
+                  >
+                    🔕 Enable Alerts
+                  </button>
+                )}
+                <button type="button" className="checkout-back-link" onClick={loadOrders}>
+                  Refresh
+                </button>
+              </div>
             </div>
 
             <div className="checkout-orders-toolbar">
@@ -1033,6 +1123,12 @@ export default function CheckoutPage({ view = "cart" }) {
                   </p>
                 </div>
 
+                {/* Live Tracking Map */}
+                <LiveTrackingMap
+                  orderId={trackingModal.order.orderId || trackingModal.order.id}
+                  restaurantName={trackingModal.order.restaurant?.name || "Restaurant"}
+                />
+
                 <div className="tracking-timeline">
                   <div className="tracking-step completed">
                     <div className="tracking-step-icon">✓</div>
@@ -1071,13 +1167,6 @@ export default function CheckoutPage({ view = "cart" }) {
                       <span className="tracking-step-time">Demo: ETA 15-20 mins</span>
                     </div>
                   </div>
-                </div>
-
-                <div className="tracking-demo-note">
-                  <p>
-                    <strong>Demo Mode:</strong> This is a demonstration of order tracking.
-                    In production, this would show real-time updates from your delivery partner.
-                  </p>
                 </div>
 
                 <div className="tracking-items">
