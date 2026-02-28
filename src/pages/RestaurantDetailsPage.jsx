@@ -876,6 +876,8 @@ export default function RestaurantDetailsPage() {
                   name="date"
                   value={bookingForm.date}
                   onChange={handleBookingFieldChange}
+                  min={new Date().toISOString().split('T')[0]}
+                  max={new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]}
                   required
                 />
               </label>
