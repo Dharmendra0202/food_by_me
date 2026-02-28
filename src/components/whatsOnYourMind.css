@@ -7,6 +7,7 @@
   padding: 6px 18px;
   z-index: 10;
   overflow: visible;
+  background: #fff6f3; /* Same as hero section - seamless transition */
 }
 
 .whatsOnYourMind {
