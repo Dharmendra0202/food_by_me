@@ -494,7 +494,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.6rem;
+  font-size: 1.8rem;
   flex-shrink: 0;
   box-shadow: 
     0 6px 12px rgba(0, 0, 0, 0.12),
@@ -531,7 +531,7 @@
 }
 
 .stat-info h3 {
-  font-size: 1.6rem;
+  font-size: 1.8rem;
   color: #1a1a1a;
   margin: 0 0 2px;
   font-weight: 900;
@@ -545,7 +545,7 @@
 }
 
 .stat-info p {
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   color: #666;
   margin: 0;
   font-weight: 800;
