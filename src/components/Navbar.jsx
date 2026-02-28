@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useRef } from "react";
 import "./Navbar.css";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import {
@@ -16,6 +16,8 @@ function Navbar() {
     cartCount: 0,
   });
   const [menuOpen, setMenuOpen] = useState(false);
+  const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
   const shortName = useMemo(() => {
     const words = snapshot.fullName.trim().split(/\s+/).filter(Boolean);
@@ -72,14 +74,32 @@ function Navbar() {
     };
   }, [menuOpen]);
 
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setProfileDropdownOpen(false);
+      }
+    };
+
+    if (profileDropdownOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => document.removeEventListener("mousedown", handleClickOutside);
+    }
+  }, [profileDropdownOpen]);
+
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("fullName");
     dispatchAppSync();
     setMenuOpen(false);
+    setProfileDropdownOpen(false);
   };
 
-  const closeMenu = () => setMenuOpen(false);
+  const closeMenu = () => {
+    setMenuOpen(false);
+    setProfileDropdownOpen(false);
+  };
 
   const scrollToRestaurants = (e) => {
     e.preventDefault();
@@ -142,20 +162,59 @@ function Navbar() {
 
           {snapshot.isLoggedIn ? (
             <>
-              <li>
-                <NavLink to="/profile" className={({ isActive }) => (isActive ? "active" : "")} onClick={closeMenu}>
-                  👤 Profile
-                </NavLink>
-              </li>
-              <li>
-                <span className="account-chip" title={snapshot.fullName}>
-                  Hi, {shortName}
-                </span>
-              </li>
-              <li>
-                <button type="button" className="logout-btn" onClick={handleLogout}>
-                  Logout
+              <li className="profile-dropdown-container" ref={dropdownRef}>
+                <button
+                  className="account-chip-btn"
+                  onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
+                  title={snapshot.fullName}
+                >
+                  <span className="account-avatar">
+                    {snapshot.fullName.charAt(0).toUpperCase()}
+                  </span>
+                  <span className="account-name">Hi, {shortName}</span>
+                  <span className="dropdown-arrow">{profileDropdownOpen ? "▲" : "▼"}</span>
                 </button>
+
+                {profileDropdownOpen && (
+                  <div className="profile-dropdown">
+                    <div className="profile-dropdown-header">
+                      <div className="profile-dropdown-avatar">
+                        {snapshot.fullName.charAt(0).toUpperCase()}
+                      </div>
+                      <div className="profile-dropdown-info">
+                        <p className="profile-dropdown-name">{snapshot.fullName}</p>
+                        <p className="profile-dropdown-email">{localStorage.getItem("email") || "user@example.com"}</p>
+                      </div>
+                    </div>
+
+                    <div className="profile-dropdown-divider"></div>
+
+                    <Link to="/profile" className="profile-dropdown-item" onClick={closeMenu}>
+                      <span className="dropdown-icon">👤</span>
+                      <span>My Profile</span>
+                    </Link>
+
+                    <Link to="/orders" className="profile-dropdown-item" onClick={closeMenu}>
+                      <span className="dropdown-icon">📦</span>
+                      <span>My Orders</span>
+                    </Link>
+
+                    <Link to="/cart" className="profile-dropdown-item" onClick={closeMenu}>
+                      <span className="dropdown-icon">🛒</span>
+                      <span>My Cart</span>
+                      {snapshot.cartCount > 0 && (
+                        <span className="dropdown-badge">{snapshot.cartCount}</span>
+                      )}
+                    </Link>
+
+                    <div className="profile-dropdown-divider"></div>
+
+                    <button className="profile-dropdown-item logout-item" onClick={handleLogout}>
+                      <span className="dropdown-icon">🚪</span>
+                      <span>Logout</span>
+                    </button>
+                  </div>
+                )}
               </li>
             </>
           ) : (
