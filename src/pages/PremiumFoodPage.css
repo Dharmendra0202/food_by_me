@@ -47,6 +47,7 @@
 .premium-main {
   position: relative;
   max-width: 1160px;
+  margin: 0 auto;
 }
 
 .premium-hero {

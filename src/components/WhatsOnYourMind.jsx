@@ -60,10 +60,7 @@ export default function WhatsOnYourMind({
   return (
     <section className="mind-section">
       <div className="mind-header">
-        <h2>
-          What's on your <span className="mind-mixed">Mind ?</span>
-        </h2>
-
+        <h2>What's on your mind?</h2>
       </div>
 
       <div className="mind-container">
