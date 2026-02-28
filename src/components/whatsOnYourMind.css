@@ -150,10 +150,6 @@ section.mind-section > .mind-header h2 {
   object-fit: cover;
 }
 
-.mind-container {
-  height: 120px; /* lock height */
-}
-
 /* -----------------------------------------
    PURE CSS INFINITE MARQUEE
 ----------------------------------------- */
@@ -161,8 +157,9 @@ section.mind-section > .mind-header h2 {
 .mind-container {
   width: 100%;
   overflow: hidden;
-  padding: 12px 0 20px;
+  padding: 12px 0 24px;
   position: relative;
+  min-height: 140px;
 
   /* responsive variables */
   --item-size: 88px;
@@ -203,12 +200,13 @@ section.mind-section > .mind-header h2 {
 
 .mind-item p {
   margin: 0;
-  font-size: 14px;
+  font-size: 13px;
   white-space: nowrap;
   overflow: visible;
   text-overflow: clip;
   max-width: none;
-  line-height: 1.3;
+  line-height: 1.4;
+  font-weight: 500;
 }
 
 /* INFINITE ANIMATION */
@@ -331,8 +329,8 @@ section.mind-section > .mind-header h2 {
     --item-size: 74px;
     --gap: 14px;
     --marquee-speed: 16s;
-    height: auto;
-    padding: 10px 0;
+    min-height: 120px;
+    padding: 10px 0 20px;
   }
 
   .mind-item {
@@ -342,7 +340,7 @@ section.mind-section > .mind-header h2 {
   }
 
   .mind-item p {
-    font-size: 0.76rem;
+    font-size: 0.72rem;
   }
 }
 
@@ -350,6 +348,7 @@ section.mind-section > .mind-header h2 {
   .mind-container {
     --item-size: 64px;
     --gap: 10px;
+    min-height: 110px;
   }
 
   .mind-item {
@@ -359,7 +358,7 @@ section.mind-section > .mind-header h2 {
   }
 
   .mind-item p {
-    font-size: 0.7rem;
+    font-size: 0.68rem;
   }
 }
 
