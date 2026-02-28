@@ -48,7 +48,7 @@ const ORDER_STATUS_OPTIONS = [
   { id: "all", label: "All" },
   { id: "confirmed", label: "Confirmed" },
   { id: "preparing", label: "Preparing" },
-  { id: "on_the_way", label: "On the way" },
+  { id: "on_the_way", label: "Track Order" },
   { id: "delivered", label: "Delivered" },
   { id: "cancelled", label: "Cancelled" },
 ];
@@ -56,7 +56,7 @@ const ORDER_STATUS_OPTIONS = [
 const ORDER_STATUS_LABELS = {
   confirmed: "Confirmed",
   preparing: "Preparing",
-  on_the_way: "On the way",
+  on_the_way: "Track Order",
   delivered: "Delivered",
   cancelled: "Cancelled",
 };
@@ -136,6 +136,7 @@ export default function CheckoutPage({ view = "cart" }) {
   const [appliedCouponCode, setAppliedCouponCode] = useState("");
   const [couponError, setCouponError] = useState("");
   const [successOrderMeta, setSuccessOrderMeta] = useState(null);
+  const [trackingModal, setTrackingModal] = useState({ isOpen: false, order: null });
   const [deliveryDetails, setDeliveryDetails] = useState({
     fullName: localStorage.getItem("fullName") || "",
     phone: "",
@@ -517,6 +518,14 @@ export default function CheckoutPage({ view = "cart" }) {
       const message = error.message || "Failed to cancel order";
       notifyApp(message, "error");
     }
+  };
+
+  const handleTrackOrder = (order) => {
+    setTrackingModal({ isOpen: true, order });
+  };
+
+  const closeTrackingModal = () => {
+    setTrackingModal({ isOpen: false, order: null });
   };
 
   const allowOnlyDigits = (event, maxLength) => {
@@ -963,6 +972,15 @@ export default function CheckoutPage({ view = "cart" }) {
                         {formatOrderStatus(normalizedStatus)}
                       </span>
                       <div style={{ display: 'flex', gap: '8px' }}>
+                        {normalizedStatus === "on_the_way" && (
+                          <button
+                            type="button"
+                            className="checkout-track-btn"
+                            onClick={() => handleTrackOrder(order)}
+                          >
+                            Track
+                          </button>
+                        )}
                         {normalizedStatus !== "delivered" && normalizedStatus !== "cancelled" && (
                           <button
                             type="button"
@@ -994,6 +1012,92 @@ export default function CheckoutPage({ view = "cart" }) {
               View order history
             </Link>
           </section>
+        )}
+
+        {trackingModal.isOpen && trackingModal.order && (
+          <div className="tracking-modal-overlay" onClick={closeTrackingModal}>
+            <div className="tracking-modal" onClick={(e) => e.stopPropagation()}>
+              <div className="tracking-modal-header">
+                <h2>Track Order</h2>
+                <button className="tracking-modal-close" onClick={closeTrackingModal}>
+                  ×
+                </button>
+              </div>
+              <div className="tracking-modal-body">
+                <div className="tracking-order-info">
+                  <p className="tracking-order-id">
+                    Order ID: <strong>{trackingModal.order.orderId || trackingModal.order.id}</strong>
+                  </p>
+                  <p className="tracking-restaurant">
+                    {trackingModal.order.restaurant?.name || "Restaurant"}
+                  </p>
+                </div>
+
+                <div className="tracking-timeline">
+                  <div className="tracking-step completed">
+                    <div className="tracking-step-icon">✓</div>
+                    <div className="tracking-step-content">
+                      <h3>Order Confirmed</h3>
+                      <p>Your order has been received</p>
+                      <span className="tracking-step-time">
+                        {formatOrderDate(trackingModal.order.createdAt)}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="tracking-step completed">
+                    <div className="tracking-step-icon">✓</div>
+                    <div className="tracking-step-content">
+                      <h3>Preparing</h3>
+                      <p>Restaurant is preparing your food</p>
+                      <span className="tracking-step-time">Demo: 5 mins ago</span>
+                    </div>
+                  </div>
+
+                  <div className="tracking-step active">
+                    <div className="tracking-step-icon">🚴</div>
+                    <div className="tracking-step-content">
+                      <h3>On the Way</h3>
+                      <p>Your order is being delivered</p>
+                      <span className="tracking-step-time">Demo: In progress</span>
+                    </div>
+                  </div>
+
+                  <div className="tracking-step">
+                    <div className="tracking-step-icon">📦</div>
+                    <div className="tracking-step-content">
+                      <h3>Delivered</h3>
+                      <p>Order will be delivered soon</p>
+                      <span className="tracking-step-time">Demo: ETA 15-20 mins</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="tracking-demo-note">
+                  <p>
+                    <strong>Demo Mode:</strong> This is a demonstration of order tracking.
+                    In production, this would show real-time updates from your delivery partner.
+                  </p>
+                </div>
+
+                <div className="tracking-items">
+                  <h3>Order Items</h3>
+                  <ul>
+                    {getOrderItems(trackingModal.order).map((item, index) => (
+                      <li key={`${item.name}-${index}`}>
+                        {item.name} x{item.quantity || 1}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="tracking-total">
+                  <span>Total Amount:</span>
+                  <strong>₹{Number(trackingModal.order.total || 0)}</strong>
+                </div>
+              </div>
+            </div>
+          </div>
         )}
       </div>
     </section>
