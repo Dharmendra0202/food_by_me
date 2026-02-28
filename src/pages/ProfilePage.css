@@ -441,17 +441,17 @@
 .profile-stats {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-  margin-bottom: 32px;
+  gap: 16px;
+  margin-bottom: 24px;
 }
 
 .stat-card {
   background: linear-gradient(145deg, #ffffff, #f8f9fa);
-  border-radius: 18px;
-  padding: 28px 24px;
+  border-radius: 16px;
+  padding: 18px 16px;
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 14px;
   box-shadow: 
     0 6px 12px rgba(0, 0, 0, 0.1),
     0 12px 24px rgba(0, 0, 0, 0.12),
@@ -487,14 +487,14 @@
 }
 
 .stat-icon {
-  width: 68px;
-  height: 68px;
-  border-radius: 16px;
+  width: 50px;
+  height: 50px;
+  border-radius: 14px;
   background: linear-gradient(145deg, #fff3e0, #ffe0b2);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2.2rem;
+  font-size: 1.6rem;
   flex-shrink: 0;
   box-shadow: 
     0 6px 12px rgba(0, 0, 0, 0.12),
@@ -531,9 +531,9 @@
 }
 
 .stat-info h3 {
-  font-size: 2.2rem;
+  font-size: 1.6rem;
   color: #1a1a1a;
-  margin: 0 0 4px;
+  margin: 0 0 2px;
   font-weight: 900;
   text-shadow: 
     0 2px 4px rgba(0, 0, 0, 0.15),
@@ -545,12 +545,12 @@
 }
 
 .stat-info p {
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   color: #666;
   margin: 0;
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 1.5px;
+  letter-spacing: 1.2px;
   text-shadow: 
     0 1px 0 rgba(255, 255, 255, 0.9),
     0 2px 4px rgba(0, 0, 0, 0.1);
