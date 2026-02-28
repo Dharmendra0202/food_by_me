@@ -343,6 +343,15 @@ export default function CheckoutPage({ view = "cart" }) {
 
   const handlePayment = async (event) => {
     event.preventDefault();
+    
+    // Check if user is logged in
+    const token = localStorage.getItem("token");
+    if (!token) {
+      notifyApp("Please login to place an order", "warning");
+      window.location.href = "/login";
+      return;
+    }
+    
     if (!cartItems.length) {
       notifyApp("Your cart is empty", "warning");
       return;
@@ -414,6 +423,17 @@ export default function CheckoutPage({ view = "cart" }) {
       await loadOrders();
     } catch (error) {
       const message = error.message || "Payment failed. Please try again.";
+      
+      // Handle token expiration or invalid token
+      if (message.includes("token") || message.includes("Token") || message.includes("Authentication")) {
+        localStorage.removeItem("token");
+        notifyApp("Session expired. Please login again.", "error");
+        setTimeout(() => {
+          window.location.href = "/login";
+        }, 2000);
+        return;
+      }
+      
       setCouponError(message);
       notifyApp(message, "error");
     } finally {
@@ -802,13 +822,26 @@ export default function CheckoutPage({ view = "cart" }) {
                 </p>
               ) : null}
 
-              <button type="submit" className="checkout-pay-btn" disabled={isPaying || !hasToken}>
-                {!hasToken
-                  ? "Login required to place order"
-                  : isPaying
+              <button type="submit" className="checkout-pay-btn" disabled={isPaying}>
+                {isPaying
                   ? "Processing payment..."
+                  : !hasToken
+                  ? `Login to Pay ₹${total}`
                   : `Pay ₹${total}`}
               </button>
+              
+              {!hasToken && (
+                <p className="checkout-cod-note" style={{ marginTop: '10px', textAlign: 'center' }}>
+                  <Link to="/login" style={{ color: '#ff6b35', textDecoration: 'underline' }}>
+                    Login
+                  </Link>
+                  {' or '}
+                  <Link to="/signup" style={{ color: '#ff6b35', textDecoration: 'underline' }}>
+                    Sign up
+                  </Link>
+                  {' to place your order'}
+                </p>
+              )}
             </form>
           </div>
         ) : null}
