@@ -864,7 +864,12 @@ export default function RestaurantDetailsPage() {
                   name="name"
                   value={bookingForm.name}
                   onChange={handleBookingFieldChange}
+                  onInput={(e) => {
+                    e.target.value = e.target.value.replace(/[^A-Za-z\s'.-]/g, '').replace(/\s{2,}/g, ' ');
+                  }}
                   placeholder="Enter your name"
+                  pattern="[A-Za-z][A-Za-z\s'.-]*"
+                  title="Use letters and spaces only"
                   required
                 />
               </label>
@@ -919,7 +924,13 @@ export default function RestaurantDetailsPage() {
                   name="phone"
                   value={bookingForm.phone}
                   onChange={handleBookingFieldChange}
-                  placeholder="Enter contact number"
+                  onInput={(e) => {
+                    e.target.value = e.target.value.replace(/\D/g, '').slice(0, 10);
+                  }}
+                  placeholder="Enter 10-digit mobile number"
+                  pattern="[0-9]{10}"
+                  maxLength={10}
+                  inputMode="numeric"
                   required
                 />
               </label>
