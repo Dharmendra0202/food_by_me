@@ -16,6 +16,7 @@ export const API_ENDPOINTS = {
   ORDERS: {
     PLACE_ORDER: `${API_BASE_URL}/api/orders/place-order`,
     GET_MY_ORDERS: `${API_BASE_URL}/api/orders/my-orders`,
+    CANCEL_ORDER: (orderId) => `${API_BASE_URL}/api/orders/cancel-order/${orderId}`,
   },
 };
 
