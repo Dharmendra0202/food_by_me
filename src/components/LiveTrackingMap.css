@@ -102,22 +102,15 @@
 .map-point.active {
   border-color: #f59e0b;
   background: #fef3c7;
-  animation: bounce-delivery 1s ease-in-out infinite;
   box-shadow: 0 0 0 8px rgba(245, 158, 11, 0.2);
+  transform: scale(1.1);
+  transition: all 0.3s ease;
 }
 
 .map-point.passed {
   border-color: #10b981;
   background: #d1fae5;
 }
-
-@keyframes bounce-delivery {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-8px);
-  }
 }
 
 .map-progress-bar {

@@ -1191,21 +1191,12 @@
   gap: 6px;
   padding: 8px 14px;
   border-radius: 999px;
-  background: linear-gradient(135deg, #10b981, #059669);
+  background: #10b981;
   color: white;
   font-size: 0.85rem;
   font-weight: 700;
   box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-  animation: pulse-glow 2s ease-in-out infinite;
-}
-
-@keyframes pulse-glow {
-  0%, 100% {
-    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-  }
-  50% {
-    box-shadow: 0 4px 20px rgba(16, 185, 129, 0.5);
-  }
+  will-change: auto;
 }
 
 .checkout-enable-notifications {
@@ -1254,16 +1245,8 @@
 
 /* Live update indicator on order cards */
 .checkout-order-card.live-update {
-  animation: highlight-flash 1s ease;
-}
-
-@keyframes highlight-flash {
-  0%, 100% {
-    background: white;
-  }
-  50% {
-    background: #fef3c7;
-  }
+  background: #fef3c7;
+  transition: background 0.3s ease;
 }
 
 /* Responsive */

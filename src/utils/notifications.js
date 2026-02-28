@@ -113,7 +113,7 @@ export class OrderPollingService {
   constructor() {
     this.pollingInterval = null;
     this.lastOrderStatuses = new Map();
-    this.pollFrequency = 30000; // 30 seconds
+    this.pollFrequency = 60000; // 60 seconds (reduced from 30)
   }
 
   start(fetchOrdersFn, onStatusChange) {

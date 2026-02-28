@@ -2865,3 +2865,65 @@ html { scroll-behavior: smooth; } /* smooth anchor scroll */
     margin-top: 34px;
   }
 }
+
+/* ===========================
+   PERFORMANCE OPTIMIZATIONS
+=========================== */
+
+/* Reduce animations on scroll for better performance */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Use GPU acceleration for transforms */
+.hero-icons span,
+.hero-badge .truck,
+.restaurant-card,
+.swiggy-card,
+.why-card {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Optimize images */
+img {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  .hero-icons span {
+    animation: none !important;
+    transform: translateY(0) !important;
+  }
+}
+
+/* Optimize scrolling */
+.home-hero,
+.mind-section,
+.why-section,
+.restaurants-section,
+.swiggy-section {
+  contain: layout style paint;
+}
+
+/* Debounce expensive operations during scroll */
+@media (hover: none) {
+  .restaurant-card:hover,
+  .swiggy-card:hover,
+  .why-card:hover {
+    transform: none !important;
+  }
+}

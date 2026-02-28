@@ -206,3 +206,49 @@ h1,h2,h3,p { margin: 0; padding: 0; color: var(--text, #111827); }
     display: none !important;
   }
 }
+
+/* ===========================
+   SCROLL PERFORMANCE OPTIMIZATIONS
+=========================== */
+
+/* Enable smooth scrolling with GPU acceleration */
+html {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Optimize rendering during scroll */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeSpeed;
+}
+
+/* Reduce repaints during scroll */
+* {
+  box-sizing: border-box;
+}
+
+/* Use will-change sparingly for elements that animate */
+.hero-icons span,
+.restaurant-card,
+.swiggy-card {
+  will-change: transform;
+}
+
+/* Remove will-change after animation completes */
+.hero-icons span:not(:hover),
+.restaurant-card:not(:hover),
+.swiggy-card:not(:hover) {
+  will-change: auto;
+}
+
+/* Optimize images for faster loading */
+img {
+  content-visibility: auto;
+}
+
+/* Reduce layout shifts */
+img[src] {
+  aspect-ratio: attr(width) / attr(height);
+}

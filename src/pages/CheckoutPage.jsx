@@ -314,8 +314,8 @@ export default function CheckoutPage({ view = "cart" }) {
     // Callback when status changes
     const handleStatusChange = (order, oldStatus, newStatus) => {
       notifyApp(`Order ${order.orderId || order.id} status: ${formatOrderStatus(newStatus)}`, "info");
-      // Reload orders to update UI
-      loadOrders();
+      // Reload orders to update UI (debounced)
+      setTimeout(() => loadOrders(), 500);
     };
 
     // Start polling
@@ -327,7 +327,7 @@ export default function CheckoutPage({ view = "cart" }) {
         pollingServiceRef.current.stop();
       }
     };
-  }, [hasToken, showOrdersView, loadOrders]);
+  }, [hasToken, showOrdersView]);
 
   const handleQtyChange = (cartItem, delta) => {
     const nextQuantity = Number(cartItem.quantity) + delta;
