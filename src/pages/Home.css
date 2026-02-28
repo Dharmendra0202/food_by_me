@@ -316,6 +316,49 @@
   padding: 40px 20px 120px;
   position: relative;
   z-index: 30;
+  overflow: hidden; /* Contain the blobs */
+}
+
+/* Decorative background blobs */
+.why-section::before,
+.why-section::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  z-index: -1;
+  opacity: 0.6;
+  filter: blur(60px);
+  animation: float 8s ease-in-out infinite;
+}
+
+.why-section::before {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(255, 182, 193, 0.5) 0%, rgba(255, 192, 203, 0.3) 50%, transparent 100%);
+  top: -100px;
+  left: -150px;
+  animation-delay: 0s;
+}
+
+.why-section::after {
+  width: 350px;
+  height: 350px;
+  background: radial-gradient(circle, rgba(210, 180, 140, 0.5) 0%, rgba(222, 184, 135, 0.3) 50%, transparent 100%);
+  bottom: -80px;
+  right: -120px;
+  animation-delay: 2s;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(30px, -30px) scale(1.1);
+  }
+  66% {
+    transform: translate(-20px, 20px) scale(0.9);
+  }
 }
 
 .why-title {
