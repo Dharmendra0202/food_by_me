@@ -94,6 +94,29 @@
   font-size: 1.02rem;
 }
 
+.premium-feedback {
+  background: #10b981;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 12px;
+  margin: 16px 0;
+  font-weight: 600;
+  text-align: center;
+  animation: slideDown 0.3s ease-out;
+  max-width: 400px;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .premium-hero-pulse {
   position: absolute;
   right: 22px;

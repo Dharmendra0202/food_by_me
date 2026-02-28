@@ -529,10 +529,10 @@ export default function RestaurantDetailsPage() {
   }, [featuredRestaurant]);
 
   useEffect(() => {
-    if (!feedback || featuredRestaurant) return undefined;
+    if (!feedback) return undefined;
     const timeoutId = setTimeout(() => setFeedback(""), 1800);
     return () => clearTimeout(timeoutId);
-  }, [feedback, featuredRestaurant]);
+  }, [feedback]);
 
   useEffect(() => {
     setBookingForm(INITIAL_BOOKING_FORM);
@@ -743,6 +743,12 @@ export default function RestaurantDetailsPage() {
                 <span>{featuredRestaurant.about.priceRange}</span>
               </div>
 
+              {feedback ? (
+                <p className="pro-restaurant-feedback" role="status" aria-live="polite">
+                  {feedback}
+                </p>
+              ) : null}
+
               <div className="pro-restaurant-actions">
                 <button
                   type="button"
@@ -828,25 +834,58 @@ export default function RestaurantDetailsPage() {
             </div>
 
             <div className="pro-menu-grid">
-              {featuredRestaurant.specialities.map((item) => (
-                <article className="pro-menu-card" key={item.name}>
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    loading="lazy"
-                    decoding="async"
-                    fetchPriority="low"
-                    width="640"
-                    height="400"
-                  />
-                  <div className="pro-menu-card-body">
-                    <p className="pro-menu-item-category">{item.category}</p>
-                    <h3>{item.name}</h3>
-                    <p>{item.description}</p>
-                    <strong>{item.price}</strong>
-                  </div>
-                </article>
-              ))}
+              {featuredRestaurant.specialities.map((item) => {
+                const priceValue = extractPriceFromText(item.price) || 299;
+                return (
+                  <article className="pro-menu-card" key={item.name}>
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                      loading="lazy"
+                      decoding="async"
+                      fetchPriority="low"
+                      width="640"
+                      height="400"
+                    />
+                    <div className="pro-menu-card-body">
+                      <p className="pro-menu-item-category">{item.category}</p>
+                      <h3>{item.name}</h3>
+                      <p>{item.description}</p>
+                      <div className="pro-menu-card-footer">
+                        <strong>{item.price}</strong>
+                        <button
+                          type="button"
+                          className="pro-order-now-btn"
+                          onClick={() => {
+                            const orderItem = {
+                              name: item.name,
+                              image: item.image,
+                              offer: `${item.category} Special`,
+                              rating: featuredRestaurant.rating,
+                              eta: featuredRestaurant.about.openingHours,
+                              cuisines: featuredRestaurant.about.cuisineType,
+                              area: featuredRestaurant.location.address.split(',')[0],
+                              price: priceValue,
+                            };
+                            addCartItem({
+                              restaurantId: id,
+                              restaurantName: featuredRestaurant.name,
+                              item: orderItem,
+                              quantity: 1,
+                            });
+                            setFeedback(`${item.name} added to cart`);
+                            setTimeout(() => {
+                              navigate('/cart');
+                            }, 500);
+                          }}
+                        >
+                          Order Now
+                        </button>
+                      </div>
+                    </div>
+                  </article>
+                );
+              })}
             </div>
           </section>
 
