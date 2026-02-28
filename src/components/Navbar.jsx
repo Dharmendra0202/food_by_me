@@ -143,6 +143,11 @@ function Navbar() {
           {snapshot.isLoggedIn ? (
             <>
               <li>
+                <NavLink to="/profile" className={({ isActive }) => (isActive ? "active" : "")} onClick={closeMenu}>
+                  👤 Profile
+                </NavLink>
+              </li>
+              <li>
                 <span className="account-chip" title={snapshot.fullName}>
                   Hi, {shortName}
                 </span>
