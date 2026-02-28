@@ -48,14 +48,20 @@ try {
   const authSupabaseRoutes = require('./routes/auth-supabase');
   const restaurantRoutes = require('./routes/restaurants');
   const orderRoutes = require('./routes/orders');
+  const orderSimulatorRoutes = require('./routes/order-simulator');
 
   app.use('/api/health', healthRoutes);
   app.use('/api/auth', authRoutes); // Keep old auth for backward compatibility
   app.use('/api/auth-supabase', authSupabaseRoutes); // New Supabase auth
   app.use('/api/restaurants', restaurantRoutes);
   app.use('/api/orders', orderRoutes);
+  app.use('/api/order-simulator', orderSimulatorRoutes);
   
   console.log('✅ Routes loaded successfully');
+  
+  // Start automatic order status updater
+  const { startAutoUpdater } = require('./routes/order-simulator');
+  startAutoUpdater();
 } catch (error) {
   console.error('❌ Error loading routes:', error.message);
   console.error(error.stack);
