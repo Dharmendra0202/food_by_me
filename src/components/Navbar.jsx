@@ -49,6 +49,18 @@ function Navbar() {
   }, [location.pathname]);
 
   useEffect(() => {
+    // Handle hash navigation on page load
+    if (location.hash === '#restaurants') {
+      setTimeout(() => {
+        const restaurantsSection = document.getElementById('restaurants');
+        if (restaurantsSection) {
+          restaurantsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
+    }
+  }, [location.hash]);
+
+  useEffect(() => {
     if (!menuOpen) {
       document.body.style.overflow = "";
       return;
@@ -68,6 +80,23 @@ function Navbar() {
   };
 
   const closeMenu = () => setMenuOpen(false);
+
+  const scrollToRestaurants = (e) => {
+    e.preventDefault();
+    closeMenu();
+    
+    // If not on home page, navigate to home first
+    if (location.pathname !== '/') {
+      window.location.href = '/#restaurants';
+      return;
+    }
+    
+    // Scroll to restaurants section
+    const restaurantsSection = document.getElementById('restaurants');
+    if (restaurantsSection) {
+      restaurantsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
 
   return (
     <nav className="app-navbar" role="navigation">
@@ -91,7 +120,7 @@ function Navbar() {
 
         <ul className={`nav-links ${menuOpen ? 'nav-open' : ''}`}>
           <li>
-            <Link to="/" onClick={closeMenu}>Restaurant</Link>
+            <a href="#restaurants" onClick={scrollToRestaurants}>Restaurant</a>
           </li>
 
           <li>
