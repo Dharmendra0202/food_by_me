@@ -3,12 +3,10 @@
 ----------------------------------------- */
 .mind-section {
   position: relative;
-  margin: 0; /* Remove margin to eliminate gap */
-  margin-bottom: 34px; /* Keep bottom margin */
-  padding: 40px 18px; /* Add more padding for spacing */
+  margin: 34px 0;
+  padding: 6px 18px;
   z-index: 10;
   overflow: visible;
-  background: #fff6f3; /* Same as hero section - seamless transition */
 }
 
 .whatsOnYourMind {

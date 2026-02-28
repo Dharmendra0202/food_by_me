@@ -5,52 +5,9 @@
 
 /* make sure hero allows overflow so floating elements are visible */
 .home-hero {
-  padding: 80px 20px 0; /* Remove bottom padding */
+  padding: 80px 20px 120px;
   padding-top: 120px;
-  position: relative;
-  overflow: hidden; /* Contain the blobs */
-}
-
-/* Decorative background blobs for hero */
-.home-hero::before,
-.home-hero::after {
-  content: '';
-  position: absolute;
-  border-radius: 50%;
-  z-index: 0;
-  opacity: 0.5;
-  filter: blur(80px);
-  animation: floatHero 10s ease-in-out infinite;
-}
-
-.home-hero::before {
-  width: 500px;
-  height: 500px;
-  background: radial-gradient(circle, rgba(255, 182, 193, 0.6) 0%, rgba(255, 192, 203, 0.4) 50%, transparent 100%);
-  top: -150px;
-  right: -100px;
-  animation-delay: 0s;
-}
-
-.home-hero::after {
-  width: 450px;
-  height: 450px;
-  background: radial-gradient(circle, rgba(210, 180, 140, 0.6) 0%, rgba(222, 184, 135, 0.4) 50%, transparent 100%);
-  bottom: -100px;
-  left: -150px;
-  animation-delay: 3s;
-}
-
-@keyframes floatHero {
-  0%, 100% {
-    transform: translate(0, 0) scale(1);
-  }
-  33% {
-    transform: translate(-40px, 30px) scale(1.15);
-  }
-  66% {
-    transform: translate(30px, -25px) scale(0.95);
-  }
+  padding-bottom: 100px;
 }
 
 .hero-badge {
@@ -63,12 +20,13 @@
   position: absolute;            /* absolute to float over both sections */
   left: 50%;
   transform: translateX(-50%);
-  bottom: 20px;                 /* Adjust position for new spacing */
+  bottom: -28px;                 /* how far they dip into the gap — tweak as needed */
   display: flex;
   gap: 20px;
   align-items: flex-end;
   height: 0;                     /* keep no extra flow height */
   pointer-events: none;        /* let clicks pass through; remove if you want them clickable */
+  margin-bottom: 110px;
   z-index: 20;                   /* must be higher than hero and mind-section */
 }
 
@@ -841,9 +799,7 @@ html { scroll-behavior: smooth; } /* smooth anchor scroll */
 } */
 
 
-.home-hero {
-  background: #fff6f3; /* Soft peachy background */
-}
+
 
 
 
