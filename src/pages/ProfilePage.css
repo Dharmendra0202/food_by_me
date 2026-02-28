@@ -97,7 +97,7 @@
 .profile-card {
   background: linear-gradient(145deg, #ffffff, #f8f9fa);
   border-radius: 20px;
-  padding: 48px 40px;
+  padding: 32px 28px;
   box-shadow: 
     0 8px 16px rgba(0, 0, 0, 0.1),
     0 16px 32px rgba(0, 0, 0, 0.12),
@@ -205,8 +205,8 @@
 }
 
 .profile-field {
-  margin-bottom: 28px;
-  padding: 20px 24px;
+  margin-bottom: 20px;
+  padding: 14px 18px;
   background: linear-gradient(145deg, #ffffff, #f5f5f5);
   border: 3px solid #d0d0d0;
   border-radius: 14px;
@@ -270,10 +270,10 @@
 
 .profile-field label {
   display: block;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 800;
   color: #555;
-  margin-bottom: 10px;
+  margin-bottom: 6px;
   text-transform: uppercase;
   letter-spacing: 1.5px;
   text-shadow: 
@@ -283,7 +283,7 @@
 }
 
 .profile-field p {
-  font-size: 1.15rem;
+  font-size: 1rem;
   color: #1a1a1a;
   font-weight: 700;
   margin: 0;
@@ -297,10 +297,10 @@
 
 .profile-field input {
   width: 100%;
-  padding: 16px 20px;
+  padding: 12px 16px;
   border: 3px solid #d0d0d0;
   border-radius: 12px;
-  font-size: 1.05rem;
+  font-size: 0.95rem;
   font-weight: 600;
   color: #1a1a1a;
   transition: all 0.3s ease;
