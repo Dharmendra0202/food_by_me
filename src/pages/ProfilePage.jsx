@@ -174,18 +174,6 @@ export default function ProfilePage() {
         {activeTab === "profile" && (
           <div className="profile-content">
             <div className="profile-card">
-              <div className="profile-avatar-section">
-                <div className="profile-avatar">
-                  {profile.avatar ? (
-                    <img src={profile.avatar} alt={profile.fullName} />
-                  ) : (
-                    <div className="profile-avatar-placeholder">
-                      {profile.fullName.charAt(0).toUpperCase()}
-                    </div>
-                  )}
-                </div>
-              </div>
-
               <div className="profile-info">
                 {!isEditing ? (
                   <>
