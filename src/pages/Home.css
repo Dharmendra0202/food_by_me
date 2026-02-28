@@ -798,7 +798,8 @@ html { scroll-behavior: smooth; } /* smooth anchor scroll */
 
 
 .home-hero {
-  background: #fff6f3; /* replace gradient with solid */
+  background: linear-gradient(135deg, #ffe5f0 0%, #fff0f5 50%, #ffe8f3 100%);
+  /* Soft pinkish gradient background */
 }
 
 
