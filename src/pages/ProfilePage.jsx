@@ -184,17 +184,6 @@ export default function ProfilePage() {
                     </div>
                   )}
                 </div>
-                {isEditing && (
-                  <label className="profile-avatar-upload">
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleAvatarChange}
-                      style={{ display: "none" }}
-                    />
-                    📷 Change Photo
-                  </label>
-                )}
               </div>
 
               <div className="profile-info">
