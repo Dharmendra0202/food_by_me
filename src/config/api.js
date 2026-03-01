@@ -17,14 +17,13 @@ export const API_ENDPOINTS = {
     PLACE_ORDER: `${API_BASE_URL}/api/orders/place-order`,
     GET_MY_ORDERS: `${API_BASE_URL}/api/orders/my-orders`,
     CANCEL_ORDER: (orderId) => `${API_BASE_URL}/api/orders/cancel-order/${orderId}`,
+    UPDATE_STATUS: (orderId) => `${API_BASE_URL}/api/orders/${orderId}/status`,
+  },
+  ADMIN: {
+    GET_ALL_ORDERS: `${API_BASE_URL}/api/admin/orders`,
+    GET_STATS: `${API_BASE_URL}/api/admin/stats`,
   },
 };
-
-export const APP_SYNC_EVENT = "foodbyme:sync";
-export const APP_TOAST_EVENT = "foodbyme:toast";
-
-export const STORAGE_KEYS = {
-  CART: "foodbyme_cart_v1",
   FAVORITES: "foodbyme_favorites_v1",
   ADDRESSES: "foodbyme_addresses_v1",
   RECENT_ORDERS: "foodbyme_recent_orders_v1",
