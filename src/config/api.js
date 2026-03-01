@@ -24,11 +24,16 @@ export const API_ENDPOINTS = {
     GET_STATS: `${API_BASE_URL}/api/admin/stats`,
   },
 };
+
+export const APP_SYNC_EVENT = "foodbyme:sync";
+export const APP_TOAST_EVENT = "foodbyme:toast";
+
+export const STORAGE_KEYS = {
+  CART: "foodbyme_cart_v1",
   FAVORITES: "foodbyme_favorites_v1",
   ADDRESSES: "foodbyme_addresses_v1",
   RECENT_ORDERS: "foodbyme_recent_orders_v1",
 };
-
 function hasWindow() {
   return typeof window !== "undefined" && typeof localStorage !== "undefined";
 }
