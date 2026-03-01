@@ -34,10 +34,12 @@ export default function AdminDashboard() {
 
   const loadOrders = async () => {
     try {
+      console.log('Loading orders from:', API_ENDPOINTS.ADMIN.GET_ALL_ORDERS);
       const data = await apiRequest(API_ENDPOINTS.ADMIN.GET_ALL_ORDERS, {
         method: "GET",
       });
       
+      console.log('Orders received:', data);
       const ordersList = Array.isArray(data) ? data : [];
       setOrders(ordersList);
       
@@ -56,7 +58,8 @@ export default function AdminDashboard() {
       setStats(newStats);
     } catch (error) {
       console.error("Error loading orders:", error);
-      notifyApp("Failed to load orders", "error");
+      console.error("Error details:", error.message);
+      notifyApp(error.message || "Failed to load orders", "error");
     } finally {
       setLoading(false);
     }
