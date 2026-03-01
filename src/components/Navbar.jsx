@@ -209,6 +209,13 @@ function Navbar() {
 
                     <div className="profile-dropdown-divider"></div>
 
+                    <Link to="/admin/login" className="profile-dropdown-item admin-item" onClick={closeMenu}>
+                      <span className="dropdown-icon">🔐</span>
+                      <span>Admin Panel</span>
+                    </Link>
+
+                    <div className="profile-dropdown-divider"></div>
+
                     <button className="profile-dropdown-item logout-item" onClick={handleLogout}>
                       <span className="dropdown-icon">🚪</span>
                       <span>Logout</span>

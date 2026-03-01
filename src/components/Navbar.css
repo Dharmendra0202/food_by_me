@@ -592,3 +592,14 @@
     transform: translateX(0);
   }
 }
+
+.profile-dropdown-item.admin-item {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-weight: 600;
+}
+
+.profile-dropdown-item.admin-item:hover {
+  background: linear-gradient(135deg, #5568d3 0%, #6a4291 100%);
+  transform: translateX(4px);
+}
