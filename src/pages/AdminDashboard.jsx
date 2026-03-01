@@ -105,9 +105,14 @@ export default function AdminDashboard() {
           <h1>📊 Admin Dashboard</h1>
           <p>Manage all restaurant orders</p>
         </div>
-        <button onClick={handleLogout} className="admin-logout-btn">
-          Logout
-        </button>
+        <div className="admin-header-actions">
+          <button onClick={() => navigate("/")} className="admin-switch-btn">
+            👤 Switch to Customer
+          </button>
+          <button onClick={handleLogout} className="admin-logout-btn">
+            Logout
+          </button>
+        </div>
       </div>
 
       <div className="admin-stats-grid">
