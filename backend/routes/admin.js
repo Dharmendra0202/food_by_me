@@ -5,10 +5,11 @@ const { supabase } = require("../lib/supabase");
 // Get all orders (admin only)
 router.get("/orders", async (req, res) => {
   try {
-    // In production, verify admin token here
+    // Simple admin token check
     const adminToken = req.headers.authorization?.replace("Bearer ", "");
     
-    if (!adminToken) {
+    // Accept our simple admin token
+    if (!adminToken || adminToken !== "admin-authenticated") {
       return res.status(401).json({ error: "Admin authentication required" });
     }
 
@@ -55,7 +56,8 @@ router.get("/stats", async (req, res) => {
   try {
     const adminToken = req.headers.authorization?.replace("Bearer ", "");
     
-    if (!adminToken) {
+    // Accept our simple admin token
+    if (!adminToken || adminToken !== "admin-authenticated") {
       return res.status(401).json({ error: "Admin authentication required" });
     }
 
