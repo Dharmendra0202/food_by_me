@@ -111,6 +111,12 @@ export default function Login() {
           <span>New here?</span>
           <Link to="/signup">Create account</Link>
         </div>
+
+        <div className="auth-links" style={{ marginTop: '20px', paddingTop: '20px', borderTop: '1px solid #e0e0e0' }}>
+          <Link to="/admin/login" style={{ color: '#667eea', fontWeight: '600' }}>
+            🔐 Admin Login
+          </Link>
+        </div>
       </div>
     </section>
   );
