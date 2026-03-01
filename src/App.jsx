@@ -52,6 +52,7 @@ function CheckoutLegacyRedirect() {
 }
 
 export default function App() {
+  const location = useLocation();
   const catalogThemes = listCatalogThemes();
   const [isAuthenticated, setIsAuthenticated] = useState(() =>
     typeof window !== "undefined" ? Boolean(localStorage.getItem("token")) : false
@@ -111,7 +112,7 @@ export default function App() {
   return (
     <div className="app-root">
       <ScrollToTop />
-      <Navbar />
+      {!location.pathname.startsWith('/admin') && <Navbar />}
       <div className="bg-dots" aria-hidden="true">
         <span className="dot dot-left dot-1" />
         <span className="dot dot-left dot-2" />

@@ -12,21 +12,38 @@ router.get("/orders", async (req, res) => {
       return res.status(401).json({ error: "Admin authentication required" });
     }
 
-    // Fetch all orders with user details
+    // Fetch all orders
     const { data: orders, error } = await supabase
       .from("orders")
-      .select(`
-        *,
-        user:users(id, fullName, email)
-      `)
-      .order("createdAt", { ascending: false });
+      .select("*")
+      .order("created_at", { ascending: false });
 
     if (error) {
       console.error("Error fetching orders:", error);
       return res.status(500).json({ error: "Failed to fetch orders" });
     }
 
-    res.json(orders || []);
+    // Format orders to match expected structure
+    const formattedOrders = (orders || []).map(order => ({
+      id: order.id,
+      orderId: order.order_id,
+      status: order.status,
+      total: order.total,
+      createdAt: order.created_at,
+      items: order.items || [order.item],
+      item: order.item,
+      restaurant: order.restaurant,
+      user: {
+        fullName: order.full_name,
+        email: order.user_email,
+      },
+      deliveryAddress: {
+        address: order.address,
+        phone: order.phone,
+      },
+    }));
+
+    res.json(formattedOrders);
   } catch (error) {
     console.error("Admin orders error:", error);
     res.status(500).json({ error: "Internal server error" });
