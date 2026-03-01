@@ -49,6 +49,7 @@ try {
   const restaurantRoutes = require('./routes/restaurants');
   const orderRoutes = require('./routes/orders');
   const orderSimulatorRoutes = require('./routes/order-simulator');
+  const adminRoutes = require('./routes/admin');
 
   app.use('/api/health', healthRoutes);
   app.use('/api/auth', authRoutes); // Keep old auth for backward compatibility
@@ -56,6 +57,7 @@ try {
   app.use('/api/restaurants', restaurantRoutes);
   app.use('/api/orders', orderRoutes);
   app.use('/api/order-simulator', orderSimulatorRoutes);
+  app.use('/api/admin', adminRoutes);
   
   console.log('✅ Routes loaded successfully');
   

@@ -10,6 +10,8 @@ import PremiumFoodPage from "./pages/PremiumFoodPage";
 import RestaurantDetailsPage from "./pages/RestaurantDetailsPage";
 import CheckoutPage from "./pages/CheckoutPage";
 import ProfilePage from "./pages/ProfilePage";
+import AdminLogin from "./pages/AdminLogin";
+import AdminDashboard from "./pages/AdminDashboard";
 import TestConnection from "./pages/TestConnection";
 import { listCatalogThemes } from "./pages/catalogThemes";
 import { RESTAURANT_ROUTE_PATTERN } from "./data/restaurants";
@@ -123,6 +125,8 @@ export default function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route
             path="/profile"
             element={

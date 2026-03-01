@@ -196,3 +196,41 @@ router.patch('/cancel-order/:orderId', authMiddleware, async (req, res) => {
 });
 
 module.exports = router;
+
+// Update order status (admin)
+router.patch('/:orderId/status', async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const { status } = req.body;
+
+    // Validate status
+    const validStatuses = ['confirmed', 'preparing', 'on_the_way', 'delivered', 'cancelled'];
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({ error: 'Invalid status' });
+    }
+
+    // Update order status
+    const { data, error } = await supabase
+      .from('orders')
+      .update({ status })
+      .eq('id', orderId)
+      .select()
+      .single();
+
+    if (error) {
+      return res.status(500).json({ error: 'Failed to update order status' });
+    }
+
+    const updatedOrder = formatOrderRow(data);
+    console.log(`✓ Order Status Updated: ${data.order_id} -> ${status}`);
+
+    res.status(200).json({
+      success: true,
+      message: 'Order status updated successfully',
+      order: updatedOrder
+    });
+  } catch (error) {
+    console.error('Update order status error:', error);
+    res.status(500).json({ error: 'Failed to update order status' });
+  }
+});
