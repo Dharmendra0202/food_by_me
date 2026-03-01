@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { supabase } = require("../lib/supabase");
+const supabase = require("../lib/supabase");
 
 // Get all orders (admin only)
 router.get("/orders", async (req, res) => {
