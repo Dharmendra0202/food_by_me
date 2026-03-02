@@ -66,7 +66,6 @@ export default function AdminLogin() {
           </form>
 
           <div className="admin-login-footer">
-            <p>Default credentials: majnu / majnu@2909</p>
             <button onClick={() => navigate("/")} className="admin-back-btn">
               ← Back to Home
             </button>
