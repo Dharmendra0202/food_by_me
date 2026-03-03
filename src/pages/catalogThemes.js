@@ -346,7 +346,16 @@ const ITEM_IMAGES = {
   noodles: ["Noodles.jpg", "Chinese.jpg", "Noodles.jpg", "Chinese.jpg"],
   paratha: ["paratha.jpg", "Pureveg.jpg", "paratha.jpg", "paratha.jpg"],
   pureveg: ["Pureveg.jpg", "Fruits.jpg", "khichdi.jpg", "Pureveg.jpg"],
-  rasgulla: ["rasgulla.jpg", "Desserts.jpg", "rasgulla.jpg", "Cakes.jpg"],
+  rasgulla: [
+    "rasgulla-1.jpg",
+    "rasgulla-2.jpg",
+    "rasgulla-3.jpg",
+    "rasgulla-4.jpg",
+    "rasgulla-5.jpg",
+    "rasgulla-6.jpg",
+    "rasgulla-7.jpg",
+    "rasgulla-8.jpg",
+  ],
   shake: ["shake.jpg", "Fruits.jpg", "shake.jpg", "shake.jpg"],
   tea: ["Tea.png", "Coffee.jpg", "Tea.png", "Tea.png"],
 };

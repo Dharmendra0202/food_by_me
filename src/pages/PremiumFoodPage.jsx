@@ -80,6 +80,73 @@ export default function PremiumFoodPage({ theme }) {
     accentSoft = "#d1def5",
   } = theme;
 
+  const isRasgulla = theme.slug === "rasgulla";
+  const fallbackSrc = `/images/${image}`;
+
+  const handleImageError = (event) => {
+    const target = event.currentTarget;
+    if (target.dataset.fallbackApplied === "true") return;
+    target.dataset.fallbackApplied = "true";
+    target.src = fallbackSrc;
+  };
+
+  const rasgullaGallery = isRasgulla
+    ? [
+        {
+          src: "/images/rasgulla-1.jpg",
+          alt: "Rasgulla in light syrup",
+          title: "Syrup Soaked",
+          note: "Slow simmered for melt-in-mouth softness.",
+        },
+        {
+          src: "/images/rasgulla-2.jpg",
+          alt: "Clay pot rasgulla",
+          title: "Clay Pot Classic",
+          note: "Traditional serving style, warm and fragrant.",
+        },
+        {
+          src: "/images/rasgulla-3.jpg",
+          alt: "Rasgulla with saffron strands",
+          title: "Saffron Drift",
+          note: "Golden syrup with a gentle saffron finish.",
+        },
+        {
+          src: "/images/rasgulla-4.jpg",
+          alt: "Rasgulla close-up texture",
+          title: "Cloudy Texture",
+          note: "Feather-soft chenna spheres.",
+        },
+        {
+          src: "/images/rasgulla-5.jpg",
+          alt: "Rasgulla plated with rose petals",
+          title: "Rose Whisper",
+          note: "Floral aroma with delicate sweetness.",
+        },
+        {
+          src: "/images/rasgulla-6.jpg",
+          alt: "Mini rasgulla platter",
+          title: "Mini Bites",
+          note: "Perfect for party boxes and sharing.",
+        },
+        {
+          src: "/images/rasgulla-7.jpg",
+          alt: "Chilled rasgulla bowl",
+          title: "Chilled Serve",
+          note: "Light and refreshing, best served cold.",
+        },
+        {
+          src: "/images/rasgulla-8.jpg",
+          alt: "Rasgulla with pistachio garnish",
+          title: "Pista Garnish",
+          note: "Nutty finish with a creamy center.",
+        },
+      ]
+    : [];
+
+  const rasgullaStrip = isRasgulla
+    ? [...rasgullaGallery, ...rasgullaGallery]
+    : [];
+
   return (
     <section
       className="premium-page"
@@ -121,6 +188,7 @@ export default function PremiumFoodPage({ theme }) {
                       loading="lazy"
                       decoding="async"
                       fetchPriority="low"
+                      onError={handleImageError}
                     />
                     <span className="premium-price">INR {price}</span>
                   </div>
@@ -145,6 +213,82 @@ export default function PremiumFoodPage({ theme }) {
               );
             })}
           </section>
+
+          {isRasgulla && (
+            <section className="rasgulla-showcase" aria-label="Rasgulla showcase">
+              <header className="rasgulla-showcase-head">
+                <div>
+                  <div className="rasgulla-eyebrow">Rasgulla Spotlight</div>
+                  <h2>Floating in syrup, melting in seconds.</h2>
+                  <p>
+                    A classic Bengali sweet made from soft chenna, gently
+                    simmered in light sugar syrup for a cloud-like bite.
+                  </p>
+                </div>
+                <div className="rasgulla-badge">Freshly Soft • Lightly Sweet</div>
+              </header>
+
+              <div className="rasgulla-strips">
+                <div className="rasgulla-strip" data-direction="left">
+                  <div className="rasgulla-strip-track">
+                    {rasgullaStrip.map((slide, index) => (
+                      <figure className="rasgulla-slide" key={`strip-a-${index}`}>
+                        <img
+                          src={slide.src}
+                          alt={slide.alt}
+                          loading="lazy"
+                          decoding="async"
+                          onError={handleImageError}
+                        />
+                        <figcaption>
+                          <span>{slide.title}</span>
+                          <small>{slide.note}</small>
+                        </figcaption>
+                      </figure>
+                    ))}
+                  </div>
+                </div>
+                <div className="rasgulla-strip" data-direction="right">
+                  <div className="rasgulla-strip-track">
+                    {rasgullaStrip.map((slide, index) => (
+                      <figure className="rasgulla-slide" key={`strip-b-${index}`}>
+                        <img
+                          src={slide.src}
+                          alt={slide.alt}
+                          loading="lazy"
+                          decoding="async"
+                          onError={handleImageError}
+                        />
+                        <figcaption>
+                          <span>{slide.title}</span>
+                          <small>{slide.note}</small>
+                        </figcaption>
+                      </figure>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="rasgulla-story">
+                <div className="rasgulla-story-card">
+                  <h3>Why it shines</h3>
+                  <p>
+                    Rasgulla is a sweet that stays light yet indulgent. The airy
+                    texture absorbs syrup without feeling heavy, making it a
+                    perfect finish after a rich meal.
+                  </p>
+                </div>
+                <div className="rasgulla-story-card">
+                  <h3>Best ways to enjoy</h3>
+                  <p>
+                    Serve chilled for a refreshing bite or warm for a more
+                    fragrant, soft-center experience. Pair with saffron or rose
+                    for an elevated finish.
+                  </p>
+                </div>
+              </div>
+            </section>
+          )}
         </div>
       </div>
     </section>
