@@ -20,7 +20,7 @@ export default function WhatsOnYourMind({
     { name: "Kebabs", img: "/images/kebabs.jpg" },
     { name: "Fruits", img: "/images/Fruits.jpg" },
     { name: "Biryani", img: "/images/Biryani.jpg" },
-    { name: "Desserts", img: "/images/desserts.jpg" },
+    { name: "Desserts", img: "/images/dessert.jpg" },
     { name: "Khichdi", img: "/images/khichdi.jpg" },
     { name: "Shake", img: "/images/shake.jpg" },
     { name: "Rasgulla", img: "/images/rasgulla.jpg" },
