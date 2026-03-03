@@ -101,7 +101,7 @@ export default function PremiumFoodPage({ theme }) {
   const firstBatchItems = items.slice(0, 8);
   const secondBatchItems = items.slice(8, 16);
   const hasMiddleStrip = secondBatchItems.length > 0;
-  const stripCards = firstBatchItems.map((item) => ({
+  const stripCards = firstBatchItems.slice(0, 4).map((item) => ({
     src: resolveImageSrc(item.image || image, fallbackSrc),
     alt: item.name,
     title: item.name,

@@ -17,8 +17,8 @@
 .premium-bg {
   position: absolute;
   border-radius: 999px;
-  filter: blur(40px);
-  opacity: 0.45;
+  filter: blur(24px);
+  opacity: 0.28;
   pointer-events: none;
 }
 
@@ -142,7 +142,9 @@
   border-radius: 20px;
   overflow: hidden;
   box-shadow: 0 12px 28px rgba(18, 30, 45, 0.12);
-  backdrop-filter: blur(10px);
+  contain: content;
+  content-visibility: auto;
+  contain-intrinsic-size: 360px;
   transform: translateY(8px);
   opacity: 0;
   animation: card-in 0.5s ease forwards;
@@ -242,7 +244,6 @@
   border-radius: 18px;
   background: linear-gradient(120deg, rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.68));
   border: 1px solid color-mix(in srgb, var(--accent) 24%, white);
-  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
 }
 
 .premium-strip-track {
@@ -250,12 +251,13 @@
   gap: 14px;
   width: max-content;
   padding: 12px;
-  animation: premium-marquee 30s linear infinite;
+  animation: premium-marquee 42s linear infinite;
+  will-change: transform;
 }
 
 .premium-mini-card {
   position: relative;
-  flex: 0 0 210px;
+  flex: 0 0 186px;
   background: #ffffff;
   border-radius: 14px;
   overflow: hidden;
@@ -269,7 +271,7 @@
 
 .premium-mini-card img {
   width: 100%;
-  height: 128px;
+  height: 116px;
   object-fit: cover;
   display: block;
 }
@@ -310,8 +312,6 @@
     color-mix(in srgb, var(--accent) 56%, #1e293b)
   );
   box-shadow: 0 8px 24px rgba(17, 24, 39, 0.28);
-  backdrop-filter: blur(4px);
-  animation: ad-glow 2.8s ease-in-out infinite;
 }
 
 .premium-ad-copy h2 {
@@ -404,6 +404,10 @@
   .premium-strip-track {
     animation: none;
   }
+
+  .premium-hero-pulse {
+    animation: none;
+  }
 }
 
 @media (max-width: 980px) {
@@ -424,6 +428,10 @@
   .premium-ad-copy {
     right: 10px;
     max-width: 280px;
+  }
+
+  .premium-strip-track {
+    animation: none;
   }
 }
 
@@ -453,14 +461,15 @@
 
   .premium-strip-track {
     padding: 8px;
+    animation: none;
   }
 
   .premium-mini-card {
-    flex-basis: 172px;
+    flex-basis: 160px;
   }
 
   .premium-mini-card img {
-    height: 112px;
+    height: 100px;
   }
 
   .premium-ad-copy {

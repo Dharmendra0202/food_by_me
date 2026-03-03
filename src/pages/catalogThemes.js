@@ -353,7 +353,19 @@ const ITEM_IMAGES = {
   khichdi: ["khichdi.jpg", "Pureveg.jpg", "khichdi.jpg", "khichdi.jpg"],
   noodles: ["Noodles.jpg", "Chinese.jpg", "Noodles.jpg", "Chinese.jpg"],
   paratha: ["paratha.jpg", "Pureveg.jpg", "paratha.jpg", "paratha.jpg"],
-  pureveg: ["Pureveg.jpg", "Fruits.jpg", "khichdi.jpg", "Pureveg.jpg"],
+  pureveg: [
+    "opt_1_pure_veg.jpg",
+    "opt_2_pure_veg.jpg",
+    "opt_3_pure_veg.jpg",
+    "opt_4_pure_veg.jpg",
+    "opt_5_pure_veg.jpg",
+    "opt_6_pure_veg.jpg",
+    "opt_7_pure_veg.jpg",
+    "opt_8_pure_veg.jpg",
+    "opt_9_pure_veg.jpg",
+    "opt_10_pure_veg.jpg",
+    "Pureveg.jpg",
+  ],
   rasgulla: [
     "https://source.unsplash.com/1200x900/?rasgulla,indian-dessert&sig=1",
     "https://source.unsplash.com/1200x900/?bengali-sweets,rasgulla&sig=2",
@@ -373,7 +385,20 @@ const ITEM_IMAGES = {
     "https://source.unsplash.com/1200x900/?dessert,indian-table&sig=16",
   ],
   shake: ["shake.jpg", "Fruits.jpg", "shake.jpg", "shake.jpg"],
-  tea: ["Tea.png", "Coffee.jpg", "Tea.png", "Tea.png"],
+  tea: [
+    "opt_1_tea.jpg",
+    "opt_2_tea.jpg",
+    "opt_3_tea.jpg",
+    "opt_4_tea.jpg",
+    "opt_5_tea.jpg",
+    "opt_6_tea.jpg",
+    "opt_7_tea.jpg",
+    "opt_8_tea.jpg",
+    "opt_9_tea.jpg",
+    "opt_10_tea.jpg",
+    "opt_11_tea.jpg",
+    "Tea.png",
+  ],
 };
 
 const TARGET_ITEMS_PER_THEME = 16;
