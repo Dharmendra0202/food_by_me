@@ -12,6 +12,12 @@ function getEta(index) {
   return `${min}-${min + 10} min`;
 }
 
+function resolveImageSrc(src, fallbackSrc) {
+  if (!src) return fallbackSrc;
+  if (/^https?:\/\//i.test(src)) return src;
+  return `/images/${src}`;
+}
+
 export default function PremiumFoodPage({ theme }) {
   const navigate = useNavigate();
   const [feedback, setFeedback] = useState("");
@@ -39,9 +45,12 @@ export default function PremiumFoodPage({ theme }) {
   }, [feedback]);
 
   const handleOrderNow = (item, price, index) => {
+    const fallbackSrc = `/images/${theme.image}`;
+    const cardImage = resolveImageSrc(item.image || theme.image, fallbackSrc);
+
     const orderItem = {
       name: item.name,
-      image: `/images/${item.image || theme.image}`,
+      image: cardImage,
       offer: `${theme.kicker} Special`,
       rating: parseFloat(getRating(index)),
       eta: getEta(index),
@@ -90,62 +99,59 @@ export default function PremiumFoodPage({ theme }) {
     target.src = fallbackSrc;
   };
 
-  const rasgullaGallery = isRasgulla
-    ? [
-        {
-          src: "/images/rasgulla-1.jpg",
-          alt: "Rasgulla in light syrup",
-          title: "Syrup Soaked",
-          note: "Slow simmered for melt-in-mouth softness.",
-        },
-        {
-          src: "/images/rasgulla-2.jpg",
-          alt: "Clay pot rasgulla",
-          title: "Clay Pot Classic",
-          note: "Traditional serving style, warm and fragrant.",
-        },
-        {
-          src: "/images/rasgulla-3.jpg",
-          alt: "Rasgulla with saffron strands",
-          title: "Saffron Drift",
-          note: "Golden syrup with a gentle saffron finish.",
-        },
-        {
-          src: "/images/rasgulla-4.jpg",
-          alt: "Rasgulla close-up texture",
-          title: "Cloudy Texture",
-          note: "Feather-soft chenna spheres.",
-        },
-        {
-          src: "/images/rasgulla-5.jpg",
-          alt: "Rasgulla plated with rose petals",
-          title: "Rose Whisper",
-          note: "Floral aroma with delicate sweetness.",
-        },
-        {
-          src: "/images/rasgulla-6.jpg",
-          alt: "Mini rasgulla platter",
-          title: "Mini Bites",
-          note: "Perfect for party boxes and sharing.",
-        },
-        {
-          src: "/images/rasgulla-7.jpg",
-          alt: "Chilled rasgulla bowl",
-          title: "Chilled Serve",
-          note: "Light and refreshing, best served cold.",
-        },
-        {
-          src: "/images/rasgulla-8.jpg",
-          alt: "Rasgulla with pistachio garnish",
-          title: "Pista Garnish",
-          note: "Nutty finish with a creamy center.",
-        },
-      ]
+  const firstBatchItems = isRasgulla ? items.slice(0, 8) : items;
+  const secondBatchItems = isRasgulla ? items.slice(8, 16) : [];
+  const stripCards = isRasgulla
+    ? firstBatchItems.map((item) => ({
+        src: resolveImageSrc(item.image || image, fallbackSrc),
+        alt: item.name,
+        title: item.name,
+        note: item.note,
+      }))
     : [];
+  const stripTrackItems = isRasgulla ? [...stripCards, ...stripCards] : [];
 
-  const rasgullaStrip = isRasgulla
-    ? [...rasgullaGallery, ...rasgullaGallery]
-    : [];
+  const renderItemGrid = (cardItems, startIndex = 0, labelSuffix = "items") => (
+    <section className="premium-grid" aria-label={`${title} ${labelSuffix}`}>
+      {cardItems.map((item, offset) => {
+        const index = startIndex + offset;
+        const price = basePrice + index * priceStep;
+
+        return (
+          <article className="premium-card" key={`${item.name}-${index}`}>
+            <div className="premium-card-media">
+              <img
+                src={resolveImageSrc(item.image || image, fallbackSrc)}
+                alt={item.name}
+                loading="lazy"
+                decoding="async"
+                fetchPriority="low"
+                onError={handleImageError}
+              />
+              <span className="premium-price">INR {price}</span>
+            </div>
+
+            <div className="premium-card-body">
+              <h3>{item.name}</h3>
+              <p>{item.note}</p>
+
+              <div className="premium-meta">
+                <span>{getEta(index)}</span>
+                <span>{getRating(index)} star</span>
+              </div>
+
+              <button
+                className="premium-order"
+                onClick={() => handleOrderNow(item, price, index)}
+              >
+                Order Now
+              </button>
+            </div>
+          </article>
+        );
+      })}
+    </section>
+  );
 
   return (
     <section
@@ -175,120 +181,44 @@ export default function PremiumFoodPage({ theme }) {
             <div className="premium-hero-pulse" aria-hidden="true" />
           </header>
 
-          <section className="premium-grid" aria-label={`${title} items`}>
-            {items.map((item, index) => {
-              const price = basePrice + index * priceStep;
+          {renderItemGrid(firstBatchItems, 0, "top picks")}
 
-              return (
-                <article className="premium-card" key={item.name}>
-                  <div className="premium-card-media">
-                    <img
-                      src={`/images/${item.image || image}`}
-                      alt={item.name}
-                      loading="lazy"
-                      decoding="async"
-                      fetchPriority="low"
-                      onError={handleImageError}
-                    />
-                    <span className="premium-price">INR {price}</span>
-                  </div>
-
-                  <div className="premium-card-body">
-                    <h3>{item.name}</h3>
-                    <p>{item.note}</p>
-
-                    <div className="premium-meta">
-                      <span>{getEta(index)}</span>
-                      <span>{getRating(index)} star</span>
-                    </div>
-
-                    <button 
-                      className="premium-order"
-                      onClick={() => handleOrderNow(item, price, index)}
-                    >
-                      Order Now
-                    </button>
-                  </div>
-                </article>
-              );
-            })}
-          </section>
-
-          {isRasgulla && (
-            <section className="rasgulla-showcase" aria-label="Rasgulla showcase">
-              <header className="rasgulla-showcase-head">
-                <div>
-                  <div className="rasgulla-eyebrow">Rasgulla Spotlight</div>
-                  <h2>Floating in syrup, melting in seconds.</h2>
-                  <p>
-                    A classic Bengali sweet made from soft chenna, gently
-                    simmered in light sugar syrup for a cloud-like bite.
-                  </p>
+          {isRasgulla && secondBatchItems.length > 0 && (
+            <section className="rasgulla-mid-banner" aria-label="Rasgulla ad strip">
+              <div className="rasgulla-strip-single">
+                <div className="rasgulla-strip-track">
+                  {stripTrackItems.map((slide, index) => (
+                    <figure className="rasgulla-mini-card" key={`strip-${index}`}>
+                      <img
+                        src={slide.src}
+                        alt={slide.alt}
+                        loading="lazy"
+                        decoding="async"
+                        onError={handleImageError}
+                      />
+                      <figcaption>
+                        <span>{slide.title}</span>
+                        <small>{slide.note}</small>
+                      </figcaption>
+                    </figure>
+                  ))}
                 </div>
-                <div className="rasgulla-badge">Freshly Soft • Lightly Sweet</div>
-              </header>
-
-              <div className="rasgulla-strips">
-                <div className="rasgulla-strip" data-direction="left">
-                  <div className="rasgulla-strip-track">
-                    {rasgullaStrip.map((slide, index) => (
-                      <figure className="rasgulla-slide" key={`strip-a-${index}`}>
-                        <img
-                          src={slide.src}
-                          alt={slide.alt}
-                          loading="lazy"
-                          decoding="async"
-                          onError={handleImageError}
-                        />
-                        <figcaption>
-                          <span>{slide.title}</span>
-                          <small>{slide.note}</small>
-                        </figcaption>
-                      </figure>
-                    ))}
-                  </div>
-                </div>
-                <div className="rasgulla-strip" data-direction="right">
-                  <div className="rasgulla-strip-track">
-                    {rasgullaStrip.map((slide, index) => (
-                      <figure className="rasgulla-slide" key={`strip-b-${index}`}>
-                        <img
-                          src={slide.src}
-                          alt={slide.alt}
-                          loading="lazy"
-                          decoding="async"
-                          onError={handleImageError}
-                        />
-                        <figcaption>
-                          <span>{slide.title}</span>
-                          <small>{slide.note}</small>
-                        </figcaption>
-                      </figure>
-                    ))}
-                  </div>
+                <div className="rasgulla-ad-copy" aria-hidden="true">
+                  <p className="rasgulla-ad-tag">Rasgulla Festival Offer</p>
+                  <h2>Buy 2 Boxes, Get 15% Off</h2>
+                  <p>Fresh batch every hour. Soft center, balanced syrup.</p>
                 </div>
               </div>
-
-              <div className="rasgulla-story">
-                <div className="rasgulla-story-card">
-                  <h3>Why it shines</h3>
-                  <p>
-                    Rasgulla is a sweet that stays light yet indulgent. The airy
-                    texture absorbs syrup without feeling heavy, making it a
-                    perfect finish after a rich meal.
-                  </p>
-                </div>
-                <div className="rasgulla-story-card">
-                  <h3>Best ways to enjoy</h3>
-                  <p>
-                    Serve chilled for a refreshing bite or warm for a more
-                    fragrant, soft-center experience. Pair with saffron or rose
-                    for an elevated finish.
-                  </p>
-                </div>
-              </div>
+              <p className="rasgulla-mid-note">
+                Made from chenna and simmered in light syrup, this sweet stays
+                airy, juicy, and classic in every bite.
+              </p>
             </section>
           )}
+
+          {isRasgulla && secondBatchItems.length > 0
+            ? renderItemGrid(secondBatchItems, 8, "more picks")
+            : null}
         </div>
       </div>
     </section>
