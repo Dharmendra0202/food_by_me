@@ -189,19 +189,21 @@
 }
 
 .premium-card-body {
-  padding: 14px;
+  padding: 12px 12px 10px;
 }
 
 .premium-card-body h3 {
   margin: 0;
   font-size: 1rem;
+  line-height: 1.2;
   letter-spacing: -0.01em;
 }
 
 .premium-card-body p {
-  margin: 8px 0 12px;
+  margin: 5px 0 8px;
   color: var(--text-soft);
   font-size: 0.9rem;
+  line-height: 1.28;
 }
 
 .premium-meta {
@@ -209,14 +211,15 @@
   justify-content: space-between;
   font-size: 12px;
   color: #394a62;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
+  line-height: 1.2;
 }
 
 .premium-order {
   width: 100%;
   border: 0;
   border-radius: 12px;
-  padding: 10px 12px;
+  padding: 9px 12px;
   background: linear-gradient(120deg, var(--accent), #202f46);
   color: #ffffff;
   font-weight: 700;
