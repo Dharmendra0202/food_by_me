@@ -89,7 +89,6 @@ export default function PremiumFoodPage({ theme }) {
     accentSoft = "#d1def5",
   } = theme;
 
-  const isRasgulla = theme.slug === "rasgulla";
   const fallbackSrc = `/images/${image}`;
 
   const handleImageError = (event) => {
@@ -99,17 +98,16 @@ export default function PremiumFoodPage({ theme }) {
     target.src = fallbackSrc;
   };
 
-  const firstBatchItems = isRasgulla ? items.slice(0, 8) : items;
-  const secondBatchItems = isRasgulla ? items.slice(8, 16) : [];
-  const stripCards = isRasgulla
-    ? firstBatchItems.map((item) => ({
-        src: resolveImageSrc(item.image || image, fallbackSrc),
-        alt: item.name,
-        title: item.name,
-        note: item.note,
-      }))
-    : [];
-  const stripTrackItems = isRasgulla ? [...stripCards, ...stripCards] : [];
+  const firstBatchItems = items.slice(0, 8);
+  const secondBatchItems = items.slice(8, 16);
+  const hasMiddleStrip = secondBatchItems.length > 0;
+  const stripCards = firstBatchItems.map((item) => ({
+    src: resolveImageSrc(item.image || image, fallbackSrc),
+    alt: item.name,
+    title: item.name,
+    note: item.note,
+  }));
+  const stripTrackItems = [...stripCards, ...stripCards];
 
   const renderItemGrid = (cardItems, startIndex = 0, labelSuffix = "items") => (
     <section className="premium-grid" aria-label={`${title} ${labelSuffix}`}>
@@ -183,12 +181,12 @@ export default function PremiumFoodPage({ theme }) {
 
           {renderItemGrid(firstBatchItems, 0, "top picks")}
 
-          {isRasgulla && secondBatchItems.length > 0 && (
-            <section className="rasgulla-mid-banner" aria-label="Rasgulla ad strip">
-              <div className="rasgulla-strip-single">
-                <div className="rasgulla-strip-track">
+          {hasMiddleStrip && (
+            <section className="premium-mid-banner" aria-label={`${title} ad strip`}>
+              <div className="premium-strip-single">
+                <div className="premium-strip-track">
                   {stripTrackItems.map((slide, index) => (
-                    <figure className="rasgulla-mini-card" key={`strip-${index}`}>
+                    <figure className="premium-mini-card" key={`strip-${index}`}>
                       <img
                         src={slide.src}
                         alt={slide.alt}
@@ -203,22 +201,20 @@ export default function PremiumFoodPage({ theme }) {
                     </figure>
                   ))}
                 </div>
-                <div className="rasgulla-ad-copy" aria-hidden="true">
-                  <p className="rasgulla-ad-tag">Rasgulla Festival Offer</p>
-                  <h2>Buy 2 Boxes, Get 15% Off</h2>
-                  <p>Fresh batch every hour. Soft center, balanced syrup.</p>
+                <div className="premium-ad-copy" aria-hidden="true">
+                  <p className="premium-ad-tag">{kicker} Offer</p>
+                  <h2>{title} Special Combo</h2>
+                  <p>Order 2 boxes and unlock extra savings on this category.</p>
                 </div>
               </div>
-              <p className="rasgulla-mid-note">
-                Made from chenna and simmered in light syrup, this sweet stays
-                airy, juicy, and classic in every bite.
+              <p className="premium-mid-note">
+                {subtitle} Freshly prepared batches with balanced flavor and smooth
+                texture in every serving.
               </p>
             </section>
           )}
 
-          {isRasgulla && secondBatchItems.length > 0
-            ? renderItemGrid(secondBatchItems, 8, "more picks")
-            : null}
+          {hasMiddleStrip ? renderItemGrid(secondBatchItems, 8, "more picks") : null}
         </div>
       </div>
     </section>

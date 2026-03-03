@@ -376,6 +376,41 @@ const ITEM_IMAGES = {
   tea: ["Tea.png", "Coffee.jpg", "Tea.png", "Tea.png"],
 };
 
+const TARGET_ITEMS_PER_THEME = 16;
+const CLONE_SUFFIXES = [
+  "Select",
+  "Prime",
+  "Signature",
+  "Plus",
+  "Chef Pick",
+  "House Special",
+  "Delight",
+  "Reserve",
+];
+
+function buildThemeItems(theme, pool) {
+  const sourceItems =
+    Array.isArray(theme.items) && theme.items.length > 0
+      ? theme.items
+      : [{ name: `${theme.title} Special`, note: theme.subtitle }];
+
+  const totalItems = Math.max(TARGET_ITEMS_PER_THEME, sourceItems.length);
+
+  return Array.from({ length: totalItems }, (_, index) => {
+    const baseItem = sourceItems[index % sourceItems.length];
+    const cycle = Math.floor(index / sourceItems.length);
+    const suffixIndex = (index - sourceItems.length) % CLONE_SUFFIXES.length;
+    const clonedName =
+      cycle > 0 ? `${baseItem.name} ${CLONE_SUFFIXES[suffixIndex]}` : baseItem.name;
+
+    return {
+      ...baseItem,
+      name: clonedName,
+      image: baseItem.image || pool[index % pool.length] || theme.image,
+    };
+  });
+}
+
 const THEMES_WITH_IMAGES = Object.fromEntries(
   Object.entries(THEMES).map(([slug, theme]) => {
     const pool = ITEM_IMAGES[slug] || [theme.image];
@@ -383,10 +418,7 @@ const THEMES_WITH_IMAGES = Object.fromEntries(
       slug,
       {
         ...theme,
-        items: theme.items.map((item, index) => ({
-          ...item,
-          image: item.image || pool[index % pool.length] || theme.image,
-        })),
+        items: buildThemeItems(theme, pool),
       },
     ];
   }),
