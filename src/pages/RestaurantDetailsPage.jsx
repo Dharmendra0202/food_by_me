@@ -9,6 +9,8 @@ import {
   toggleFavoriteRestaurant,
 } from "../config/api";
 import { getRestaurantById } from "../data/restaurants";
+import PremiumFoodPage from "./PremiumFoodPage";
+import { getThemeBySlug } from "./catalogThemes";
 import "./RestaurantDetailsPage.css";
 
 const INITIAL_BOOKING_FORM = {
@@ -489,11 +491,54 @@ function getReviewStars(value) {
   return `${"★".repeat(rating)}${"☆".repeat(5 - rating)}`;
 }
 
+const RESTAURANT_THEME_MAP = {
+  biryani: "biryani",
+  burger: "kebabs",
+  pizza: "cakes",
+  cake: "cakes",
+  khichdi: "khichdi",
+  "ice-cream": "desserts",
+  noodles: "noodles",
+  vada: "pureveg",
+  paratha: "paratha",
+  pastry: "cakes",
+  salad: "fruits",
+  "healthy-bowl": "fruits",
+  idli: "pureveg",
+  rolls: "kebabs",
+  shawarma: "kebabs",
+  dosa: "pureveg",
+  "pav-bhaji": "pureveg",
+  shake: "shake",
+  "gulab-jamun": "rasgulla",
+  pasta: "noodles",
+  chinese: "chinese",
+};
+
+function getMappedThemeForRestaurant(restaurant) {
+  if (!restaurant) return null;
+
+  const normalizedId = String(restaurant.id || "").trim().toLowerCase();
+  const targetThemeSlug = RESTAURANT_THEME_MAP[normalizedId];
+  if (!targetThemeSlug) return null;
+
+  const baseTheme = getThemeBySlug(targetThemeSlug);
+  return {
+    ...baseTheme,
+    slug: normalizedId || baseTheme.slug,
+    route: `/restaurant/${normalizedId || baseTheme.slug}`,
+    kicker: `${restaurant.name} Section`,
+    title: restaurant.name,
+    subtitle: restaurant.description || baseTheme.subtitle,
+  };
+}
+
 export default function RestaurantDetailsPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const featuredRestaurant = FEATURED_RESTAURANTS[id] || null;
   const restaurant = featuredRestaurant ? null : getRestaurantById(id);
+  const mappedTheme = useMemo(() => getMappedThemeForRestaurant(restaurant), [restaurant]);
 
   const [cartCount, setCartCount] = useState(0);
   const [feedback, setFeedback] = useState("");
@@ -1162,10 +1207,16 @@ export default function RestaurantDetailsPage() {
           </div>
         </header>
 
-        <section className="restaurant-highlights">
-          <h2>Popular picks</h2>
-          {renderHighlights(restaurant.highlights)}
-        </section>
+        {mappedTheme ? (
+          <section className="restaurant-highlights restaurant-highlights--theme">
+            <PremiumFoodPage theme={mappedTheme} hideHero embedded />
+          </section>
+        ) : (
+          <section className="restaurant-highlights">
+            <h2>Popular picks</h2>
+            {renderHighlights(restaurant.highlights)}
+          </section>
+        )}
 
         {Array.isArray(restaurant.nonVegHighlights) &&
           restaurant.nonVegHighlights.length > 0 && (

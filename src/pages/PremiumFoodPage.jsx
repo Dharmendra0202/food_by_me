@@ -18,11 +18,13 @@ function resolveImageSrc(src, fallbackSrc) {
   return `/images/${src}`;
 }
 
-export default function PremiumFoodPage({ theme }) {
+export default function PremiumFoodPage({ theme, hideHero = false, embedded = false }) {
   const navigate = useNavigate();
   const [feedback, setFeedback] = useState("");
 
   useLayoutEffect(() => {
+    if (embedded) return undefined;
+
     const html = document.documentElement;
     const body = document.body;
     const prevHtmlBehavior = html.style.scrollBehavior;
@@ -153,31 +155,39 @@ export default function PremiumFoodPage({ theme }) {
 
   return (
     <section
-      className="premium-page"
+      className={`premium-page${embedded ? " premium-page-embedded" : ""}`}
       style={{
         "--accent": accent,
         "--accent-soft": accentSoft,
       }}
     >
-      <div className="premium-bg premium-bg-one" aria-hidden="true" />
-      <div className="premium-bg premium-bg-two" aria-hidden="true" />
+      {!embedded && <div className="premium-bg premium-bg-one" aria-hidden="true" />}
+      {!embedded && <div className="premium-bg premium-bg-two" aria-hidden="true" />}
 
       <div className="premium-shell">
         <div className="premium-main">
-          <header className="premium-hero">
-            <button className="premium-back" onClick={() => navigate(-1)}>
-              Back
-            </button>
-            <div className="premium-kicker">{kicker}</div>
-            <h1>{title}</h1>
-            <p>{subtitle}</p>
-            {feedback && (
-              <div className="premium-feedback" role="status" aria-live="polite">
-                {feedback}
-              </div>
-            )}
-            <div className="premium-hero-pulse" aria-hidden="true" />
-          </header>
+          {!hideHero && (
+            <header className="premium-hero">
+              <button className="premium-back" onClick={() => navigate(-1)}>
+                Back
+              </button>
+              <div className="premium-kicker">{kicker}</div>
+              <h1>{title}</h1>
+              <p>{subtitle}</p>
+              {feedback && (
+                <div className="premium-feedback" role="status" aria-live="polite">
+                  {feedback}
+                </div>
+              )}
+              <div className="premium-hero-pulse" aria-hidden="true" />
+            </header>
+          )}
+
+          {hideHero && feedback && (
+            <div className="premium-feedback premium-feedback-inline" role="status" aria-live="polite">
+              {feedback}
+            </div>
+          )}
 
           {renderItemGrid(firstBatchItems, 0, "top picks")}
 

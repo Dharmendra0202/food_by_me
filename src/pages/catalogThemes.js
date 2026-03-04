@@ -477,6 +477,8 @@ const ALIASES = {
   pureveg: "pureveg",
   "pure-veg": "pureveg",
   rasgula: "rasgulla",
+  salad: "fruits",
+  "healthy-bowl": "fruits",
 };
 
 function normalizeSlug(input) {

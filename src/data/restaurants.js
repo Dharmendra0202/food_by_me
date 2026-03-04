@@ -1020,7 +1020,7 @@ const baseDeliveryRestaurants = [
   },
   {
     id: "salad",
-    name: "Salad",
+    name: "Healthy Bowl",
     cuisines: ["Healthy", "Salads"],
     area: "Green Avenue",
     rating: 4.4,
@@ -1029,7 +1029,7 @@ const baseDeliveryRestaurants = [
     priceForTwo: 210,
     offer: "HEALTH BOWL ₹129",
     image: "/images/Fruits.jpg",
-    description: "Crunchy salad bowls with fresh greens and light dressings.",
+    description: "Fresh fruit and salad bowls with light, clean nutrition.",
     highlights: ["Greek Salad", "Protein Bowl", "Fresh Veggies"],
   },
   {

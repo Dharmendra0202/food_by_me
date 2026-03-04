@@ -14,6 +14,16 @@
   overflow: hidden;
 }
 
+.premium-page-embedded {
+  min-height: auto;
+  padding: 0;
+  overflow: visible;
+}
+
+.premium-page-embedded .premium-main {
+  max-width: none;
+}
+
 .premium-bg {
   position: absolute;
   border-radius: 999px;
@@ -106,6 +116,11 @@
   max-width: 400px;
 }
 
+.premium-feedback-inline {
+  margin: 0 0 12px;
+  max-width: none;
+}
+
 @keyframes slideDown {
   from {
     opacity: 0;
@@ -142,6 +157,8 @@
   border-radius: 20px;
   overflow: hidden;
   box-shadow: 0 12px 28px rgba(18, 30, 45, 0.12);
+  display: flex;
+  flex-direction: column;
   contain: content;
   content-visibility: auto;
   contain-intrinsic-size: 360px;
@@ -190,6 +207,9 @@
 
 .premium-card-body {
   padding: 12px 12px 10px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 .premium-card-body h3 {
@@ -197,6 +217,11 @@
   font-size: 1rem;
   line-height: 1.2;
   letter-spacing: -0.01em;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: calc(1em * 1.2 * 2);
 }
 
 .premium-card-body p {
@@ -204,6 +229,11 @@
   color: var(--text-soft);
   font-size: 0.9rem;
   line-height: 1.28;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: calc(0.9rem * 1.28 * 2);
 }
 
 .premium-meta {
@@ -220,6 +250,7 @@
   border: 0;
   border-radius: 12px;
   padding: 9px 12px;
+  margin-top: auto;
   background: linear-gradient(120deg, var(--accent), #202f46);
   color: #ffffff;
   font-weight: 700;
