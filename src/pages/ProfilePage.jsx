@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { API_ENDPOINTS, apiRequest, notifyApp } from "../config/api";
 import "./ProfilePage.css";
@@ -94,16 +94,7 @@ export default function ProfilePage() {
     notifyApp("Profile updated successfully", "success");
   };
 
-  const handleAvatarChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setEditForm({ ...editForm, avatar: reader.result });
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+  const handleAvatarChange = undefined; // removed — avatar upload not used
 
   const toggleFavorite = (restaurantId, restaurantName) => {
     const favorites = [...favoriteRestaurants];

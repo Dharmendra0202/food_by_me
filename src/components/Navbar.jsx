@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState, useRef } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "./Navbar.css";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import {
@@ -88,35 +88,31 @@ function Navbar() {
     }
   }, [profileDropdownOpen]);
 
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     localStorage.removeItem("token");
     localStorage.removeItem("fullName");
     dispatchAppSync();
     setMenuOpen(false);
     setProfileDropdownOpen(false);
-  };
+  }, []);
 
-  const closeMenu = () => {
+  const closeMenu = useCallback(() => {
     setMenuOpen(false);
     setProfileDropdownOpen(false);
-  };
+  }, []);
 
-  const scrollToRestaurants = (e) => {
+  const scrollToRestaurants = useCallback((e) => {
     e.preventDefault();
     closeMenu();
-    
-    // If not on home page, navigate to home first
     if (location.pathname !== '/') {
       window.location.href = '/#restaurants';
       return;
     }
-    
-    // Scroll to restaurants section
     const restaurantsSection = document.getElementById('restaurants');
     if (restaurantsSection) {
       restaurantsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
-  };
+  }, [location.pathname, closeMenu]);
 
   return (
     <nav className="app-navbar" role="navigation">
@@ -249,4 +245,4 @@ function Navbar() {
   );
 }
 
-export default Navbar;
+export default memo(Navbar);

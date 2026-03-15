@@ -1,0 +1,101 @@
+/* ============================================
+   SHARED STYLES — imported once, used everywhere
+   Eliminates duplicate CSS across pages
+   ============================================ */
+
+/* --- Shared gradient button --- */
+.btn-primary {
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #ff7a45 0%, #ff4d4d 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  will-change: transform;
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 77, 77, 0.35);
+}
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* --- Shared card base --- */
+.card-base {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  will-change: transform;
+}
+.card-base:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+}
+
+/* --- Shared form input --- */
+.input-base {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  background: #fafafa;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.input-base:focus {
+  border-color: #ff7a45;
+  box-shadow: 0 0 0 3px rgba(255, 122, 69, 0.12);
+  background: white;
+}
+
+/* --- Shared status badge --- */
+.badge-confirmed  { background: #e3f2fd; color: #1976d2; }
+.badge-preparing  { background: #fff3e0; color: #f57c00; }
+.badge-on_the_way { background: #f3e5f5; color: #7b1fa2; }
+.badge-delivered  { background: #e8f5e9; color: #388e3c; }
+.badge-cancelled  { background: #ffebee; color: #d32f2f; }
+
+.status-badge {
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: capitalize;
+  display: inline-block;
+}
+
+/* --- Shared empty state --- */
+.empty-state-box {
+  text-align: center;
+  padding: 48px 20px;
+  color: #999;
+}
+.empty-state-box p {
+  font-size: 1.1rem;
+  margin-bottom: 16px;
+}
+
+/* --- Shared fade-in animation (GPU only) --- */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-up {
+  animation: fadeUp 0.4s ease forwards;
+  will-change: transform, opacity;
+}
+
+/* --- Shared section container --- */
+.section-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
