@@ -214,3 +214,69 @@
     padding: 10px;
   }
 }
+
+/* --- Google Sign-In Button --- */
+.auth-google-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 11px 16px;
+  margin-top: 4px;
+  border: 1.5px solid #dadce0;
+  border-radius: 12px;
+  background: #fff;
+  color: #3c4043;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.auth-google-btn:hover:not(:disabled) {
+  background: #f8f9fa;
+  border-color: #c6c9cc;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+}
+
+.auth-google-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.auth-google-spinner {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2.5px solid #dadce0;
+  border-top-color: #4285F4;
+  border-radius: 50%;
+  animation: auth-spin 0.7s linear infinite;
+}
+
+@keyframes auth-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* --- Divider between Google and email form --- */
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 16px 0 8px;
+  color: #8a9ab5;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: rgba(38, 55, 81, 0.12);
+}

@@ -19,6 +19,7 @@ const CheckoutPage = lazy(() => import("./pages/CheckoutPage"));
 const ProfilePage = lazy(() => import("./pages/ProfilePage"));
 const AdminLogin = lazy(() => import("./pages/AdminLogin"));
 const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
+const AuthCallback = lazy(() => import("./pages/AuthCallback"));
 const TestConnection = lazy(() => import("./pages/TestConnection"));
 
 function PageLoader() {
@@ -120,6 +121,7 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/test-connection" element={<TestConnection />} />
+            <Route path="/auth/callback" element={<AuthCallback />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/login" element={<Login />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
